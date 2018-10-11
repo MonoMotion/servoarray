@@ -1,4 +1,4 @@
-#include "pca9685.h"
+#include "pca9685/pca9685.h"
 
 PCA9685::PCA9685(std::uint8_t bus, std::uint8_t addr) : bus(bus), address(addr) {
   char dev_path[64];
