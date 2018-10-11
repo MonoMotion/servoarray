@@ -17,6 +17,9 @@ void ServoArray::set(std::uint8_t index, double rad) {
 }
 
 double ServoArray::get(std::uint8_t index) {
+  if (index >= this->driver.num_servos()) {
+    throw std::out_of_range("Channel index out of bounds");
+  }
   return this->values[index];
 }
 
