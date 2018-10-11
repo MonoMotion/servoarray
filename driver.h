@@ -11,6 +11,28 @@
 #include <stdexcept>
 #include <type_traits>
 
+enum class registers : std::uint8_t {
+  MODE1 = 0x00,
+  MODE2 = 0x01,
+  SUBADR1 = 0x02,
+  SUBADR2 = 0x03,
+  SUBADR3 = 0x04,
+  ALLCALLADR = 0x05,
+  LED0 = 0x6,
+  LED0_ON_L = 0x6,
+  LED0_ON_H = 0x7,
+  LED0_OFF_L = 0x8,
+  LED0_OFF_H = 0x9,
+  ALLLED_ON_L = 0xFA,
+  ALLLED_ON_H = 0xFB,
+  ALLLED_OFF_L = 0xFC,
+  ALLLED_OFF_H = 0xFD,
+  PRE_SCALE = 0xFE
+};
+
+static constexpr std::size_t LED_MULTIPLYER = 4;
+static constexpr float CLOCK_FREQ = 25000000.0;
+
 class PCA9685 {
   std::uint8_t bus;
   std::uint8_t address;
