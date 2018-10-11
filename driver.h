@@ -61,6 +61,13 @@ public:
     this->write_reg(Register::MODE2, 0x04); //totem pole (default)
   }
 
+  void set_pwm(std::uint8_t index, std::uint16_t on, std::uint16_t off) {
+    this->write_reg(Register::LED0_ON_L  + 4 * index, on & 0xFF);
+    this->write_reg(Register::LED0_ON_H  + 4 * index, on >> 8);
+    this->write_reg(Register::LED0_OFF_L + 4 * index, off & 0xFF);
+    this->write_reg(Register::LED0_OFF_H + 4 * index, off >> 8);
+  }
+
 private:
   void reset() {
     this->write_reg(Register::MODE1, 0x00);
