@@ -50,6 +50,15 @@ public:
       throw std::runtime_error("Unable to get bus access to talk to slave");
     }
     this->reset();
+    this->set_pwm_freq(40);
+  }
+
+  void set_pwm_freq(float freq) {
+    uint8_t prescale_val = (CLOCK_FREQ / 4096 / freq)  - 1;
+    this->write_reg(Register::MODE1, 0x10); //sleep
+    this->write_reg(Register::PRE_SCALE, prescale_val); // multiplyer for PWM frequency
+    this->write_reg(Register::MODE1, 0x80); //restart
+    this->write_reg(Register::MODE2, 0x04); //totem pole (default)
   }
 
 private:
