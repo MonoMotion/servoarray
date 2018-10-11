@@ -84,5 +84,17 @@ setup(
         ext_modules=[CMakeExtension('servoarray')],
         cmdclass=dict(build_ext=CMakeBuild),
         zip_safe=False,
+        classifiers=[
+            'Development Status :: 3 - Alpha',
+            'Intended Audience :: Developers',
+            'Environment :: Other Environment',
+            'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
+            'Operating System :: POSIX',
+            'Programming Language :: Python',
+            'Programming Language :: C++',
+            'Topic :: Software Development :: Libraries',
+            'Topic :: Software Development :: Embedded Systems',
+            'Topic :: System :: Hardware :: Hardware Drivers',
+            ],
         )
 
