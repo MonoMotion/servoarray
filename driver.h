@@ -29,6 +29,18 @@ public:
   }
 
 private:
+  void write_byte_reg(std::uint8_t reg, std::uint8_t data) {
+    uint8_t buf[2] = {reg, data};
+    if(this->write(&buf, 2) != 2) {
+      throw std::runtime_error("Failed to write byte");
+    }
+  }
+
+  std::uint8_t read_byte_reg(std::uint8_t reg) {
+    this->write_byte(reg);
+    return this->read_byte();
+  }
+
   void write_byte(std::uint8_t data) {
     if(this->write(&data, 1) != 1) {
       throw std::runtime_error("Failed to write byte");
