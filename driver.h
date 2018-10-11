@@ -11,7 +11,7 @@
 #include <stdexcept>
 #include <type_traits>
 
-enum class registers : std::uint8_t {
+enum class Register : std::uint8_t {
   MODE1 = 0x00,
   MODE2 = 0x01,
   SUBADR1 = 0x02,
@@ -49,16 +49,22 @@ public:
     if (ioctl(this->fd, I2C_SLAVE, this->address) < 0) {
       throw std::runtime_error("Unable to get bus access to talk to slave");
     }
+    this->reset();
   }
 
 private:
-  void write_reg(std::uint8_t reg, std::uint8_t data) {
-    uint8_t buf[2] = {reg, data};
+  void reset() {
+    this->write_reg(Register::MODE1, 0x00);
+    this->write_reg(Register::MODE2, 0x04);
+  }
+
+  void write_reg(Register reg, std::uint8_t data) {
+    uint8_t buf[2] = {static_cast<uint8_t>(reg), data};
     this->write_seq(buf, 2);
   }
 
-  std::uint8_t read_reg(std::uint8_t reg) {
-    this->write(reg);
+  std::uint8_t read_reg(Register reg) {
+    this->write(static_cast<std::uint8_t>(reg));
     return this->read<std::uint8_t>();
   }
 
