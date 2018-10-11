@@ -1,6 +1,6 @@
 #include <cstdint>
 
-#include "pca9685/register.h"
+#include "servoarray/pca9685/register.h"
 
 namespace ServoArray {
 

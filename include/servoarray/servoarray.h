@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "pca9685/pca9685.h"
+#include "servoarray/pca9685/pca9685.h"
 
 namespace ServoArray {
 
