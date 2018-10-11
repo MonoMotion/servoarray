@@ -27,6 +27,9 @@ void PCA9685::set_pwm_freq(float freq) {
 }
 
 void PCA9685::set_pwm(std::uint8_t index, std::uint16_t on, std::uint16_t off) {
+  if (index >= this->num_servos()) {
+    throw std::out_of_range("Channel index out of bounds");
+  }
   this->write_reg(Register::LED0_ON_L  + 4 * index, on & 0xFF);
   this->write_reg(Register::LED0_ON_H  + 4 * index, on >> 8);
   this->write_reg(Register::LED0_OFF_L + 4 * index, off & 0xFF);
