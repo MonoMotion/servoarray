@@ -10,7 +10,7 @@ ServoArray::ServoArray(std::uint8_t bus, std::uint8_t address, std::uint16_t min
 void ServoArray::set(std::uint8_t index, double rad) {
   this->values[index] = rad;
 
-  const auto pulse = (rad + M_PI / 4) * (this->max_pulse - this->min_pulse) / (M_PI / 2) + this->min_pulse;
+  const auto pulse = (rad + M_PI / 2) * (this->max_pulse - this->min_pulse) / M_PI + this->min_pulse;
   this->driver.set_pwm(index, 0, pulse);
 }
 
