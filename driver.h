@@ -27,6 +27,15 @@ public:
       throw std::runtime_error("Unable to get bus access to talk to slave");
     }
   }
+
+private:
+  std::size_t write(const void* buf, std::size_t count) {
+    return ::write(this->fd, buf, count);
+  }
+
+  std::ssize_t read(void* buf, std::size_t count) {
+    return ::read(this->fd, buf, count);
+  }
 };
 
 #endif
