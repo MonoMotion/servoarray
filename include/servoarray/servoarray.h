@@ -6,6 +6,8 @@
 
 #include "pca9685/pca9685.h"
 
+namespace ServoArray {
+
 class ServoArray {
   PCA9685 driver;
   std::uint16_t max_pulse;
@@ -19,5 +21,7 @@ public:
   void set(std::uint8_t index, double rad);
   double get(std::uint8_t index);
 };
+
+}
 
 #endif

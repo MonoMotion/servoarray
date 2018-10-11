@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+namespace ServoArray {
+
 ServoArray::ServoArray(std::uint8_t bus, std::uint8_t address, std::uint16_t min_pulse, std::uint16_t max_pulse)
   : driver(PCA9685(bus, address)), min_pulse(min_pulse), max_pulse(max_pulse) {
   this->values.resize(this->driver.num_servos());
@@ -16,4 +18,6 @@ void ServoArray::set(std::uint8_t index, double rad) {
 
 double ServoArray::get(std::uint8_t index) {
   return this->values[index];
+}
+
 }

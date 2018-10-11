@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
   const std::uint16_t min_pulse = strtol(argv[3], NULL, 0);
   const std::uint16_t max_pulse = strtol(argv[4], NULL, 0);
 
-  auto sa = ServoArray(bus, addr, min_pulse, max_pulse);
+  auto sa = ServoArray::ServoArray(bus, addr, min_pulse, max_pulse);
 
   while(true) {
     unsigned index;

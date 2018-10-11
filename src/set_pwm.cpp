@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
   const std::uint8_t addr = strtol(argv[2], NULL, 0);
   const std::uint8_t index = strtol(argv[3], NULL, 0);
 
-  auto driver = PCA9685(bus, addr);
+  auto driver = ServoArray::PCA9685(bus, addr);
 
   while(true) {
     std::uint16_t pulselen;

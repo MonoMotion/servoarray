@@ -3,6 +3,8 @@
 
 #include <cstdint>
 
+namespace ServoArray {
+
 enum class Register : std::uint8_t {
   MODE1 = 0x00,
   MODE2 = 0x01,
@@ -23,5 +25,7 @@ enum class Register : std::uint8_t {
 };
 
 Register operator+(const Register& reg, const std::uint8_t& offset);
+
+}
 
 #endif

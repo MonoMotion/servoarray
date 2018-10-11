@@ -13,6 +13,8 @@
 
 #include "register.h"
 
+namespace ServoArray {
+
 static constexpr float CLOCK_FREQ = 25000000.0;
 
 class PCA9685 {
@@ -57,5 +59,7 @@ private:
     return buf;
   }
 };
+
+}
 
 #endif

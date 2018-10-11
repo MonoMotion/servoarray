@@ -1,5 +1,7 @@
 #include "pca9685/pca9685.h"
 
+namespace ServoArray {
+
 PCA9685::PCA9685(std::uint8_t bus, std::uint8_t addr) : bus(bus), address(addr) {
   char dev_path[64];
   std::sprintf(dev_path, "/dev/i2c-%d", this->bus);
@@ -49,4 +51,6 @@ void PCA9685::write_reg(Register reg, std::uint8_t data) {
 std::uint8_t PCA9685::read_reg(Register reg) {
   this->write(static_cast<std::uint8_t>(reg));
   return this->read<std::uint8_t>();
+}
+
 }
