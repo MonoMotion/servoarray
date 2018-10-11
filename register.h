@@ -1,6 +1,8 @@
 #ifndef SERVOARRAY_REGISTER_H
 #define SERVOARRAY_REGISTER_H
 
+#include <cstdint>
+
 enum class Register : std::uint8_t {
   MODE1 = 0x00,
   MODE2 = 0x01,
@@ -20,9 +22,6 @@ enum class Register : std::uint8_t {
   PRE_SCALE = 0xFE
 };
 
-Register operator+(const Register& reg, const std::uint8_t& offset) {
-  const auto address = static_cast<uint8_t>(reg) + offset;
-  return Register(address);
-}
+Register operator+(const Register& reg, const std::uint8_t& offset);
 
 #endif
