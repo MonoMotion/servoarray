@@ -30,7 +30,6 @@ enum class Register : std::uint8_t {
   PRE_SCALE = 0xFE
 };
 
-static constexpr std::size_t LED_MULTIPLYER = 4;
 static constexpr float CLOCK_FREQ = 25000000.0;
 
 class PCA9685 {
