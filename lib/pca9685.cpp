@@ -20,6 +20,12 @@ std::uint8_t PCA9685::num_servos() {
   return 16;
 }
 
+//
+// set_pwm and set_pwm_freq are written based on TeraHz/PCA9685
+// https://github.com/TeraHz/PCA9685
+//
+// Copyright © 2012 Georgi Todorov  <terahz@geodar.com>
+//
 void PCA9685::set_pwm_freq(float freq) {
   uint8_t prescale_val = (CLOCK_FREQ / 4096 / freq)  - 1;
   this->write_reg(Register::MODE1, 0x10); //sleep

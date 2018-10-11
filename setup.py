@@ -1,3 +1,10 @@
+#
+# This file is written based on benjaminjack/python_cpp_example
+# https://github.com/benjaminjack/python_cpp_example
+#
+# Copyright (c) 2017 Benjamin R. Jack
+#
+
 import os
 import re
 import sys
