@@ -9,6 +9,7 @@
 
 #include <string>
 #include <stdexcept>
+#include <type_traits>
 
 class PCA9685 {
   std::uint8_t bus;
@@ -41,26 +42,19 @@ private:
     return this->read_byte();
   }
 
-  void write_byte(std::uint8_t data) {
-    if(this->write(&data, 1) != 1) {
+  template<typename T, std::enable_if_t<std::is_integral<T>::value>* = nullptr>
+  std::size_t write(T data) {
+    if(::write(this->fd, &data, sizeof(T)) != sizeof(T)) {
       throw std::runtime_error("Failed to write byte");
     }
+    return sizeof(T);
   }
 
-  std::uint8_t read_byte() {
-    std::uint8_t data;
-    if(this->read(&data, 1) != 1) {
-      throw std::runtime_error("Failed to read byte");
-    }
-    return data;
-  }
-
-  std::size_t write(const void* buf, std::size_t count) {
-    return ::write(this->fd, buf, count);
-  }
-
-  ::ssize_t read(void* buf, std::size_t count) {
-    return ::read(this->fd, buf, count);
+  template<typename T, std::enable_if_t<std::is_integral<T>::value>* = nullptr>
+  T read() {
+    T buf;
+    ::read(this->fd, &buf, sizeof(T));
+    return buf;
   }
 };
 
