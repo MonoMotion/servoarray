@@ -30,16 +30,23 @@ public:
   }
 
 private:
-  void write_byte_reg(std::uint8_t reg, std::uint8_t data) {
+  void write_reg(std::uint8_t reg, std::uint8_t data) {
     uint8_t buf[2] = {reg, data};
-    if(this->write(&buf, 2) != 2) {
-      throw std::runtime_error("Failed to write byte");
-    }
+    this->write_seq(buf, 2);
   }
 
-  std::uint8_t read_byte_reg(std::uint8_t reg) {
-    this->write_byte(reg);
-    return this->read_byte();
+  std::uint8_t read_reg(std::uint8_t reg) {
+    this->write(reg);
+    return this->read<std::uint8_t>();
+  }
+
+  template<typename T, std::enable_if_t<std::is_integral<T>::value>* = nullptr>
+  std::size_t write_seq(T const* data, std::size_t size) {
+    const auto length = sizeof(T) * size;
+    if(::write(this->fd, data, length) != length) {
+      throw std::runtime_error("Failed to write byte");
+    }
+    return length;
   }
 
   template<typename T, std::enable_if_t<std::is_integral<T>::value>* = nullptr>
