@@ -30,6 +30,11 @@ enum class Register : std::uint8_t {
   PRE_SCALE = 0xFE
 };
 
+Register operator+(const Register& reg, const std::uint8_t& offset) {
+  const auto address = static_cast<uint8_t>(reg) + offset;
+  return Register(address);
+}
+
 static constexpr float CLOCK_FREQ = 25000000.0;
 
 class PCA9685 {
