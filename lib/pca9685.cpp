@@ -14,6 +14,10 @@ PCA9685::PCA9685(std::uint8_t bus, std::uint8_t addr) : bus(bus), address(addr) 
   this->set_pwm_freq(40);
 }
 
+std::uint8_t PCA9685::num_servos() {
+  return 16;
+}
+
 void PCA9685::set_pwm_freq(float freq) {
   uint8_t prescale_val = (CLOCK_FREQ / 4096 / freq)  - 1;
   this->write_reg(Register::MODE1, 0x10); //sleep

@@ -25,6 +25,7 @@ public:
 
   void set_pwm_freq(float freq);
   void set_pwm(std::uint8_t index, std::uint16_t on, std::uint16_t off);
+  std::uint8_t num_servos();
 
 private:
   void reset();
