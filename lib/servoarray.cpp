@@ -20,4 +20,8 @@ double ServoArray::get(std::uint8_t index) {
   return this->values[index];
 }
 
+std::uint8_t ServoArray::size() {
+  return this->driver.num_servos();
+}
+
 }

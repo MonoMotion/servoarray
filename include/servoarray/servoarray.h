@@ -20,6 +20,8 @@ public:
 
   void set(std::uint8_t index, double rad);
   double get(std::uint8_t index);
+
+  std::uint8_t size();
 };
 
 }
