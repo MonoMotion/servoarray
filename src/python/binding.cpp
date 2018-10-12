@@ -32,7 +32,7 @@ public:
   ServoArray(Ts&&... params) : sa(::ServoArray::ServoArray(std::forward<Ts>(params)...)) {}
 
   void set(std::int16_t index, double rad) {
-    if (index > 0) {
+    if (index >= 0) {
       return this->sa.set(index, rad);
     } else {
       return this->sa.set(this->sa.size() + index, rad);
@@ -52,7 +52,7 @@ public:
     }
   }
   double get(std::int16_t index) {
-    if (index > 0) {
+    if (index >= 0) {
       return this->sa.get(index);
     } else {
       return this->sa.get(this->sa.size() + index);
