@@ -1,7 +1,10 @@
-language: python
-python:
-  - '3.5'
-install: true
+language: cpp
+addons:
+  apt:
+    packages:
+      - python3.5
+      - python3.5-pip
+      - python3.5-dev
 script:
   - pip install -e .
 deploy:
