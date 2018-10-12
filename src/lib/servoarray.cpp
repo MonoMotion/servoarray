@@ -25,6 +25,10 @@ ServoArray::ServoArray(std::uint8_t bus, std::uint8_t address, std::uint16_t min
 }
 
 void ServoArray::set(std::uint8_t index, double rad) {
+  if (index >= this->driver.num_servos()) {
+    throw std::out_of_range("Channel index out of bounds");
+  }
+
   if (rad > M_PI / 2 || rad < - M_PI / 2) {
     throw std::out_of_range("Position value must be within the range from -pi/2 to pi/2");
   }
