@@ -115,6 +115,7 @@ PYBIND11_MODULE(servoarray, m) {
     .def(py::init<std::uint8_t, std::uint8_t, std::uint16_t, std::uint16_t>(), py::arg("bus") = 1, py::arg("address") = 0x40, py::arg("min_pulse") = 150, py::arg("max_pulse") = 600)
     .def("set", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::set))
     .def("get", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::get))
+    .def("auto_clip", &Adaptor::ServoArray::auto_clip)
     .def("__len__", &Adaptor::ServoArray::size)
     .def("__setitem__", py::overload_cast<py::slice, py::list>(&Adaptor::ServoArray::set))
     .def("__setitem__", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::set))
