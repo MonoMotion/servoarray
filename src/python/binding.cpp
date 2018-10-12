@@ -31,8 +31,20 @@ public:
   template<typename... Ts>
   ServoArray(Ts&&... params) : sa(::ServoArray::ServoArray(std::forward<Ts>(params)...)) {}
 
-  void set(std::uint8_t index, double rad) { this->sa.set(index, rad); }
-  double get(std::uint8_t index) { return this->sa.get(index); }
+  void set(std::int16_t index, double rad) {
+    if (index > 0) {
+      return this->sa.set(index, rad);
+    } else {
+      return this->sa.set(this->sa.size() + index, rad);
+    }
+  }
+  double get(std::int16_t index) {
+    if (index > 0) {
+      return this->sa.get(index);
+    } else {
+      return this->sa.get(this->sa.size() + index);
+    }
+  }
   py::list get(py::slice slice) {
     std::size_t start, stop, step, length;
     if (!slice.compute(this->sa.size(), &start, &stop, &step, &length))
@@ -56,10 +68,10 @@ PYBIND11_MODULE(servoarray, m) {
   py::class_<Adaptor::ServoArray>(m, "ServoArray")
     .def(py::init<std::uint8_t, std::uint8_t, std::uint16_t, std::uint16_t>(), py::arg("bus") = 1, py::arg("address") = 0x40, py::arg("min_pulse") = 150, py::arg("max_pulse") = 600)
     .def("set", &Adaptor::ServoArray::set)
-    .def("get", py::overload_cast<std::uint8_t>(&Adaptor::ServoArray::get))
+    .def("get", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::get))
     .def("__len__", &Adaptor::ServoArray::size)
     .def("__setitem__", &Adaptor::ServoArray::set)
     .def("__getitem__", py::overload_cast<py::slice>(&Adaptor::ServoArray::get))
-    .def("__getitem__", py::overload_cast<std::uint8_t>(&Adaptor::ServoArray::get));
+    .def("__getitem__", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::get));
 }
 
