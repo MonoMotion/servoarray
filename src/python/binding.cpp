@@ -18,6 +18,7 @@
 #include <cstdlib>
 
 #include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
 
 #include "servoarray/servoarray.h"
 
@@ -44,7 +45,7 @@ public:
       return this->sa.set(static_cast<uint8_t>(this->sa.size() + index), rad);
     }
   }
-  void set(py::slice slice, py::list list) {
+  void set(py::slice slice, py::array_t<double> list) {
     std::size_t start, stop, step, length;
     if (!slice.compute(this->sa.size(), &start, &stop, &step, &length))
       throw py::error_already_set();
@@ -117,7 +118,7 @@ PYBIND11_MODULE(servoarray, m) {
     .def("get", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::get))
     .def("auto_clip", &Adaptor::ServoArray::auto_clip)
     .def("__len__", &Adaptor::ServoArray::size)
-    .def("__setitem__", py::overload_cast<py::slice, py::list>(&Adaptor::ServoArray::set))
+    .def("__setitem__", py::overload_cast<py::slice, py::array_t<double>>(&Adaptor::ServoArray::set))
     .def("__setitem__", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::set))
     .def("__getitem__", py::overload_cast<py::slice>(&Adaptor::ServoArray::get))
     .def("__getitem__", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::get));
