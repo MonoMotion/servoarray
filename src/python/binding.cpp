@@ -44,7 +44,7 @@ public:
       throw py::error_already_set();
 
     if (py::len(list) != length) {
-      throw std::runtime_error("Can't assign the different length of list from slice");
+      throw std::out_of_range("Can't assign the different length of list from slice");
     }
     for (auto const& elem : list) {
       this->sa.set(start, elem.cast<double>());
