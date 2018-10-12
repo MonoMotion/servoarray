@@ -1,5 +1,10 @@
 # servoarray
 
+![Travis (.org)](https://img.shields.io/travis/coord-e/servoarray.py.svg)
+![PyPI](https://img.shields.io/pypi/v/servoarray.svg)
+![PyPI - License](https://img.shields.io/pypi/l/servoarray.svg)
+![C++](https://img.shields.io/badge/C%2B%2B-14-orange.svg)
+
 A fast implementation of PCA9685 driver, written in C++ and available as python module
 
 ## Install
