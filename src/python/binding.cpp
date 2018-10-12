@@ -80,6 +80,7 @@ public:
 private:
   template<typename Int, typename T, std::enable_if_t<std::numeric_limits<T>::is_signed>* = nullptr>
   void check_index(T v) {
+    static_assert(sizeof(Int) < sizeof(T), "check_index is only available to convert larger integer to smaller one");
     if (std::numeric_limits<Int>::max() < v || -std::numeric_limits<Int>::max() > v) {
       throw std::out_of_range("Index out of bounds");
     }
@@ -87,6 +88,7 @@ private:
 
   template<typename Int, typename T, std::enable_if_t<!std::numeric_limits<T>::is_signed>* = nullptr>
   void check_index(T v) {
+    static_assert(sizeof(Int) < sizeof(T), "check_index is only available to convert larger integer to smaller one");
     if (std::numeric_limits<Int>::max() < v) {
       throw std::out_of_range("Index out of bounds");
     }
