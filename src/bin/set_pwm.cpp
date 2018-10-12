@@ -36,5 +36,4 @@ int main(int argc, char **argv) {
     std::cin >> pulselen;
     driver.set_pwm(index, 0, pulselen);
   }
-  return 0;
 }

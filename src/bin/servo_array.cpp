@@ -44,5 +44,4 @@ int main(int argc, char **argv) {
     sa.set(index, rad);
     std::cout << index << " -> " << sa.get(index) << std::endl;
   }
-  return 0;
 }
