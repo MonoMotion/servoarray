@@ -80,7 +80,13 @@ private:
   template<typename T, std::enable_if_t<std::is_integral<T>::value>* = nullptr>
   T read() {
     T buf;
-    ::read(this->fd, &buf, sizeof(T));
+    const auto result = ::read(this->fd, &buf, sizeof(T));
+    if (result == -1) {
+      throw this->errno_error<std::runtime_error>(errno);
+    }
+    if (static_cast<std::size_t>(result) != sizeof(T)) {
+      throw std::runtime_error("Failed to read byte");
+    }
     return buf;
   }
 
