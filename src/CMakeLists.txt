@@ -22,6 +22,16 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(PYBIND11_CPP_STANDARD -std=c++14)
 
+if(NOT CONFIG)
+  set(CONFIG Release)
+endif()
+
+if(CONFIG STREQUAL "Debug")
+  add_compile_options(-O0 -g3)
+elseif(CONFIG STREQUAL "Release")
+  add_compile_options(-O3 -march=native)
+endif()
+
 include_directories(include/)
 
 add_subdirectory(lib)
