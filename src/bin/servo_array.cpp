@@ -24,17 +24,18 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  const std::uint8_t bus = strtol(argv[1], NULL, 0);
-  const std::uint8_t addr = strtol(argv[2], NULL, 0);
-  const std::uint16_t min_pulse = strtol(argv[3], NULL, 0);
-  const std::uint16_t max_pulse = strtol(argv[4], NULL, 0);
+  const std::uint8_t bus   = static_cast<std::uint8_t>(strtol(argv[1], NULL, 0));
+  const std::uint8_t addr  = static_cast<std::uint8_t>(strtol(argv[2], NULL, 0));
+  const std::uint16_t min_pulse  = static_cast<std::uint16_t>(strtol(argv[3], NULL, 0));
+  const std::uint16_t max_pulse  = static_cast<std::uint16_t>(strtol(argv[4], NULL, 0));
 
   auto sa = ServoArray::ServoArray(bus, addr, min_pulse, max_pulse);
 
   while(true) {
-    unsigned index;
+    unsigned index_in;
     std::cout << "(index) > ";
-    std::cin >> index;
+    std::cin >> index_in;
+    const auto index = static_cast<std::uint8_t>(index_in);
 
     double rad;
     std::cout << " (rad)  > ";

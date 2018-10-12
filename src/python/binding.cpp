@@ -32,10 +32,13 @@ public:
   ServoArray(Ts&&... params) : sa(::ServoArray::ServoArray(std::forward<Ts>(params)...)) {}
 
   void set(std::int16_t index, double rad) {
+    if (std::numeric_limits<uint8_t>::max() < index || -std::numeric_limits<uint8_t>::max() > index) {
+      throw std::out_of_range("Index out of bounds");
+    }
     if (index >= 0) {
-      return this->sa.set(index, rad);
+      return this->sa.set(static_cast<uint8_t>(index), rad);
     } else {
-      return this->sa.set(this->sa.size() + index, rad);
+      return this->sa.set(static_cast<uint8_t>(this->sa.size() + index), rad);
     }
   }
   void set(py::slice slice, py::list list) {
@@ -46,16 +49,19 @@ public:
     if (py::len(list) != length) {
       throw std::out_of_range("Can't assign the different length of list from slice");
     }
-    for (auto const& elem : list) {
+    for (auto const elem : list) {
       this->sa.set(start, elem.cast<double>());
       start += step;
     }
   }
   double get(std::int16_t index) {
+    if (std::numeric_limits<uint8_t>::max() < index || -std::numeric_limits<uint8_t>::max() > index) {
+      throw std::out_of_range("Index out of bounds");
+    }
     if (index >= 0) {
-      return this->sa.get(index);
+      return this->sa.get(static_cast<uint8_t>(index));
     } else {
-      return this->sa.get(this->sa.size() + index);
+      return this->sa.get(static_cast<uint8_t>(this->sa.size() + index));
     }
   }
   py::list get(py::slice slice) {

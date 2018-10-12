@@ -24,9 +24,9 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  const std::uint8_t bus = strtol(argv[1], NULL, 0);
-  const std::uint8_t addr = strtol(argv[2], NULL, 0);
-  const std::uint8_t index = strtol(argv[3], NULL, 0);
+  const std::uint8_t bus   = static_cast<std::uint8_t>(strtol(argv[1], NULL, 0));
+  const std::uint8_t addr  = static_cast<std::uint8_t>(strtol(argv[2], NULL, 0));
+  const std::uint8_t index = static_cast<std::uint8_t>(strtol(argv[3], NULL, 0));
 
   auto driver = ServoArray::PCA9685(bus, addr);
 
