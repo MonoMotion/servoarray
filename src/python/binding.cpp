@@ -32,10 +32,11 @@ public:
   ServoArray(Ts&&... params) : sa(::ServoArray::ServoArray(std::forward<Ts>(params)...)) {}
 
   void set(std::int16_t index, double rad) {
+    const auto u8idx = this->cast_index<uint8_t>(index);
     if (index >= 0) {
-      return this->sa.set(index, rad);
+      return this->sa.set(u8idx, rad);
     } else {
-      return this->sa.set(this->sa.size() + index, rad);
+      return this->sa.set(static_cast<uint8_t>(this->sa.size() + index), rad);
     }
   }
   void set(py::slice slice, py::list list) {
@@ -47,15 +48,17 @@ public:
       throw std::out_of_range("Can't assign the different length of list from slice");
     }
     for (auto const& elem : list) {
-      this->sa.set(start, elem.cast<double>());
+      const auto idx = this->cast_index<uint8_t>(start);
+      this->sa.set(idx, elem.cast<double>());
       start += step;
     }
   }
   double get(std::int16_t index) {
+    const auto u8idx = this->cast_index<uint8_t>(index);
     if (index >= 0) {
-      return this->sa.get(index);
+      return this->sa.get(u8idx);
     } else {
-      return this->sa.get(this->sa.size() + index);
+      return this->sa.get(static_cast<uint8_t>(this->sa.size() + index));
     }
   }
   py::list get(py::slice slice) {
@@ -65,13 +68,33 @@ public:
 
     auto l = py::list();
     for (std::size_t i = 0; i < length; ++i) {
-      l.append(this->sa.get(start));
+      const auto idx = this->cast_index<uint8_t>(start);
+      l.append(this->sa.get(idx));
       start += step;
     }
     return l;
   }
 
   std::uint8_t size() { return this->sa.size(); }
+
+private:
+  template<typename Int, typename T, std::enable_if_t<std::numeric_limits<T>::is_signed>* = nullptr>
+  Int cast_index(T v) {
+    static_assert(sizeof(Int) < sizeof(T), "check_index is only available to convert larger integer to smaller one");
+    if (std::numeric_limits<Int>::max() < v || -std::numeric_limits<Int>::max() > v) {
+      throw std::out_of_range("Index out of bounds");
+    }
+    return static_cast<Int>(v);
+  }
+
+  template<typename Int, typename T, std::enable_if_t<!std::numeric_limits<T>::is_signed>* = nullptr>
+  Int cast_index(T v) {
+    static_assert(sizeof(Int) < sizeof(T), "check_index is only available to convert larger integer to smaller one");
+    if (std::numeric_limits<Int>::max() < v) {
+      throw std::out_of_range("Index out of bounds");
+    }
+    return static_cast<Int>(v);
+  }
 };
 
 }

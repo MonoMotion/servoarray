@@ -77,7 +77,7 @@ class CMakeBuild(build_ext):
 
 setup(
         name='servoarray',
-        version='0.2',
+        version='0.3',
         author='coord.e',
         author_email='me@coord-e.com',
         description='ServoArray: A fast implementation of servo motor array written in C++, also available as a python module',
@@ -86,7 +86,7 @@ setup(
         cmdclass=dict(build_ext=CMakeBuild),
         zip_safe=False,
         classifiers=[
-            'Development Status :: 3 - Alpha',
+            'Development Status :: 4 - Beta',
             'Intended Audience :: Developers',
             'Environment :: Other Environment',
             'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
