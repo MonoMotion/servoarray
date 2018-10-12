@@ -14,6 +14,7 @@
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <utility>
+#include <algorithm>
 #include <cstdlib>
 
 #include <pybind11/pybind11.h>
@@ -26,13 +27,17 @@ namespace Adaptor {
 
 class ServoArray {
   ::ServoArray::ServoArray sa;
+  bool enable_clip;
 
 public:
   template<typename... Ts>
-  ServoArray(Ts&&... params) : sa(::ServoArray::ServoArray(std::forward<Ts>(params)...)) {}
+  ServoArray(Ts&&... params) : sa(::ServoArray::ServoArray(std::forward<Ts>(params)...)), enable_clip(false) {}
 
   void set(std::int16_t index, double rad) {
     const auto u8idx = this->cast_index<uint8_t>(index);
+    if (this->enable_clip) {
+      rad = std::min(std::max(rad, - M_PI / 2), M_PI / 2);
+    }
     if (index >= 0) {
       return this->sa.set(u8idx, rad);
     } else {
@@ -49,7 +54,11 @@ public:
     }
     for (auto const& elem : list) {
       const auto idx = this->cast_index<uint8_t>(start);
-      this->sa.set(idx, elem.cast<double>());
+      auto rad = elem.cast<double>();
+      if (this->enable_clip) {
+        rad = std::min(std::max(rad, - M_PI / 2), M_PI / 2);
+      }
+      this->sa.set(idx, rad);
       start += step;
     }
   }
@@ -76,6 +85,7 @@ public:
   }
 
   std::uint8_t size() { return this->sa.size(); }
+  void auto_clip(bool is_enabled) { this->enable_clip = is_enabled; }
 
 private:
   template<typename Int, typename T, std::enable_if_t<std::numeric_limits<T>::is_signed>* = nullptr>
@@ -105,6 +115,7 @@ PYBIND11_MODULE(servoarray, m) {
     .def(py::init<std::uint8_t, std::uint8_t, std::uint16_t, std::uint16_t>(), py::arg("bus") = 1, py::arg("address") = 0x40, py::arg("min_pulse") = 150, py::arg("max_pulse") = 600)
     .def("set", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::set))
     .def("get", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::get))
+    .def("auto_clip", &Adaptor::ServoArray::auto_clip)
     .def("__len__", &Adaptor::ServoArray::size)
     .def("__setitem__", py::overload_cast<py::slice, py::list>(&Adaptor::ServoArray::set))
     .def("__setitem__", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::set))
