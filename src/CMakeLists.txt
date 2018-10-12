@@ -36,7 +36,7 @@ endif()
 if(CONFIG STREQUAL "Debug")
   add_compile_options(-O0 -g3)
 elseif(CONFIG STREQUAL "Release")
-  add_compile_options(-O3 -march=native)
+  add_compile_options(-O3)
 endif()
 
 include_directories(include/)
