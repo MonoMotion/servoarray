@@ -1,7 +1,24 @@
-language: python
-python:
-  - '3.5'
-install: true
+language: cpp
+addons:
+  apt:
+    packages:
+      - python3.5
+      - python3.5-pip
+      - python3.5-dev
+matrix:
+  include:
+    - compiler: clang++
+      env:
+        - CXX=clang++
+    - compiler: g++
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+        - CXX=g++5
 script:
   - pip install -e .
 deploy:
