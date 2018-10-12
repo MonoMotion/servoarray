@@ -8,7 +8,7 @@ matrix:
   include:
     - compiler: clang++
       env:
-        - CXX=clang++
+        - MATRIX_EVAL="CC=clang-5 && CXX=clang++-5"
     - compiler: g++
       addons:
         apt:
@@ -19,7 +19,9 @@ matrix:
             - python3.5
             - python3.5-dev
       env:
-        - CXX=g++5
+        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+before_install:
+  - eval "${MATRIX_EVAL}"
 install:
   - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
   - python3.5 get-pip.py --user
