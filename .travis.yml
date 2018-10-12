@@ -18,6 +18,9 @@ matrix:
             - g++-5
       env:
         - CXX=g++5
+install:
+  - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+  - python get-pip.py --user
 script:
   - pip install -e .
 deploy:
