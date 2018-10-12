@@ -82,7 +82,7 @@ setup(
         author_email='me@coord-e.com',
         description='ServoArray: A fast implementation of servo motor array written in C++, also available as a python module',
         long_description='',
-        ext_modules=[CMakeExtension('servoarray')],
+        ext_modules=[CMakeExtension('servoarray', './src/')],
         cmdclass=dict(build_ext=CMakeBuild),
         zip_safe=False,
         classifiers=[
