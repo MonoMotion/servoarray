@@ -53,9 +53,9 @@ public:
     if (static_cast<std::size_t>(list.size()) != length) {
       throw std::out_of_range("Can't assign the different length of list from slice");
     }
-    for (auto const& elem : list) {
+    for (std::size_t i = 0; i < length; ++i) {
       const auto idx = this->cast_index<uint8_t>(start);
-      auto rad = elem.cast<double>();
+      double rad = list.at(i);
       if (this->enable_clip) {
         rad = std::min(std::max(rad, - M_PI / 2), M_PI / 2);
       }
