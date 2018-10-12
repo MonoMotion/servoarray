@@ -32,9 +32,7 @@ public:
   ServoArray(Ts&&... params) : sa(::ServoArray::ServoArray(std::forward<Ts>(params)...)) {}
 
   void set(std::int16_t index, double rad) {
-    if (std::numeric_limits<uint8_t>::max() < index || -std::numeric_limits<uint8_t>::max() > index) {
-      throw std::out_of_range("Index out of bounds");
-    }
+    this->check_index<uint8_t>(index);
     if (index >= 0) {
       return this->sa.set(static_cast<uint8_t>(index), rad);
     } else {
@@ -50,14 +48,13 @@ public:
       throw std::out_of_range("Can't assign the different length of list from slice");
     }
     for (auto const elem : list) {
-      this->sa.set(start, elem.cast<double>());
+      this->check_index<uint8_t>(start);
+      this->sa.set(static_cast<uint8_t>(start), elem.cast<double>());
       start += step;
     }
   }
   double get(std::int16_t index) {
-    if (std::numeric_limits<uint8_t>::max() < index || -std::numeric_limits<uint8_t>::max() > index) {
-      throw std::out_of_range("Index out of bounds");
-    }
+    this->check_index<uint8_t>(index);
     if (index >= 0) {
       return this->sa.get(static_cast<uint8_t>(index));
     } else {
@@ -71,13 +68,22 @@ public:
 
     auto l = py::list();
     for (std::size_t i = 0; i < length; ++i) {
-      l.append(this->sa.get(start));
+      this->check_index<uint8_t>(start);
+      l.append(this->sa.get(static_cast<uint8_t>(start)));
       start += step;
     }
     return l;
   }
 
   std::uint8_t size() { return this->sa.size(); }
+
+private:
+  template<typename Int, typename T>
+  void check_index(T v) {
+    if (std::numeric_limits<Int>::max() < v || -std::numeric_limits<Int>::max() > v) {
+      throw std::out_of_range("Index out of bounds");
+    }
+  }
 };
 
 }
