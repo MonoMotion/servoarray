@@ -17,6 +17,8 @@
 #define SERVOARRAY_DRIVER_H
 
 #include <cstdlib>
+#include <cerrno>
+#include <cstring>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -53,7 +55,11 @@ private:
   template<typename T, std::enable_if_t<std::is_integral<T>::value>* = nullptr>
   std::size_t write_seq(T const* data, std::size_t size) {
     const auto length = sizeof(T) * size;
-    if(::write(this->fd, data, length) != length) {
+    const auto result = ::write(this->fd, data, length);
+    if (result == -1) {
+      throw this->errno_error<std::runtime_error>(errno);
+    }
+    if (static_cast<std::size_t>(result) != length) {
       throw std::runtime_error("Failed to write byte");
     }
     return length;
@@ -61,7 +67,11 @@ private:
 
   template<typename T, std::enable_if_t<std::is_integral<T>::value>* = nullptr>
   std::size_t write(T data) {
-    if(::write(this->fd, &data, sizeof(T)) != sizeof(T)) {
+    const auto result = ::write(this->fd, &data, sizeof(T));
+    if (result == -1) {
+      throw this->errno_error<std::runtime_error>(errno);
+    }
+    if (static_cast<std::size_t>(result) != sizeof(T)) {
       throw std::runtime_error("Failed to write byte");
     }
     return sizeof(T);
@@ -73,6 +83,14 @@ private:
     ::read(this->fd, &buf, sizeof(T));
     return buf;
   }
+
+  template<typename T>
+  T errno_error(int errnum) {
+    char errbuf[64];
+    ::strerror_r(errnum, errbuf, 64);
+    return T{errbuf};
+  }
+
 };
 
 }
