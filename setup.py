@@ -1,3 +1,10 @@
+#
+# This file is written based on benjaminjack/python_cpp_example
+# https://github.com/benjaminjack/python_cpp_example
+#
+# Copyright (c) 2017 Benjamin R. Jack
+#
+
 import os
 import re
 import sys
@@ -9,10 +16,11 @@ from distutils.version import LooseVersion
 from setuptools import setup, find_packages, Extension
 from setuptools.command.build_ext import build_ext
 
+import glob
 
 class CMakeExtension(Extension):
-    def __init__(self, name, sourcedir=''):
-        Extension.__init__(self, name, sources=[])
+    def __init__(self, name, sourcedir='.'):
+        Extension.__init__(self, name, sources=glob.glob(sourcedir + "/**/*", recursive=True))
         self.sourcedir = os.path.abspath(sourcedir)
 
 
@@ -69,13 +77,25 @@ class CMakeBuild(build_ext):
 
 setup(
         name='servoarray',
-        version='0.1',
+        version='0.1.1',
         author='coord.e',
         author_email='me@coord-e.com',
         description='ServoArray: A fast implementation of servo motor array written in C++, also available as a python module',
         long_description='',
-        ext_modules=[CMakeExtension('servoarray')],
+        ext_modules=[CMakeExtension('servoarray', './src/')],
         cmdclass=dict(build_ext=CMakeBuild),
         zip_safe=False,
+        classifiers=[
+            'Development Status :: 3 - Alpha',
+            'Intended Audience :: Developers',
+            'Environment :: Other Environment',
+            'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
+            'Operating System :: POSIX',
+            'Programming Language :: Python',
+            'Programming Language :: C++',
+            'Topic :: Software Development :: Libraries',
+            'Topic :: Software Development :: Embedded Systems',
+            'Topic :: System :: Hardware :: Hardware Drivers',
+            ],
         )
 

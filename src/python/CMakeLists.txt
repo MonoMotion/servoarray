@@ -13,20 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 3.7)
-cmake_policy(SET CMP0048 NEW)
+cmake_minimum_required(VERSION 2.7)
 
-project(servoarray VERSION 0.1 LANGUAGES CXX)
-
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(PYBIND11_CPP_STANDARD -std=c++14)
-
-include_directories(include/)
-
-add_subdirectory(lib)
-add_subdirectory(bin)
-
-add_subdirectory(pybind11)
-
-add_subdirectory(python)
+pybind11_add_module(servoarray SHARED binding.cpp)
+target_link_libraries(servoarray servoarray_lib)

@@ -13,20 +13,13 @@
 # You should have received a copy of the GNU General Public License
 # along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 3.7)
-cmake_policy(SET CMP0048 NEW)
+cmake_minimum_required(VERSION 2.7)
 
-project(servoarray VERSION 0.1 LANGUAGES CXX)
+add_library(pca9685_lib STATIC pca9685.cpp register.cpp)
+set_target_properties(pca9685_lib PROPERTIES OUTPUT_NAME "pca9685")
+set_target_properties(pca9685_lib PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(PYBIND11_CPP_STANDARD -std=c++14)
-
-include_directories(include/)
-
-add_subdirectory(lib)
-add_subdirectory(bin)
-
-add_subdirectory(pybind11)
-
-add_subdirectory(python)
+add_library(servoarray_lib STATIC servoarray.cpp)
+set_target_properties(servoarray_lib PROPERTIES OUTPUT_NAME "servoarray")
+set_target_properties(servoarray_lib PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+target_link_libraries(servoarray_lib pca9685_lib)
