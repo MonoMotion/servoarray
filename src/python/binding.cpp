@@ -38,6 +38,19 @@ public:
       return this->sa.set(this->sa.size() + index, rad);
     }
   }
+  void set(py::slice slice, py::list list) {
+    std::size_t start, stop, step, length;
+    if (!slice.compute(this->sa.size(), &start, &stop, &step, &length))
+      throw py::error_already_set();
+
+    if (py::len(list) != length) {
+      throw std::runtime_error("Can't assign the different length of list from slice");
+    }
+    for (auto const& elem : list) {
+      this->sa.set(start, elem.cast<double>());
+      start += step;
+    }
+  }
   double get(std::int16_t index) {
     if (index > 0) {
       return this->sa.get(index);
@@ -67,10 +80,11 @@ PYBIND11_MODULE(servoarray, m) {
   m.doc() = "ServoArray: A fast implementation of servo motor array written in C++, also available as a python module";
   py::class_<Adaptor::ServoArray>(m, "ServoArray")
     .def(py::init<std::uint8_t, std::uint8_t, std::uint16_t, std::uint16_t>(), py::arg("bus") = 1, py::arg("address") = 0x40, py::arg("min_pulse") = 150, py::arg("max_pulse") = 600)
-    .def("set", &Adaptor::ServoArray::set)
+    .def("set", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::set))
     .def("get", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::get))
     .def("__len__", &Adaptor::ServoArray::size)
-    .def("__setitem__", &Adaptor::ServoArray::set)
+    .def("__setitem__", py::overload_cast<py::slice, py::list>(&Adaptor::ServoArray::set))
+    .def("__setitem__", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::set))
     .def("__getitem__", py::overload_cast<py::slice>(&Adaptor::ServoArray::get))
     .def("__getitem__", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::get));
 }
