@@ -10,7 +10,6 @@ addons:
       - build-essential
       - cmake
 env:
-  - CC=gcc-5
   - CXX=g++-5
 script:
   - pip install -e .
