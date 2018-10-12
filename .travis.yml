@@ -1,25 +1,18 @@
-language: cpp
-addons:
-  apt:
-    packages:
-      - python3.5
-      - python3.5-dev
-compiler: g++
+language: python
+python:
+  - '3.5'
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
     packages:
       - g++-5
-      - python3.5
-      - python3.5-dev
-before_install:
-  - eval "CC=gcc-5 && CXX=g++-5"
-install:
-  - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-  - python3.5 get-pip.py --user
+      - build-essential
+      - cmake
+env:
+  - CXX=g++-5
 script:
-  - python3.5 -m pip install --user -e .
+  - pip install -e .
 deploy:
   provider: pypi
   user: "${PYPI_USERNAME}"
