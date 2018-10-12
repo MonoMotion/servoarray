@@ -14,6 +14,7 @@
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <utility>
+#include <algorithm>
 #include <cstdlib>
 
 #include <pybind11/pybind11.h>
@@ -34,6 +35,9 @@ public:
 
   void set(std::int16_t index, double rad) {
     const auto u8idx = this->cast_index<uint8_t>(index);
+    if (this->enable_clip) {
+      rad = std::min(std::max(rad, - M_PI / 2), M_PI);
+    }
     if (index >= 0) {
       return this->sa.set(u8idx, rad);
     } else {
@@ -50,7 +54,11 @@ public:
     }
     for (auto const& elem : list) {
       const auto idx = this->cast_index<uint8_t>(start);
-      this->sa.set(idx, elem.cast<double>());
+      auto rad = elem.cast<double>();
+      if (this->enable_clip) {
+        rad = std::min(std::max(rad, - M_PI / 2), M_PI);
+      }
+      this->sa.set(idx, rad);
       start += step;
     }
   }
