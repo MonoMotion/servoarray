@@ -50,7 +50,7 @@ public:
     if (!slice.compute(this->sa.size(), &start, &stop, &step, &length))
       throw py::error_already_set();
 
-    if (py::len(list) != length) {
+    if (list.size() != length) {
       throw std::out_of_range("Can't assign the different length of list from slice");
     }
     for (auto const& elem : list) {
