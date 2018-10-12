@@ -25,8 +25,8 @@ namespace ServoArray {
 
 class ServoArray {
   PCA9685 driver;
-  std::uint16_t max_pulse;
   std::uint16_t min_pulse;
+  std::uint16_t max_pulse;
 
   std::vector<double> values;
 
