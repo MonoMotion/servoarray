@@ -26,10 +26,11 @@ namespace Adaptor {
 
 class ServoArray {
   ::ServoArray::ServoArray sa;
+  bool enable_clip;
 
 public:
   template<typename... Ts>
-  ServoArray(Ts&&... params) : sa(::ServoArray::ServoArray(std::forward<Ts>(params)...)) {}
+  ServoArray(Ts&&... params) : sa(::ServoArray::ServoArray(std::forward<Ts>(params)...)), enable_clip(false) {}
 
   void set(std::int16_t index, double rad) {
     const auto u8idx = this->cast_index<uint8_t>(index);
@@ -76,6 +77,7 @@ public:
   }
 
   std::uint8_t size() { return this->sa.size(); }
+  void auto_clip(bool is_enabled) { this->enable_clip = is_enabled; }
 
 private:
   template<typename Int, typename T, std::enable_if_t<std::numeric_limits<T>::is_signed>* = nullptr>
