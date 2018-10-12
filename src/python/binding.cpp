@@ -78,9 +78,16 @@ public:
   std::uint8_t size() { return this->sa.size(); }
 
 private:
-  template<typename Int, typename T>
+  template<typename Int, typename T, std::enable_if_t<std::numeric_limits<T>::is_signed>* = nullptr>
   void check_index(T v) {
     if (std::numeric_limits<Int>::max() < v || -std::numeric_limits<Int>::max() > v) {
+      throw std::out_of_range("Index out of bounds");
+    }
+  }
+
+  template<typename Int, typename T, std::enable_if_t<!std::numeric_limits<T>::is_signed>* = nullptr>
+  void check_index(T v) {
+    if (std::numeric_limits<Int>::max() < v) {
       throw std::out_of_range("Index out of bounds");
     }
   }
