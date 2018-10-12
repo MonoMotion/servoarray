@@ -24,7 +24,7 @@ install:
   - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
   - python3 get-pip.py --user
 script:
-  - pip3 install -e .
+  - python3 -m pip install -e .
 deploy:
   provider: pypi
   user: "${PYPI_USERNAME}"
