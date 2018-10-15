@@ -27,6 +27,7 @@
 #include <string>
 #include <stdexcept>
 #include <type_traits>
+#include <vector>
 
 #include "register.h"
 
@@ -37,6 +38,7 @@ static constexpr float CLOCK_FREQ = 25000000.0;
 class PCA9685 {
   std::uint8_t bus;
   std::uint8_t address;
+  std::vector<uint8_t> buf;
   int fd;
 
 public:
@@ -50,6 +52,8 @@ private:
   void reset();
 
   void write_reg(Register reg, std::uint8_t data);
+  void write_buf(Register reg, std::uint8_t data);
+  void flush_buf();
   std::uint8_t read_reg(Register reg);
 
   template<typename T, std::enable_if_t<std::is_integral<T>::value>* = nullptr>
