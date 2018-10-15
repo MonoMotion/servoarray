@@ -71,12 +71,13 @@ void PCA9685::write_reg(Register reg, std::uint8_t data) {
 }
 
 void PCA9685::write_buf(Register reg, std::uint8_t data) {
-  this->buf.push_back(static_cast<uint8_t>(reg));
-  this->buf.push_back(data);
+  this->buf[this->buf_count++] = static_cast<std::uint8_t>(reg);
+  this->buf[this->buf_count++] = data;
 }
 
 void PCA9685::flush_buf() {
-  this->write_seq(this->buf.data(), this->buf.size());
+  this->write_seq(this->buf.data(), this->buf_count);
+  this->buf_count = 0;
 }
 
 std::uint8_t PCA9685::read_reg(Register reg) {

@@ -27,7 +27,7 @@
 #include <string>
 #include <stdexcept>
 #include <type_traits>
-#include <vector>
+#include <array>
 
 #include "register.h"
 
@@ -38,7 +38,10 @@ static constexpr float CLOCK_FREQ = 25000000.0;
 class PCA9685 {
   std::uint8_t bus;
   std::uint8_t address;
-  std::vector<uint8_t> buf;
+
+  std::array<std::uint8_t, 64> buf;
+  std::size_t buf_count;
+
   int fd;
 
 public:
