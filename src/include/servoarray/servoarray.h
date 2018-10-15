@@ -34,13 +34,9 @@ public:
   ServoArray(std::uint8_t bus=1, std::uint8_t address=0x40, std::uint16_t min_pulse=150, std::uint16_t max_pulse=600);
 
   void set(std::uint8_t index, double rad);
-  void set_sequence(std::vector<std::pair<std::uint8_t, double>> const&);
   double get(std::uint8_t index);
 
   std::uint8_t size();
-
-private:
-  void _set(std::uint8_t index, double rad, bool flush);
 };
 
 }

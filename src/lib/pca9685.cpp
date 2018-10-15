@@ -49,7 +49,7 @@ void PCA9685::set_pwm_freq(float freq) {
   this->write_reg(Register::MODE2, 0x04); //totem pole (default)
 }
 
-void PCA9685::set_pwm(std::uint8_t index, std::uint16_t on, std::uint16_t off, bool flush) {
+void PCA9685::set_pwm(std::uint8_t index, std::uint16_t on, std::uint16_t off) {
   if (index >= this->num_servos()) {
     throw std::out_of_range("Channel index out of bounds");
   }
@@ -57,8 +57,7 @@ void PCA9685::set_pwm(std::uint8_t index, std::uint16_t on, std::uint16_t off, b
   this->write_buf(Register::LED0_ON_H  + 4 * index, on >> 8);
   this->write_buf(Register::LED0_OFF_L + 4 * index, off & 0xFF);
   this->write_buf(Register::LED0_OFF_H + 4 * index, off >> 8);
-  if (flush)
-    this->flush_buf();
+  this->flush_buf();
 }
 
 void PCA9685::reset() {
