@@ -22,3 +22,7 @@ target_link_libraries(set_pwm_bin pca9685_lib)
 add_executable(servo_array_bin servo_array.cpp)
 set_target_properties(servo_array_bin PROPERTIES OUTPUT_NAME "servo_array")
 target_link_libraries(servo_array_bin servoarray_lib)
+
+add_executable(bench_bin bench.cpp)
+set_target_properties(bench_bin PROPERTIES OUTPUT_NAME "bench")
+target_link_libraries(bench_bin servoarray_lib)
