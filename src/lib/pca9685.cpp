@@ -48,16 +48,20 @@ void PCA9685::set_pwm_freq(float freq) {
   this->write_reg_buf(Register::MODE1, 0x80); //restart
   this->write_reg_buf(Register::MODE2, 0x04); //totem pole (default)
   this->flush_buf();
+
+  auto const old_mode = this->read_reg(Register::MODE1);
+  this->write_reg(Register::MODE1, old_mode | 0xa0); // Turn on auto increment
 }
 
 void PCA9685::set_pwm(std::uint8_t index, std::uint16_t on, std::uint16_t off) {
   if (index >= this->num_servos()) {
     throw std::out_of_range("Channel index out of bounds");
   }
-  this->write_buf(Register::LED0_ON_L  + 4 * index, on & 0xFF);
-  this->write_buf(Register::LED0_ON_H  + 4 * index, on >> 8);
-  this->write_buf(Register::LED0_OFF_L + 4 * index, off & 0xFF);
-  this->write_buf(Register::LED0_OFF_H + 4 * index, off >> 8);
+  this->write_reg_buf(Register::LED0_ON_L  + 4 * index, on & 0xFF);
+  // There's no need to specify register bacause auto increment is enabled
+  this->write_buf(on >> 8);
+  this->write_buf(off & 0xFF);
+  this->write_buf(off >> 8);
   this->flush_buf();
 }
 
