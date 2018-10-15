@@ -34,5 +34,6 @@ int main(int argc, char **argv) {
 
   auto const array_size = sa.size();
 
-  bench("Set (0)", times, [&sa](size_t i) { sa.set(0, 0); });
+  bench("Set", times, [&sa](size_t i) { sa.set(0, 0); });
+  bench("Get", times, [&sa](size_t i) { sa.get(0); });
 }
