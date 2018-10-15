@@ -34,4 +34,8 @@ int main(int argc, char **argv) {
 
   bench("Set", times, [&sa](size_t i) { sa.set(0, 0); });
   bench("Get", times, [&sa](size_t i) { sa.get(0); });
+  std::vector<std::pair<std::uint8_t, double>> seq(times);
+  bench("Set (buffered)", 1, [&sa, &seq, times](size_t) {
+    sa.set_sequence(seq);
+  });
 }

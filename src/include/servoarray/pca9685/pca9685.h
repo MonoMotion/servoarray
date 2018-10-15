@@ -48,15 +48,16 @@ public:
   PCA9685(std::uint8_t bus, std::uint8_t addr);
 
   void set_pwm_freq(float freq);
-  void set_pwm(std::uint8_t index, std::uint16_t on, std::uint16_t off);
+  void set_pwm(std::uint8_t index, std::uint16_t on, std::uint16_t off, bool flush = true);
   std::uint8_t num_servos();
+
+  void flush_buf();
 
 private:
   void reset();
 
   void write_reg(Register reg, std::uint8_t data);
   void write_buf(Register reg, std::uint8_t data);
-  void flush_buf();
   std::uint8_t read_reg(Register reg);
 
   template<typename T, std::enable_if_t<std::is_integral<T>::value>* = nullptr>
