@@ -17,7 +17,7 @@
 
 namespace ServoArray {
 
-PCA9685::PCA9685(std::uint8_t bus_, std::uint8_t addr_) : bus(bus_), address(addr_) {
+PCA9685::PCA9685(std::uint8_t bus_, std::uint8_t addr_) : bus(bus_), address(addr_), buf_count(0) {
   char dev_path[64];
   std::sprintf(dev_path, "/dev/i2c-%d", this->bus);
   if ((this->fd = ::open(dev_path, O_RDWR)) < 0) {
