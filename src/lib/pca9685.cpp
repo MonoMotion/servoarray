@@ -43,30 +43,43 @@ std::uint8_t PCA9685::num_servos() {
 //
 void PCA9685::set_pwm_freq(float freq) {
   uint8_t prescale_val = static_cast<uint8_t>(CLOCK_FREQ / 4096 / freq)  - 1;
-  this->write_reg(Register::MODE1, 0x10); //sleep
-  this->write_reg(Register::PRE_SCALE, prescale_val); // multiplyer for PWM frequency
-  this->write_reg(Register::MODE1, 0x80); //restart
-  this->write_reg(Register::MODE2, 0x04); //totem pole (default)
+  this->write_buf(Register::MODE1, 0x10); //sleep
+  this->write_buf(Register::PRE_SCALE, prescale_val); // multiplyer for PWM frequency
+  this->write_buf(Register::MODE1, 0x80); //restart
+  this->write_buf(Register::MODE2, 0x04); //totem pole (default)
+  this->flush_buf();
 }
 
 void PCA9685::set_pwm(std::uint8_t index, std::uint16_t on, std::uint16_t off) {
   if (index >= this->num_servos()) {
     throw std::out_of_range("Channel index out of bounds");
   }
-  this->write_reg(Register::LED0_ON_L  + 4 * index, on & 0xFF);
-  this->write_reg(Register::LED0_ON_H  + 4 * index, on >> 8);
-  this->write_reg(Register::LED0_OFF_L + 4 * index, off & 0xFF);
-  this->write_reg(Register::LED0_OFF_H + 4 * index, off >> 8);
+  this->write_buf(Register::LED0_ON_L  + 4 * index, on & 0xFF);
+  this->write_buf(Register::LED0_ON_H  + 4 * index, on >> 8);
+  this->write_buf(Register::LED0_OFF_L + 4 * index, off & 0xFF);
+  this->write_buf(Register::LED0_OFF_H + 4 * index, off >> 8);
+  this->flush_buf();
 }
 
 void PCA9685::reset() {
-  this->write_reg(Register::MODE1, 0x00);
-  this->write_reg(Register::MODE2, 0x04);
+  this->write_buf(Register::MODE1, 0x00);
+  this->write_buf(Register::MODE2, 0x04);
+  this->flush_buf();
 }
 
 void PCA9685::write_reg(Register reg, std::uint8_t data) {
   uint8_t buf[2] = {static_cast<uint8_t>(reg), data};
   this->write_seq(buf, 2);
+}
+
+void PCA9685::write_buf(Register reg, std::uint8_t data) {
+  this->buf[this->buf_count++] = static_cast<std::uint8_t>(reg);
+  this->buf[this->buf_count++] = data;
+}
+
+void PCA9685::flush_buf() {
+  this->write_seq(this->buf.data(), this->buf_count);
+  this->buf_count = 0;
 }
 
 std::uint8_t PCA9685::read_reg(Register reg) {
