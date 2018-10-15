@@ -3,6 +3,19 @@
 #include <iostream>
 #include <chrono>
 
+template<typename F>
+void bench(std::string const& title, std::size_t times, F target) {
+  std::cout << title << std::endl;
+  auto start = std::chrono::system_clock::now();
+  for (std::size_t i = 0; i < times; i++) {
+    target(i);
+  }
+  auto end = std::chrono::system_clock::now();
+  auto elapsed = end - start;
+  std::cout << "Elapsed time: \t" << std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count() << "ms" << std::endl;
+  std::cout << "Per-call avarage: \t" << std::chrono::duration_cast<std::chrono::microseconds>(elapsed / times).count() << "us" << std::endl;
+}
+
 int main(int argc, char **argv) {
 
   if (argc != 6) {
@@ -20,13 +33,5 @@ int main(int argc, char **argv) {
 
   auto const array_size = sa.size();
 
-  std::cout << "Set (0)" << std::endl;
-  auto start = std::chrono::system_clock::now();
-  for (std::size_t i = 0; i < times; i++) {
-    sa.set(0, 0);
-  }
-  auto end = std::chrono::system_clock::now();
-  auto elapsed = end - start;
-  std::cout << "Elapsed time: \t" << std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count() << "ms" << std::endl;
-  std::cout << "Per-call avarage: \t" << std::chrono::duration_cast<std::chrono::microseconds>(elapsed / times).count() << "us" << std::endl;
+  bench("Set (0)", times, [&sa](size_t i) { sa.set(0, 0); });
 }
