@@ -43,11 +43,10 @@ std::uint8_t PCA9685::num_servos() {
 //
 void PCA9685::set_pwm_freq(float freq) {
   uint8_t prescale_val = static_cast<uint8_t>(CLOCK_FREQ / 4096 / freq)  - 1;
-  this->write_reg_buf(Register::MODE1, 0x10); //sleep
-  this->write_reg_buf(Register::PRE_SCALE, prescale_val); // multiplyer for PWM frequency
-  this->write_reg_buf(Register::MODE1, 0x80); //restart
-  this->write_reg_buf(Register::MODE2, 0x04); //totem pole (default)
-  this->flush_buf();
+  this->write_reg(Register::MODE1, 0x10); //sleep
+  this->write_reg(Register::PRE_SCALE, prescale_val); // multiplyer for PWM frequency
+  this->write_reg(Register::MODE1, 0x80); //restart
+  this->write_reg(Register::MODE2, 0x04); //totem pole (default)
 
   auto const old_mode = this->read_reg(Register::MODE1);
   this->write_reg(Register::MODE1, old_mode | 0xa0); // Turn on auto increment
@@ -66,9 +65,8 @@ void PCA9685::set_pwm(std::uint8_t index, std::uint16_t on, std::uint16_t off) {
 }
 
 void PCA9685::reset() {
-  this->write_reg_buf(Register::MODE1, 0x00);
-  this->write_reg_buf(Register::MODE2, 0x04);
-  this->flush_buf();
+  this->write_reg(Register::MODE1, 0x00);
+  this->write_reg(Register::MODE2, 0x04);
 }
 
 void PCA9685::write_reg(Register reg, std::uint8_t data) {
