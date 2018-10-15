@@ -19,18 +19,16 @@ void bench(std::string const& title, std::size_t times, F target) {
 
 int main(int argc, char **argv) {
 
-  if (argc != 6) {
-    std::cerr << "bench <bus> <address> <min_pulse> <max_pulse> <times>" << std::endl;
+  if (argc != 4) {
+    std::cerr << "bench <bus> <address> <times>" << std::endl;
     return 1;
   }
 
   const std::uint8_t bus   = static_cast<std::uint8_t>(strtol(argv[1], nullptr, 0));
   const std::uint8_t addr  = static_cast<std::uint8_t>(strtol(argv[2], nullptr, 0));
-  const std::uint16_t min_pulse  = static_cast<std::uint16_t>(strtol(argv[3], nullptr, 0));
-  const std::uint16_t max_pulse  = static_cast<std::uint16_t>(strtol(argv[4], nullptr, 0));
-  const std::uint16_t times  = static_cast<std::uint16_t>(strtol(argv[5], nullptr, 0));
+  const std::uint16_t times  = static_cast<std::uint16_t>(strtol(argv[3], nullptr, 0));
 
-  auto sa = ServoArray::ServoArray(bus, addr, min_pulse, max_pulse);
+  auto sa = ServoArray::ServoArray(bus, addr);
 
   auto const array_size = sa.size();
 
