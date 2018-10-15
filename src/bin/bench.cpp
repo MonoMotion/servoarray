@@ -1,6 +1,7 @@
 #include "servoarray/servoarray.h"
 
 #include <iostream>
+#include <iomanip>
 #include <chrono>
 
 template<typename F>
@@ -12,8 +13,8 @@ void bench(std::string const& title, std::size_t times, F target) {
   }
   auto end = std::chrono::system_clock::now();
   auto elapsed = end - start;
-  std::cout << "Elapsed time: \t" << std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count() << "ms" << std::endl;
-  std::cout << "Per-call avarage: \t" << std::chrono::duration_cast<std::chrono::microseconds>(elapsed / times).count() << "us" << std::endl;
+  std::cout << "\tTotal elapsed time: " << std::setw(12) << std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count() << "ms" << std::endl;
+  std::cout << "\tAvarage latency   : " << std::setw(12) << std::chrono::duration_cast<std::chrono::microseconds>(elapsed / times).count() << "us" << std::endl;
 }
 
 int main(int argc, char **argv) {
