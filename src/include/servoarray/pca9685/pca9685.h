@@ -55,7 +55,8 @@ private:
   void reset();
 
   void write_reg(Register reg, std::uint8_t data);
-  void write_buf(Register reg, std::uint8_t data);
+  void write_reg_buf(Register reg, std::uint8_t data);
+  void write_buf(std::uint8_t data);
   void flush_buf();
   std::uint8_t read_reg(Register reg);
 

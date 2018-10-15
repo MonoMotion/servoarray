@@ -72,8 +72,12 @@ void PCA9685::write_reg(Register reg, std::uint8_t data) {
   this->write_seq(buf, 2);
 }
 
-void PCA9685::write_buf(Register reg, std::uint8_t data) {
+void PCA9685::write_reg_buf(Register reg, std::uint8_t data) {
   this->buf[this->buf_count++] = static_cast<std::uint8_t>(reg);
+  this->buf[this->buf_count++] = data;
+}
+
+void PCA9685::write_buf(std::uint8_t data) {
   this->buf[this->buf_count++] = data;
 }
 
