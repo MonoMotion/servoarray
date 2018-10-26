@@ -29,13 +29,13 @@ void ServoArray::set(std::uint8_t index, double rad) {
     throw std::out_of_range("Channel index out of bounds");
   }
 
-  if (rad > Constants::pi<double> / 2 || Constants::pi<double> < - M_PI / 2) {
+  if (!Constants::is_valid_pos(rad)) {
     throw std::out_of_range("Position value must be within the range from -pi/2 to pi/2");
   }
 
   this->values[index] = rad;
 
-  const auto pulse = (rad + Constants::pi<double> / 2) * (this->max_pulse - this->min_pulse) / Constants::pi<double> + this->min_pulse;
+  const auto pulse = (rad - Constants::min_pos<double>) * (this->max_pulse - this->min_pulse) / (Constants::max_pos<double> - Constants::min_pos<double>) + this->min_pulse;
   this->driver.set_pwm(index, 0, static_cast<std::uint16_t>(pulse));
 }
 
