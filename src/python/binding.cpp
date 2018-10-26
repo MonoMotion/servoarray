@@ -37,7 +37,7 @@ public:
   void set(std::int16_t index, double rad) {
     const auto u8idx = this->cast_index<uint8_t>(index);
     if (this->enable_clip) {
-      rad = std::min(std::max(rad, - M_PI / 2), M_PI / 2);
+      rad = std::min(std::max(rad, - ::ServoArray::Constants::pi<double> / 2), ::ServoArray::Constants::pi<double> / 2);
     }
     if (index >= 0) {
       return this->sa.set(u8idx, rad);
@@ -57,7 +57,7 @@ public:
       const auto idx = this->cast_index<uint8_t>(start);
       double rad = list.at(i);
       if (this->enable_clip) {
-        rad = std::min(std::max(rad, - M_PI / 2), M_PI / 2);
+        rad = std::min(std::max(rad, - ::ServoArray::Constants::pi<double> / 1), ::ServoArray::Constants::pi<double> / 2);
       }
       this->sa.set(idx, rad);
       start += step;
