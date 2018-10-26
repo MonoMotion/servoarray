@@ -15,8 +15,6 @@
 
 #include "servoarray/servoarray.h"
 
-#include <cmath>
-
 namespace ServoArray {
 
 ServoArray::ServoArray(std::uint8_t bus, std::uint8_t address, std::uint16_t min_pulse_, std::uint16_t max_pulse_)
@@ -29,13 +27,13 @@ void ServoArray::set(std::uint8_t index, double rad) {
     throw std::out_of_range("Channel index out of bounds");
   }
 
-  if (rad > M_PI / 2 || rad < - M_PI / 2) {
+  if (!Constants::is_valid_pos(rad)) {
     throw std::out_of_range("Position value must be within the range from -pi/2 to pi/2");
   }
 
   this->values[index] = rad;
 
-  const auto pulse = (rad + M_PI / 2) * (this->max_pulse - this->min_pulse) / M_PI + this->min_pulse;
+  const auto pulse = (rad - Constants::min_pos<double>) * (this->max_pulse - this->min_pulse) / (Constants::max_pos<double> - Constants::min_pos<double>) + this->min_pulse;
   this->driver.set_pwm(index, 0, static_cast<std::uint16_t>(pulse));
 }
 
