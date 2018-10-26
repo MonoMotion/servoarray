@@ -7,7 +7,7 @@ namespace ServoArray {
 namespace Constants {
 
 template <class T>
-static constexpr T pi = static_cast<T>(3.14159265358979323846);
+static constexpr T pi = static_cast<T>(3.141592653589793238462643383279502884e+00);
 
 template <class T>
 static constexpr T max_pos = pi<T> / 2;
