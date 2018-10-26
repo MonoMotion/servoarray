@@ -15,8 +15,6 @@
 
 #include "servoarray/servoarray.h"
 
-#include <cmath>
-
 namespace ServoArray {
 
 ServoArray::ServoArray(std::uint8_t bus, std::uint8_t address, std::uint16_t min_pulse_, std::uint16_t max_pulse_)
