@@ -1,6 +1,8 @@
 #ifndef SERVOARRAY_CONSTANTS_H
 #define SERVOARRAY_CONSTANTS_H
 
+#include <algorithm>
+
 namespace ServoArray {
 namespace Constants {
 
