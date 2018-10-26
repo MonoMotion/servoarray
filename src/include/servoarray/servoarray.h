@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "servoarray/pca9685/pca9685.h"
+#include "servoarray/constants.h"
 
 namespace ServoArray {
 
