@@ -27,8 +27,7 @@ namespace ServoArray {
 // Using primitive types to keep ABI compatibility
 class DriverParams {
 public:
-  // Returns nullptr if the key was not found
-  const void* operator[](const char* key) const;
+  const void* get(const char* key, void* default_ = nullptr) const;
 
 private:
   // TODO: Pimpl?
