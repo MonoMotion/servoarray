@@ -40,8 +40,8 @@ public:
   virtual Driver(const DriverParams&) = 0;
   virtual ~Driver() = default;
 
-  virtual void set(std::size_t, double) = 0;
-  virtual double get(std::size_t) const = 0;
+  virtual void write(std::size_t, double) = 0;
+  virtual double read(std::size_t) const = 0;
 
   virtual std::size_t size() const = 0;
 };
