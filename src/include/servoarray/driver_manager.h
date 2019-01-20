@@ -32,7 +32,7 @@ public:
   Driver* get_or_load(const std::string&);
   Driver* get(const std::string&) const;
 
-  bool is_loaded(const std::string&);
+  bool is_loaded(const std::string&) const;
 
 private:
   static std::string driver_file_name(const std::string&) const;
