@@ -38,7 +38,6 @@ private:
 // ABC for drivers
 class Driver {
 public:
-  virtual Driver(const DriverParams&) = 0;
   virtual ~Driver();
 
   virtual void write(std::size_t, double) = 0;
@@ -49,7 +48,7 @@ public:
 
 //
 // Driver .so must contain this symbol:
-// Driver* servoarray_driver(void*);
+// Driver* servoarray_driver(const DriverParams&);
 //
 
 }
