@@ -6,7 +6,7 @@
 
 namespace ServoArray {
 
-DriverManager::DriverManager(const std::string& path) : path_(path), loaded_drivers_() {}
+DriverManager::DriverManager(const std::vector<std::string>& paths) : paths_(paths), loaded_drivers_() {}
 
 Driver* DriverManager::get(const std::string& name) const {
   // TODO: throw errors::DriverNotFoundError when the name is not found
@@ -56,14 +56,17 @@ std::string DriverManager::resolve(const std::string& name) const {
   namespace fs = boost::filesystem;
 
   fs::path file {DriverManager::driver_file_name(name)};
-  fs::path dir {this->path_};
-  fs::path path = dir / file;
-  if (!fs::exists(path)) {
-    // TODO: throw errors::DriverNotFoundError
-    throw std::runtime_error("Could not resolve driver name " + name);
+
+  for (const auto& path : this->paths) {
+    fs::path dir {path};
+    fs::path path = dir / file;
+    if (fs::exists(path)) {
+      return fs::canonical(path).native();
+    }
   }
 
-  return fs::canonical(path).native();
+  // TODO: throw errors::DriverNotFoundError
+  throw std::runtime_error("Could not resolve driver name " + name);
 }
 
 }

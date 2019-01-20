@@ -22,11 +22,11 @@
 namespace ServoArray {
 
 class DriverManager {
-  const std::string path_;
+  const std::vector<std::string> paths_;
   std::unordered_map<std::string, Driver*> loaded_drivers_;
 
 public:
-  DriverManager(const std::string& path);
+  DriverManager(const std::vector<std::string>& paths);
 
   Driver* load(const std::string&);
   Driver* get_or_load(const std::string&);
