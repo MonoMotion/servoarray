@@ -23,6 +23,8 @@ namespace ServoArray {
 // ABC for drivers
 class Driver {
 public:
+  virtual ~Driver() = default;
+
   virtual void set(std::size_t, double) = 0;
   virtual double get(std::size_t) const = 0;
 
@@ -30,9 +32,8 @@ public:
 };
 
 //
-// Driver .so must contain these symbols:
+// Driver .so must contain this symbol:
 // Driver* servoarray_driver(void*);
-// void servoarray_cleanup(Driver*);
 //
 
 }

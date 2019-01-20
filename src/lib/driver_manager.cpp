@@ -29,15 +29,9 @@ std::shared_ptr<Driver> DriverManager::load(const std::string& name) {
     throw std::runtime_error("Could not import symbol 'servoarray_driver'");
   }
 
-  auto* servoarray_cleanup = static_cast<void (*)(Driver*)>(dlsym(handle, "servoarray_cleanup"));
-  if (!servoarray_cleanup) {
-    // TODO: throw errors::DriverLoadError
-    // TODO: Use dlerror(3) to obtain error message
-    throw std::runtime_error("Could not import symbol 'servoarray_cleanup'");
-  }
+  auto deleter = [handle](Driver* driver) {
+    delete driver;
 
-  auto deleter = [servoarray_cleanup, handle](Driver* driver) {
-    servoarray_cleanup(driver);
     if(dlclose(handle) != 0) {
       // TODO: throw errors::DriverCleanupError
       // TODO: Use dlerror(3) to obtain error message
