@@ -46,7 +46,7 @@ std::shared_ptr<Driver> DriverManager::load(const std::string& name) {
   };
 
   Driver* driver = servoarray_driver();
-  return std::shared_ptr<Driver>(driver, deleter);
+  return {driver, deleter};
 }
 
 std::shared_ptr<Driver> DriverManager::get_or_load(const std::string& name) {
