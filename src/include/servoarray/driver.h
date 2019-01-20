@@ -28,7 +28,7 @@ public:
   virtual void set(std::size_t, double) = 0;
   virtual double get(std::size_t) const = 0;
 
-  virtual std::uint8_t size() const = 0;
+  virtual std::size_t size() const = 0;
 };
 
 //
