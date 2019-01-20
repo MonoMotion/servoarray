@@ -29,6 +29,15 @@ class DriverParams {
 public:
   const void* get(const char* key, void* default_ = nullptr) const;
 
+  template<typename... Args>
+  void emplace(const char* key, Args&&... args) {
+    this->data_.emplace(std::string{key}, new T(args...));
+  }
+
+  void erase(const char* key) {
+    this->data_.erase(std::string{key});
+  }
+
 private:
   // TODO: Pimpl?
   std::unordered_map<std::string, void*> data_;
