@@ -36,7 +36,7 @@ namespace ServoArray {
 
 static constexpr float CLOCK_FREQ = 25000000.0;
 
-class PCA9685 final : ServoArray::Plugin {
+class PCA9685 final : ServoArray::Driver {
   std::uint8_t bus;
   std::uint8_t address;
 

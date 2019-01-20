@@ -13,21 +13,21 @@
 // You should have received a copy of the GNU General Public License
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SERVOARRAY_PLUGIN_MANAGER_H
-#define SERVOARRAY_PLUGIN_MANAGER_H
+#ifndef SERVOARRAY_DRIVER_MANAGER_H
+#define SERVOARRAY_DRIVER_MANAGER_H
 
 #include <unordered_map>
 #include <string>
 
 namespace ServoArray {
 
-class PluginManager {
-  std::unordered_map<std::string, Plugin*> instances_;
+class DriverManager {
+  std::unordered_map<std::string, Driver*> instances_;
 
 public:
   PluginManager(const std::string& path);
 
-  Plugin* instantiate(const std::string&);
+  Driver* instantiate(const std::string&);
 };
 
 }

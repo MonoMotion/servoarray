@@ -13,15 +13,15 @@
 // You should have received a copy of the GNU General Public License
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SERVOARRAY_PLUGIN_H
-#define SERVOARRAY_PLUGIN_H
+#ifndef SERVOARRAY_DRIVER_H
+#define SERVOARRAY_DRIVER_H
 
 #include <unistd.h>
 
 namespace ServoArray {
 
-// ABC for plugins
-class Plugin {
+// ABC for drivers
+class Driver {
 public:
   virtual void set(std::size_t, double) = 0;
   virtual double get(std::size_t) const = 0;
@@ -30,9 +30,9 @@ public:
 };
 
 //
-// Plugin .so must contain these symbols:
-// Plugin* servoarray_plugin(void*);
-// void servoarray_cleanup(Plugin*);
+// Driver .so must contain these symbols:
+// Driver* servoarray_driver(void*);
+// void servoarray_cleanup(Driver*);
 //
 
 }
