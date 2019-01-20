@@ -15,12 +15,19 @@ Driver* DriverManager::load(const std::string& name) {
   const auto path = this->resolve(name);
   auto* handle = dlopen(path.c_str(), RTLD_LAZY);
   if (!handle) {
-    // TODO: throw errors::CouldNotLoadDriverError
+    // TODO: throw errors::DriverLoadError
     // TODO: Use dlerror(3) to obtain error message
     throw std::runtime_error("Could not load " + path);
   }
 
   auto* f = static_cast<Driver* (*)()>(dlsym(handle, "servoarray_driver"));
+  if (!f) {
+    // TODO: throw errors::DriverLoadError
+    // TODO: Use dlerror(3) to obtain error message
+    throw std::runtime_error("Could not import symbol 'servoarray_driver'");
+  }
+
+  // TODO: Close handle properly
   return f();
 }
 
