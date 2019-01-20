@@ -17,12 +17,27 @@
 #define SERVOARRAY_DRIVER_H
 
 #include <unistd.h>
+#include <unordered_map>
+#include <memory>
+#include <string>
 
 namespace ServoArray {
+
+// A Key-Value store to hold initialization parameters
+// Using primitive types to keep ABI compatibility
+class DriverParams {
+public:
+  const void* operator[](const char*) const;
+
+private:
+  // TODO: Pimpl?
+  std::unordered_map<std::string, std::unique_ptr<void*>> data_;
+};
 
 // ABC for drivers
 class Driver {
 public:
+  virtual Driver(const DriverParams&) = 0;
   virtual ~Driver() = default;
 
   virtual void set(std::size_t, double) = 0;
