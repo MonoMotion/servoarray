@@ -20,6 +20,8 @@
 #include <string>
 #include <memory>
 
+#include "servoarray/driver_params.h"
+
 namespace ServoArray {
 
 class DriverManager {
@@ -29,8 +31,7 @@ class DriverManager {
 public:
   DriverManager(const std::vector<std::string>& paths);
 
-  std::shared_ptr<Driver> load(const std::string&);
-  std::shared_ptr<Driver> get_or_load(const std::string&);
+  std::shared_ptr<Driver> load(const std::string&, const DriverParams&);
   std::shared_ptr<Driver> get(const std::string&) const;
 
   bool is_loaded(const std::string&) const;

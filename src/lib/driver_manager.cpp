@@ -13,7 +13,7 @@ std::shared_ptr<Driver> DriverManager::get(const std::string& name) const {
   return this->loaded_drivers_.at(name);
 }
 
-std::shared_ptr<Driver> DriverManager::load(const std::string& name) {
+std::shared_ptr<Driver> DriverManager::load(const std::string& name, const DriverParams& params) {
   const auto path = this->resolve(name);
   auto* handle = dlopen(path.c_str(), RTLD_LAZY);
   if (!handle) {
@@ -39,18 +39,10 @@ std::shared_ptr<Driver> DriverManager::load(const std::string& name) {
     }
   };
 
-  Driver* driver = servoarray_driver();
+  Driver* driver = servoarray_driver(params);
   std::shared_ptr<Driver> sptr {driver, deleter};
   this->loaded_drivers_.emplace(name, sptr);
   return sptr;
-}
-
-std::shared_ptr<Driver> DriverManager::get_or_load(const std::string& name) {
-  if (this->is_loaded(name)) {
-    return this->get(name);
-  } else {
-    return this->load(name);
-  }
 }
 
 bool DriverManager::is_loaded(const std::string& name) const {
