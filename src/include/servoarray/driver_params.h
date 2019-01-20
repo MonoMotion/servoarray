@@ -27,7 +27,15 @@ namespace ServoArray {
 // Using primitive types to keep ABI compatibility
 class DriverParams {
 public:
-  const void* get(const char* key, void* default_ = nullptr) const;
+  const void* get(const char* key, void* default_ = nullptr) const {
+    std::string key_str { key };
+    auto it = this->data_.find(key_str);
+    if (it == this->data.end()) {
+      return default_;
+    } else {
+      return it->get();
+    }
+  }
 
   template<typename... Args>
   void emplace(const char* key, Args&&... args) {
