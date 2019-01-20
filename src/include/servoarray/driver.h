@@ -27,7 +27,8 @@ namespace ServoArray {
 // Using primitive types to keep ABI compatibility
 class DriverParams {
 public:
-  const void* operator[](const char*) const;
+  // Returns nullptr if the key was not found
+  const void* operator[](const char* key) const;
 
 private:
   // TODO: Pimpl?
@@ -38,7 +39,7 @@ private:
 class Driver {
 public:
   virtual Driver(const DriverParams&) = 0;
-  virtual ~Driver() = default;
+  virtual ~Driver();
 
   virtual void write(std::size_t, double) = 0;
   virtual double read(std::size_t) const;
