@@ -31,7 +31,7 @@ public:
 
 private:
   // TODO: Pimpl?
-  std::unordered_map<std::string, std::unique_ptr<void*>> data_;
+  std::unordered_map<std::string, void*> data_;
 };
 
 }
