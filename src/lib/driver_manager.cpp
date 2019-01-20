@@ -1,5 +1,7 @@
 #include "servoarray/driver_manager.h"
 
+#include <boost/filesystem.hpp>
+
 #include <dlfcn.h>
 
 namespace ServoArray {
@@ -42,6 +44,26 @@ Driver* DriverManager::get_or_load(const std::string& name) {
 bool DriverManager::is_loaded(const std::string& name) const {
   const auto& drivers = this->loaded_drivers_;
   return drivers.find(name) != drivers.end();
+}
+
+static std::string DriverManager::driver_file_name(const std::string& name) const {
+  // TODO: Include version information of servoarray
+  // TODO: Include system information ($CC -dumpmachine ?)
+  return name + ".servoarray.so";
+}
+
+std::string DriverManager::resolve(const std::string& name) const {
+  namespace fs = boost::filesystem;
+
+  fs::path file {DriverManager::driver_file_name(name)};
+  fs::path dir {this->path_};
+  fs::path path = dir / file;
+  if (!fs::exists(path)) {
+    // TODO: throw errors::DriverNotFoundError
+    throw std::runtime_error("Could not resolve driver name " + name);
+  }
+
+  return fs::canonical(path).native();
 }
 
 }
