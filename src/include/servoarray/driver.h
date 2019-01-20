@@ -41,7 +41,7 @@ public:
   virtual ~Driver() = default;
 
   virtual void write(std::size_t, double) = 0;
-  virtual double read(std::size_t) const = 0;
+  virtual double read(std::size_t) const;
 
   virtual std::size_t size() const = 0;
 };
