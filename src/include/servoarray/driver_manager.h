@@ -26,7 +26,7 @@ class DriverManager {
   std::unordered_map<std::string, Driver*> loaded_drivers_;
 
 public:
-  PluginManager(const std::string& path);
+  DriverManager(const std::string& path);
 
   Driver* load(const std::string&);
   Driver* get_or_load(const std::string&);
