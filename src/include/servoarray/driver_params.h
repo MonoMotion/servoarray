@@ -13,28 +13,26 @@
 // You should have received a copy of the GNU General Public License
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SERVOARRAY_DRIVER_H
-#define SERVOARRAY_DRIVER_H
+#ifndef SERVOARRAY_DRIVER_PARAMS_H
+#define SERVOARRAY_DRIVER_PARAMS_H
 
-#include "servoarray/driver_params.h"
+#include <unistd.h>
+#include <unordered_map>
+#include <memory>
+#include <string>
 
 namespace ServoArray {
 
-// ABC for drivers
-class Driver {
+// A Key-Value store to hold initialization parameters
+// Using primitive types to keep ABI compatibility
+class DriverParams {
 public:
-  virtual ~Driver();
+  const void* get(const char* key, void* default_ = nullptr) const;
 
-  virtual void write(std::size_t, double) = 0;
-  virtual double read(std::size_t) const;
-
-  virtual std::size_t size() const = 0;
+private:
+  // TODO: Pimpl?
+  std::unordered_map<std::string, std::unique_ptr<void*>> data_;
 };
-
-//
-// Driver .so must contain this symbol:
-// Driver* servoarray_driver(const DriverParams&);
-//
 
 }
 
