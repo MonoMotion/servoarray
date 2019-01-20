@@ -8,12 +8,12 @@ namespace ServoArray {
 
 DriverManager::DriverManager(const std::vector<std::string>& paths) : paths_(paths), loaded_drivers_() {}
 
-Driver* DriverManager::get(const std::string& name) const {
+std::shared_ptr<Driver> DriverManager::get(const std::string& name) const {
   // TODO: throw errors::DriverNotFoundError when the name is not found
   return this->loaded_drivers_.at(name);
 }
 
-Driver* DriverManager::load(const std::string& name) {
+std::shared_ptr<Driver> DriverManager::load(const std::string& name) {
   const auto path = this->resolve(name);
   auto* handle = dlopen(path.c_str(), RTLD_LAZY);
   if (!handle) {
@@ -22,18 +22,34 @@ Driver* DriverManager::load(const std::string& name) {
     throw std::runtime_error("Could not load " + path);
   }
 
-  auto* f = static_cast<Driver* (*)()>(dlsym(handle, "servoarray_driver"));
-  if (!f) {
+  auto* servoarray_driver = static_cast<Driver* (*)()>(dlsym(handle, "servoarray_driver"));
+  if (!servoarray_driver) {
     // TODO: throw errors::DriverLoadError
     // TODO: Use dlerror(3) to obtain error message
     throw std::runtime_error("Could not import symbol 'servoarray_driver'");
   }
 
-  // TODO: Close handle properly
-  return f();
+  auto* servoarray_cleanup = static_cast<void (*)(Driver*)>(dlsym(handle, "servoarray_cleanup"));
+  if (!servoarray_cleanup) {
+    // TODO: throw errors::DriverLoadError
+    // TODO: Use dlerror(3) to obtain error message
+    throw std::runtime_error("Could not import symbol 'servoarray_cleanup'");
+  }
+
+  auto deleter = [servoarray_cleanup, handle](Driver* driver) {
+    servoarray_cleanup(driver);
+    if(dlclose(handle) != 0) {
+      // TODO: throw errors::DriverCleanupError
+      // TODO: Use dlerror(3) to obtain error message
+      throw std::runtime_error("Could not close " + path);
+    }
+  };
+
+  Driver* driver = servoarray_driver();
+  return std::shared_ptr<Driver>(driver, deleter);
 }
 
-Driver* DriverManager::get_or_load(const std::string& name) {
+std::shared_ptr<Driver> DriverManager::get_or_load(const std::string& name) {
   if (this->is_loaded(name)) {
     return this->get(name);
   } else {
