@@ -30,12 +30,13 @@
 #include <array>
 
 #include "register.h"
+#include "servoarray/plugin.h"
 
 namespace ServoArray {
 
 static constexpr float CLOCK_FREQ = 25000000.0;
 
-class PCA9685 {
+class PCA9685 final : ServoArray::Plugin {
   std::uint8_t bus;
   std::uint8_t address;
 
@@ -44,8 +45,16 @@ class PCA9685 {
 
   int fd;
 
+  std::uint16_t min_pulse;
+  std::uint16_t max_pulse;
+
 public:
-  PCA9685(std::uint8_t bus, std::uint8_t addr);
+  PCA9685(std::uint8_t bus=1, std::uint8_t address=0x40, std::uint16_t min_pulse=150, std::uint16_t max_pulse=600);
+
+  void set(std::size_t, double) override;
+  double get(std::size_t) const override;
+
+  std::size_t size() const override;
 
   void set_pwm_freq(float freq);
   void set_pwm(std::uint8_t index, std::uint16_t on, std::uint16_t off);
