@@ -17,27 +17,21 @@
 #define SERVOARRAY_SERVOARRAY_H
 
 #include <cstdint>
-#include <vector>
 
-#include "servoarray/pca9685/pca9685.h"
-#include "servoarray/constants.h"
+#include "servoarray/plugin.h"
+#include "servoarray/plugin_manager.h"
 
 namespace ServoArray {
 
 class ServoArray {
-  PCA9685 driver;
-  std::uint16_t min_pulse;
-  std::uint16_t max_pulse;
-
-  std::vector<double> values;
-
 public:
-  ServoArray(std::uint8_t bus=1, std::uint8_t address=0x40, std::uint16_t min_pulse=150, std::uint16_t max_pulse=600);
+  ServoArray(const std::string&, PluginManager&);
+  ServoArray(Plugin*);
 
   void set(std::uint8_t index, double rad);
-  double get(std::uint8_t index);
+  double get(std::uint8_t index) const;
 
-  std::uint8_t size();
+  std::uint8_t size() const;
 };
 
 }
