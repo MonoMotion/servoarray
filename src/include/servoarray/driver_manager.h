@@ -18,19 +18,20 @@
 
 #include <unordered_map>
 #include <string>
+#include <memory>
 
 namespace ServoArray {
 
 class DriverManager {
   const std::vector<std::string> paths_;
-  std::unordered_map<std::string, Driver*> loaded_drivers_;
+  std::unordered_map<std::string, std::shared_ptr<Driver>> loaded_drivers_;
 
 public:
   DriverManager(const std::vector<std::string>& paths);
 
-  Driver* load(const std::string&);
-  Driver* get_or_load(const std::string&);
-  Driver* get(const std::string&) const;
+  std::shared_ptr<Driver> load(const std::string&);
+  std::shared_ptr<Driver> get_or_load(const std::string&);
+  std::shared_ptr<Driver> get(const std::string&) const;
 
   bool is_loaded(const std::string&) const;
 
