@@ -24,14 +24,14 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  const std::uint8_t bus   = static_cast<std::uint8_t>(strtol(argv[1], nullptr, 0));
-  const std::uint8_t addr  = static_cast<std::uint8_t>(strtol(argv[2], nullptr, 0));
-  const std::uint16_t times  = static_cast<std::uint16_t>(strtol(argv[3], nullptr, 0));
+  const std::string name {argv[1]};
+  const std::uint16_t times  = static_cast<std::uint16_t>(strtol(argv[2], nullptr, 0));
 
-  auto sa = ServoArray::ServoArray(bus, addr);
+  ServoArray::DriverParams params;
+  auto sa = ServoArray::ServoArray(name, params);
 
   auto const array_size = sa.size();
 
-  bench("Set", times, [&sa](size_t i) { sa.set(0, 0); });
-  bench("Get", times, [&sa](size_t i) { sa.get(0); });
+  bench("Set", times, [&sa](size_t i) { sa.write(0, 0); });
+  bench("Get", times, [&sa](size_t i) { sa.read(0); });
 }

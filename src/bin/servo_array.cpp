@@ -20,16 +20,14 @@
 int main(int argc, char **argv) {
 
   if (argc != 5) {
-    std::cerr << "servo_array <bus> <address> <min_pulse> <max_pulse>" << std::endl;
+    std::cerr << "servo_array <name>" << std::endl;
     return 1;
   }
 
-  const std::uint8_t bus   = static_cast<std::uint8_t>(strtol(argv[1], nullptr, 0));
-  const std::uint8_t addr  = static_cast<std::uint8_t>(strtol(argv[2], nullptr, 0));
-  const std::uint16_t min_pulse  = static_cast<std::uint16_t>(strtol(argv[3], nullptr, 0));
-  const std::uint16_t max_pulse  = static_cast<std::uint16_t>(strtol(argv[4], nullptr, 0));
+  const std::string name {argv[1]};
 
-  auto sa = ServoArray::ServoArray(bus, addr, min_pulse, max_pulse);
+  ServoArray::DriverParams params;
+  auto sa = ServoArray::ServoArray(name, params);
 
   while(true) {
     unsigned index_in;
@@ -41,7 +39,7 @@ int main(int argc, char **argv) {
     std::cout << " (rad)  > ";
     std::cin >> rad;
 
-    sa.set(index, rad);
-    std::cout << index << " -> " << sa.get(index) << std::endl;
+    sa.write(index, rad);
+    std::cout << index << " -> " << sa.read(index) << std::endl;
   }
 }
