@@ -19,6 +19,7 @@
 #include <unordered_map>
 #include <string>
 #include <memory>
+#include <vector>
 
 #include "servoarray/driver_params.h"
 
@@ -37,7 +38,7 @@ public:
   bool is_loaded(const std::string&) const;
 
 private:
-  static std::string driver_file_name(const std::string&) const;
+  static std::string driver_file_name(const std::string&);
   std::string resolve(const std::string&) const;
 };
 

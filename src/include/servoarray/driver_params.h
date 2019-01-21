@@ -30,7 +30,7 @@ public:
   template<typename T>
   const T& get(const std::string& key) const {
     auto it = this->data_.find(key);
-    if (it == this->data.end()) {
+    if (it == this->data_.end()) {
       // TODO: Use errors::ParamKeyError
       throw std::runtime_error("Could not find " + key);
     } else {
@@ -41,14 +41,14 @@ public:
   template<typename T>
   const T& get_or(const std::string& key, const T& default_) const {
     auto it = this->data_.find(key);
-    if (it == this->data.end()) {
+    if (it == this->data_.end()) {
       return default_;
     } else {
       return *static_cast<const T*>(*it);
     }
   }
 
-  template<typename... Args>
+  template<typename T, typename... Args>
   void emplace(const std::string& key, Args&&... args) {
     this->data_.emplace(key, new T(args...));
   }
@@ -58,8 +58,8 @@ public:
   }
 
   ~DriverParams() {
-    for (auto const& [key, value] : this->data_) {
-      delete value;
+    for (auto const& p : this->data_) {
+      delete p.second;
     }
   }
 
