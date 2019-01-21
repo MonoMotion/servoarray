@@ -22,14 +22,14 @@ std::shared_ptr<Driver> DriverManager::load(const std::string& name, const Drive
     throw std::runtime_error("Could not load " + path);
   }
 
-  auto* servoarray_driver = static_cast<Driver* (*)()>(dlsym(handle, "servoarray_driver"));
+  auto* servoarray_driver = reinterpret_cast<Driver* (*)(const DriverParams&)>(dlsym(handle, "servoarray_driver"));
   if (!servoarray_driver) {
     // TODO: throw errors::DriverLoadError
     // TODO: Use dlerror(3) to obtain error message
     throw std::runtime_error("Could not import symbol 'servoarray_driver'");
   }
 
-  auto deleter = [handle](Driver* driver) {
+  auto deleter = [path, handle](Driver* driver) {
     delete driver;
 
     if(dlclose(handle) != 0) {
@@ -50,7 +50,7 @@ bool DriverManager::is_loaded(const std::string& name) const {
   return drivers.find(name) != drivers.end();
 }
 
-static std::string DriverManager::driver_file_name(const std::string& name) const {
+std::string DriverManager::driver_file_name(const std::string& name) {
   // TODO: Include version information of servoarray
   // TODO: Include system information ($CC -dumpmachine ?)
   return name + ".servoarray.so";
@@ -61,11 +61,11 @@ std::string DriverManager::resolve(const std::string& name) const {
 
   fs::path file {DriverManager::driver_file_name(name)};
 
-  for (const auto& path : this->paths) {
-    fs::path dir {path};
-    fs::path path = dir / file;
-    if (fs::exists(path)) {
-      return fs::canonical(path).native();
+  for (const auto& path : this->paths_) {
+    fs::path dir (path);
+    fs::path file_path = dir / file;
+    if (fs::exists(file_path)) {
+      return fs::canonical(file_path).native();
     }
   }
 

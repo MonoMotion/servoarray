@@ -22,6 +22,7 @@
 #include <vector>
 
 #include "servoarray/driver_params.h"
+#include "servoarray/driver.h"
 
 namespace ServoArray {
 
