@@ -23,10 +23,10 @@ namespace ServoArray {
 // ABC for drivers
 class Driver {
 public:
-  virtual ~Driver();
+  virtual ~Driver() = default;
 
   virtual void write(std::size_t, double) = 0;
-  virtual double read(std::size_t) const;
+  virtual double read(std::size_t) const { return 0; }
 
   virtual std::size_t size() const = 0;
 };
