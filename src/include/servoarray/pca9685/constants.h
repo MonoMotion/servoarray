@@ -1,10 +1,10 @@
-#ifndef SERVOARRAY_CONSTANTS_H
-#define SERVOARRAY_CONSTANTS_H
+#ifndef PCA9685_CONSTANTS_H
+#define PCA9685_CONSTANTS_H
 
 #include <algorithm>
 
-namespace ServoArray {
-namespace Constants {
+namespace pca9685 {
+namespace constants {
 
 template <class T>
 static constexpr T pi = static_cast<T>(3.141592653589793238462643383279502884e+00);
