@@ -132,7 +132,9 @@ PYBIND11_MODULE(servoarray, m) {
 
   py::class_<::ServoArray::DriverManager>(m, "DriverManager")
     .def(py::init<const std::vector<std::string>&>())
-    .def("load", &::ServoArray::DriverManager::load)
+    .def("load", [](::ServoArray::DriverManager& manager, const std::string& name, py::dict params) {
+        return manager.load(name, Adaptor::to_driver_params(params));
+      })
     .def("get", &::ServoArray::DriverManager::get)
     .def("is_loaded", &::ServoArray::DriverManager::is_loaded);
 
