@@ -137,5 +137,11 @@ PYBIND11_MODULE(servoarray, m) {
     .def("__writeitem__", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::write))
     .def("__readitem__", py::overload_cast<py::slice>(&Adaptor::ServoArray::read))
     .def("__readitem__", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::read));
+
+  py::class_<::ServoArray::DriverManager>(m, "DriverManager")
+    .def(py::init<const std::vector<std::string>&>())
+    .def("load", &::ServoArray::DriverManager::load)
+    .def("get", &::ServoArray::DriverManager::get)
+    .def("is_loaded", &::ServoArray::DriverManager::is_loaded);
 }
 
