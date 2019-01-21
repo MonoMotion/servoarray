@@ -29,8 +29,6 @@
 #include <type_traits>
 #include <array>
 
-#include <servoarray/plugin.h>
-
 #include "pca9685/register.h"
 
 namespace pca9685 {
@@ -50,16 +48,11 @@ class PCA9685 {
   std::uint16_t max_pulse;
 
 public:
-  PCA9685(std::uint8_t bus=1, std::uint8_t address=0x40, std::uint16_t min_pulse=150, std::uint16_t max_pulse=600);
-
-  void set(std::size_t, double) override;
-  double get(std::size_t) const override;
-
-  std::size_t size() const override;
+  PCA9685(std::uint8_t bus, std::uint8_t address);
 
   void set_pwm_freq(float freq);
   void set_pwm(std::uint8_t index, std::uint16_t on, std::uint16_t off);
-  std::uint8_t num_servos();
+  std::uint8_t num_servos() const;
 
 private:
   void reset();
