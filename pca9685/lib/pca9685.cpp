@@ -31,7 +31,7 @@ PCA9685::PCA9685(std::uint8_t bus_, std::uint8_t addr_) : bus(bus_), address(add
   this->set_pwm_freq(40);
 }
 
-std::uint8_t PCA9685::num_servos() {
+std::uint8_t PCA9685::num_servos() const {
   return 16;
 }
 
