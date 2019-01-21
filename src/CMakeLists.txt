@@ -39,6 +39,10 @@ elseif(CONFIG STREQUAL "Release")
   add_compile_options(-O3 -Wno-error)
 endif()
 
+set(Boost_USE_STATIC_LIBS ON)
+find_package(Boost 1.36.0 REQUIRED COMPONENTS filesystem system)
+include_directories(${Boost_INCLUDE_DIRS})
+
 include_directories(include/)
 
 add_subdirectory(lib)
