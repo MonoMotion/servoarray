@@ -13,9 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "servoarray/pca9685/pca9685.h"
+#include "pca9685/pca9685.h"
 
-namespace ServoArray {
+namespace pca9685 {
 
 PCA9685::PCA9685(std::uint8_t bus_, std::uint8_t addr_) : bus(bus_), address(addr_), buf_count(0) {
   char dev_path[64];

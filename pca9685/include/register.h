@@ -13,31 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SERVOARRAY_PCA9685_DRIVER_H
-#define SERVOARRAY_PCA9685_DRIVER_H
+#ifndef PCA9685_REGISTER_H
+#define PCA9685_REGISTER_H
 
-#include <unistd.h>
-#include <servoarray/driver.h>
-
-#include "pca9685/pca9685.h"
+#include <cstdint>
 
 namespace pca9685 {
 
-class PCA9685Driver final : public ServoArray::Driver {
-  PCA9685 pca9685_;
-  std::uint16_t min_pulse_;
-  std::uint16_t max_pulse_;
-
-public:
-  PCA9685Driver(std::uint8_t bus, std::uint8_t address, std::uint16_t min_pulse=150, std::uint16_t max_pulse=600);
-
-  void write(std::size_t, double) override;
-
-  std::size_t size() const override;
+enum class Register : std::uint8_t {
+  MODE1 = 0x00,
+  MODE2 = 0x01,
+  SUBADR1 = 0x02,
+  SUBADR2 = 0x03,
+  SUBADR3 = 0x04,
+  ALLCALLADR = 0x05,
+  LED0 = 0x6,
+  LED0_ON_L = 0x6,
+  LED0_ON_H = 0x7,
+  LED0_OFF_L = 0x8,
+  LED0_OFF_H = 0x9,
+  ALLLED_ON_L = 0xFA,
+  ALLLED_ON_H = 0xFB,
+  ALLLED_OFF_L = 0xFC,
+  ALLLED_OFF_H = 0xFD,
+  PRE_SCALE = 0xFE
 };
 
-}
+Register operator+(const Register& reg, const std::uint8_t& offset);
 
-extern "C" ServoArray::Driver* servoarray_driver(const ServoArray::DriverParams&);
+}
 
 #endif

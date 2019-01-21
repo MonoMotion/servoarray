@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SERVOARRAY_DRIVER_H
-#define SERVOARRAY_DRIVER_H
+#ifndef PCA9685_PCA9685_H
+#define PCA9685_PCA9685_H
 
 #include <cstdlib>
 #include <cerrno>
@@ -29,14 +29,15 @@
 #include <type_traits>
 #include <array>
 
-#include "register.h"
-#include "servoarray/plugin.h"
+#include <servoarray/plugin.h>
 
-namespace ServoArray {
+#include "pca9685/register.h"
+
+namespace pca9685 {
 
 static constexpr float CLOCK_FREQ = 25000000.0;
 
-class PCA9685 final : ServoArray::Driver {
+class PCA9685 {
   std::uint8_t bus;
   std::uint8_t address;
 

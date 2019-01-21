@@ -15,9 +15,9 @@
 
 #include <cstdint>
 
-#include "servoarray/pca9685/register.h"
+#include "pca9685/register.h"
 
-namespace ServoArray {
+namespace pca9685 {
 
 Register operator+(const Register& reg, const std::uint8_t& offset) {
   const auto address = static_cast<std::uint8_t>(reg) + offset;

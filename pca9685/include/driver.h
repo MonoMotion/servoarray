@@ -13,27 +13,31 @@
 // You should have received a copy of the GNU General Public License
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "servoarray/pca9685/pca9685.h"
+#ifndef PCA9685_DRIVER_H
+#define PCA9685_DRIVER_H
 
-#include <iostream>
+#include <unistd.h>
+#include <servoarray/driver.h>
 
-int main(int argc, char **argv) {
+#include "pca9685/pca9685.h"
 
-  if (argc != 4) {
-    std::cerr << "set_pwm <bus> <address> <index>" << std::endl;
-    return 1;
-  }
+namespace pca9685 {
 
-  const std::uint8_t bus   = static_cast<std::uint8_t>(strtol(argv[1], nullptr, 0));
-  const std::uint8_t addr  = static_cast<std::uint8_t>(strtol(argv[2], nullptr, 0));
-  const std::uint8_t index = static_cast<std::uint8_t>(strtol(argv[3], nullptr, 0));
+class PCA9685Driver final : public ServoArray::Driver {
+  PCA9685 pca9685_;
+  std::uint16_t min_pulse_;
+  std::uint16_t max_pulse_;
 
-  auto driver = ServoArray::PCA9685(bus, addr);
+public:
+  PCA9685Driver(std::uint8_t bus, std::uint8_t address, std::uint16_t min_pulse=150, std::uint16_t max_pulse=600);
 
-  while(true) {
-    std::uint16_t pulselen;
-    std::cout << "> ";
-    std::cin >> pulselen;
-    driver.set_pwm(index, 0, pulselen);
-  }
+  void write(std::size_t, double) override;
+
+  std::size_t size() const override;
+};
+
 }
+
+extern "C" ServoArray::Driver* servoarray_driver(const ServoArray::DriverParams&);
+
+#endif
