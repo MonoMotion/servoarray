@@ -18,8 +18,8 @@
 
 #include <cstdint>
 
-#include "servoarray/plugin.h"
-#include "servoarray/plugin_manager.h"
+#include "servoarray/driver.h"
+#include "servoarray/driver_manager.h"
 
 namespace ServoArray {
 
