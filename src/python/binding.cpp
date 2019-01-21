@@ -26,12 +26,30 @@ namespace py = pybind11;
 
 namespace Adaptor {
 
+ServoArray::DriverParams to_driver_params(py::dict py_params) {
+  ServoArray::DriverParams params;
+  for (auto item : py_params) {
+    auto const& py_key = item.first;
+    auto const& py_value = item.second;
+
+    if(!py::isinstance<py::str>(py_key)) {
+      throw std::runtime_error("Parameter dict must have string keys");
+    }
+    auto key = py::cast<std::string>(py_key);
+
+    if (py::isinstance<py::int_>(py_value)) {
+      params.emplace<int>(key, py::cast<int>(py_value));
+    }
+  }
+
+  return params;
+}
+
 class ServoArray {
   ::ServoArray::ServoArray sa;
 
 public:
-  template<typename... Ts>
-  ServoArray(Ts&&... params) : sa(::ServoArray::ServoArray(std::forward<Ts>(params)...)) {}
+  ServoArray(const std::string& name, py::dict py_params) : sa(name, to_driver_params(py_params)) {}
 
   void write(std::int16_t index, double rad) {
     const auto u8idx = this->cast_index<uint8_t>(index);
@@ -105,6 +123,7 @@ private:
 PYBIND11_MODULE(servoarray, m) {
   m.doc() = "ServoArray: A fast implementation of servo motor array written in C++, also available as a python module";
   py::class_<Adaptor::ServoArray>(m, "ServoArray")
+    .def(py::init<const std::string&, py::dict>())
     .def("write", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::write))
     .def("read", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::read))
     .def("__len__", &Adaptor::ServoArray::size)
