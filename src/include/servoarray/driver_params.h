@@ -34,7 +34,7 @@ public:
       // TODO: Use errors::ParamKeyError
       throw std::runtime_error("Could not find " + key);
     } else {
-      return *static_cast<const T*>(*it);
+      return *static_cast<const T*>(it->second.get());
     }
   }
 
@@ -44,28 +44,22 @@ public:
     if (it == this->data_.end()) {
       return default_;
     } else {
-      return *static_cast<const T*>(*it);
+      return *static_cast<const T*>(it->second.get());
     }
   }
 
   template<typename T, typename... Args>
   void emplace(const std::string& key, Args&&... args) {
-    this->data_.emplace(key, new T(args...));
+    this->data_.emplace(key, std::make_shared<T>(args...));
   }
 
   void erase(const std::string& key) {
     this->data_.erase(key);
   }
 
-  ~DriverParams() {
-    for (auto const& p : this->data_) {
-      delete p.second;
-    }
-  }
-
 private:
   // TODO: Pimpl?
-  std::unordered_map<std::string, void*> data_;
+  std::unordered_map<std::string, std::shared_ptr<void>> data_;
 };
 
 }
