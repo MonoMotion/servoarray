@@ -73,4 +73,6 @@ std::string DriverManager::resolve(const std::string& name) const {
   throw std::runtime_error("Could not resolve driver name " + name);
 }
 
+DriverManager default_manager;
+
 }
