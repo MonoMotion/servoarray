@@ -24,26 +24,43 @@
 namespace ServoArray {
 
 // A Key-Value store to hold initialization parameters
-// Using primitive types to keep ABI compatibility
+// TODO: Using primitive types to keep ABI compatibility
 class DriverParams {
 public:
-  const void* get(const char* key, void* default_ = nullptr) const {
-    std::string key_str { key };
-    auto it = this->data_.find(key_str);
+  template<typename T>
+  const T& get(const std::string& key) const {
+    auto it = this->data_.find(key);
+    if (it == this->data.end()) {
+      // TODO: Use errors::ParamKeyError
+      throw std::runtime_error("Could not find " + key);
+    } else {
+      return *static_cast<const T*>(*it);
+    }
+  }
+
+  template<typename T>
+  const T& get_or(const std::string& key, const T& default_) const {
+    auto it = this->data_.find(key);
     if (it == this->data.end()) {
       return default_;
     } else {
-      return it->get();
+      return *static_cast<const T*>(*it);
     }
   }
 
   template<typename... Args>
-  void emplace(const char* key, Args&&... args) {
-    this->data_.emplace(std::string{key}, new T(args...));
+  void emplace(const std::string& key, Args&&... args) {
+    this->data_.emplace(key, new T(args...));
   }
 
-  void erase(const char* key) {
-    this->data_.erase(std::string{key});
+  void erase(const std::string& key) {
+    this->data_.erase(key);
+  }
+
+  ~DriverParams() {
+    for (auto const& [key, value] : this->data_) {
+      delete value;
+    }
   }
 
 private:
