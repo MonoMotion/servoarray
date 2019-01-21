@@ -27,13 +27,12 @@ class ServoArray {
   std::shared_ptr<Driver> driver_;
 
 public:
-  ServoArray(const std::string&, DriverManager&);
   ServoArray(std::shared_ptr<Driver>);
 
-  void set(std::uint8_t index, double rad);
-  double get(std::uint8_t index) const;
+  void write(std::size_t index, double rad);
+  double read(std::size_t index) const;
 
-  std::uint8_t size() const;
+  std::size_t size() const;
 };
 
 }
