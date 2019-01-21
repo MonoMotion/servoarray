@@ -18,6 +18,7 @@
 #include <cstdlib>
 
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 
 #include "servoarray/servoarray.h"
@@ -55,7 +56,7 @@ class ServoArray {
   ::ServoArray::ServoArray sa;
 
 public:
-  ServoArray(const std::string& name, py::dict py_params) : sa(name, to_driver_params(py_params)) {}
+  ServoArray(const std::string& name, py::dict py_params, ::ServoArray::DriverManager& manager) : sa(name, to_driver_params(py_params), manager) {}
 
   void write(std::int16_t index, double rad) {
     const auto u8idx = this->cast_index<uint8_t>(index);
@@ -128,8 +129,15 @@ private:
 
 PYBIND11_MODULE(servoarray, m) {
   m.doc() = "ServoArray: A fast implementation of servo motor array written in C++, also available as a python module";
+
+  py::class_<::ServoArray::DriverManager>(m, "DriverManager")
+    .def(py::init<const std::vector<std::string>&>())
+    .def("load", &::ServoArray::DriverManager::load)
+    .def("get", &::ServoArray::DriverManager::get)
+    .def("is_loaded", &::ServoArray::DriverManager::is_loaded);
+
   py::class_<Adaptor::ServoArray>(m, "ServoArray")
-    .def(py::init<const std::string&, py::dict>())
+    .def(py::init<const std::string&, py::dict, ::ServoArray::DriverManager&>(), py::arg("name"), py::arg("params"), py::arg("manager") = ::ServoArray::default_manager)
     .def("write", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::write))
     .def("read", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::read))
     .def("__len__", &Adaptor::ServoArray::size)
@@ -137,11 +145,5 @@ PYBIND11_MODULE(servoarray, m) {
     .def("__writeitem__", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::write))
     .def("__readitem__", py::overload_cast<py::slice>(&Adaptor::ServoArray::read))
     .def("__readitem__", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::read));
-
-  py::class_<::ServoArray::DriverManager>(m, "DriverManager")
-    .def(py::init<const std::vector<std::string>&>())
-    .def("load", &::ServoArray::DriverManager::load)
-    .def("get", &::ServoArray::DriverManager::get)
-    .def("is_loaded", &::ServoArray::DriverManager::is_loaded);
 }
 
