@@ -7,10 +7,18 @@
 
 namespace ServoArray {
 
-std::vector<std::string> DriverManager::expand_paths(const std::vector<std::string>& paths) {
-  std::vector<std::string> new_paths (paths);
+std::vector<std::string> DriverManager::expand_paths(const std::vector<std::string>& additional_paths) {
+  std::vector<std::string> new_paths (additional_paths);
 
-  new_paths.insert(new_paths.begin(), ".");
+  //
+  // Driver path resolution order
+  //
+  // 1. $SA_DRIVER_PATH
+  // 2. additional_paths
+  // 3. ./
+  // 4. SERVOARRAY_DEFAULT_PATHS (set in cmake)
+  // 5. dynamic linker searches for the library
+  //
 
   const char* env_path = std::getenv("SA_DRIVER_PATH");
   if(env_path) {
@@ -19,6 +27,12 @@ std::vector<std::string> DriverManager::expand_paths(const std::vector<std::stri
     while(std::getline(s, path, ':')) {
       new_paths.insert(new_paths.begin(), path);
     }
+  }
+
+  new_paths.push_back(".");
+
+  for (auto const& path : {SERVOARRAY_DEFAULT_PATHS}) {
+    new_paths.push_back(path);
   }
 
   const char* home = std::getenv("HOME");
