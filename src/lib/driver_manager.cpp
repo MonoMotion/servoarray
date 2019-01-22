@@ -97,8 +97,7 @@ std::string DriverManager::resolve(const std::string& name) const {
     }
   }
 
-  // TODO: throw errors::DriverNotFoundError
-  throw std::runtime_error("Could not resolve driver name " + name);
+  return file.native();
 }
 
 DriverManager default_manager;
