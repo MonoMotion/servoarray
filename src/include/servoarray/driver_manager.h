@@ -39,6 +39,7 @@ public:
   bool is_loaded(const std::string&) const;
 
 private:
+  static std::vector<std::string> expand_paths(const std::vector<std::string>&);
   static std::string driver_file_name(const std::string&);
   std::string resolve(const std::string&) const;
 };

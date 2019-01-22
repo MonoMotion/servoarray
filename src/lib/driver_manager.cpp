@@ -6,7 +6,30 @@
 
 namespace ServoArray {
 
-DriverManager::DriverManager(const std::vector<std::string>& paths) : paths_(paths), loaded_drivers_() {}
+std::vector<std::string> DriverManager::expand_paths(const std::vector<std::string>& paths) {
+  std::vector<std::string> new_paths (paths);
+
+  new_paths.insert(new_paths.begin(), ".");
+
+  const char* env_path = std::getenv("SA_DRIVER_PATH");
+  if(env_path) {
+    new_paths.insert(new_paths.begin(), env_path);
+  }
+
+  const char* home = std::getenv("HOME");
+  if (!home) {
+    return new_paths;
+  }
+
+  for (auto&& path : new_paths) {
+    if (path[0] == '~') {
+      path.replace(0, 1, home);
+    }
+  }
+  return new_paths;
+}
+
+DriverManager::DriverManager(const std::vector<std::string>& paths) : paths_(expand_paths(paths)), loaded_drivers_() {}
 
 std::shared_ptr<Driver> DriverManager::get(const std::string& name) const {
   // TODO: throw errors::DriverNotFoundError when the name is not found
