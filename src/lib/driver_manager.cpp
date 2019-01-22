@@ -2,6 +2,7 @@
 
 #include <boost/filesystem.hpp>
 
+#include <sstream>
 #include <dlfcn.h>
 
 namespace ServoArray {
@@ -13,7 +14,11 @@ std::vector<std::string> DriverManager::expand_paths(const std::vector<std::stri
 
   const char* env_path = std::getenv("SA_DRIVER_PATH");
   if(env_path) {
-    new_paths.insert(new_paths.begin(), env_path);
+    std::string path;
+    std::istringstream s (env_path);
+    while(std::getline(s, path, ':')) {
+      new_paths.insert(new_paths.begin(), path);
+    }
   }
 
   const char* home = std::getenv("HOME");
