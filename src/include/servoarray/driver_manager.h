@@ -31,7 +31,7 @@ class DriverManager {
   std::unordered_map<std::string, std::shared_ptr<Driver>> loaded_drivers_;
 
 public:
-  DriverManager(const std::vector<std::string>& paths = {"/usr/share/servoarray"});
+  DriverManager(const std::vector<std::string>& paths = {"~/.servoarray/", "/usr/lib/servoarray"});
 
   std::shared_ptr<Driver> load(const std::string&, const DriverParams&);
   std::shared_ptr<Driver> get(const std::string&) const;
