@@ -93,9 +93,7 @@ bool DriverManager::is_loaded(const std::string& name) const {
 }
 
 std::string DriverManager::driver_file_name(const std::string& name) {
-  // TODO: Include version information of servoarray
-  // TODO: Include system information ($CC -dumpmachine ?)
-  return name + ".servoarray.so";
+  return name + SERVOARRAY_DRIVER_POSTFIX;
 }
 
 std::string DriverManager::resolve(const std::string& name) const {
