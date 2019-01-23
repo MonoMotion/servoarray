@@ -27,6 +27,8 @@ namespace ServoArray {
 // TODO: Using primitive types to keep ABI compatibility
 class DriverParams {
 public:
+  DriverParams() = default;
+
   template<typename T>
   const T& get(const std::string& key) const {
     auto it = this->data_.find(key);
