@@ -18,6 +18,7 @@
 #include <cstdlib>
 
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 
 #include "servoarray/servoarray.h"
@@ -26,26 +27,46 @@ namespace py = pybind11;
 
 namespace Adaptor {
 
-class ServoArray {
-  ::ServoArray::ServoArray sa;
-  bool enable_clip;
+ServoArray::DriverParams to_driver_params(py::dict py_params) {
+  ServoArray::DriverParams params;
+  for (auto item : py_params) {
+    auto const& py_key = item.first;
+    auto const& py_value = item.second;
 
-public:
-  template<typename... Ts>
-  ServoArray(Ts&&... params) : sa(::ServoArray::ServoArray(std::forward<Ts>(params)...)), enable_clip(false) {}
-
-  void set(std::int16_t index, double rad) {
-    const auto u8idx = this->cast_index<uint8_t>(index);
-    if (this->enable_clip) {
-      rad = ::ServoArray::Constants::clip_pos(rad);
+    if(!py::isinstance<py::str>(py_key)) {
+      throw std::runtime_error("Parameter dict must have string keys");
     }
-    if (index >= 0) {
-      return this->sa.set(u8idx, rad);
+    auto key = py::cast<std::string>(py_key);
+
+    if (py::isinstance<py::int_>(py_value)) {
+      params.emplace<int>(key, py::cast<int>(py_value));
+    } else if (py::isinstance<py::float_>(py_value)) {
+      params.emplace<float>(key, py::cast<float>(py_value));
+    } else if (py::isinstance<py::bool_>(py_value)) {
+      params.emplace<bool>(key, py::cast<bool>(py_value));
     } else {
-      return this->sa.set(static_cast<uint8_t>(this->sa.size() + index), rad);
+      throw std::runtime_error("Unsupported parameter value " + std::string(py::str(py_value)));
     }
   }
-  void set(py::slice slice, py::array_t<double> list) {
+
+  return params;
+}
+
+class ServoArray {
+  ::ServoArray::ServoArray sa;
+
+public:
+  ServoArray(const std::string& name, py::dict py_params, ::ServoArray::DriverManager& manager) : sa(name, to_driver_params(py_params), manager) {}
+
+  void write(std::int16_t index, double rad) {
+    const auto u8idx = this->cast_index<uint8_t>(index);
+    if (index >= 0) {
+      return this->sa.write(u8idx, rad);
+    } else {
+      return this->sa.write(static_cast<uint8_t>(this->sa.size() + index), rad);
+    }
+  }
+  void write(py::slice slice, py::array_t<double> list) {
     std::size_t start, stop, step, length;
     if (!slice.compute(this->sa.size(), &start, &stop, &step, &length))
       throw py::error_already_set();
@@ -56,22 +77,19 @@ public:
     for (std::size_t i = 0; i < length; ++i) {
       const auto idx = this->cast_index<uint8_t>(start);
       double rad = list.at(i);
-      if (this->enable_clip) {
-        rad = ::ServoArray::Constants::clip_pos(rad);
-      }
-      this->sa.set(idx, rad);
+      this->sa.write(idx, rad);
       start += step;
     }
   }
-  double get(std::int16_t index) {
+  double read(std::int16_t index) {
     const auto u8idx = this->cast_index<uint8_t>(index);
     if (index >= 0) {
-      return this->sa.get(u8idx);
+      return this->sa.read(u8idx);
     } else {
-      return this->sa.get(static_cast<uint8_t>(this->sa.size() + index));
+      return this->sa.read(static_cast<uint8_t>(this->sa.size() + index));
     }
   }
-  py::array_t<double> get(py::slice slice) {
+  py::array_t<double> read(py::slice slice) {
     std::size_t start, stop, step, length;
     if (!slice.compute(this->sa.size(), &start, &stop, &step, &length))
       throw py::error_already_set();
@@ -79,14 +97,13 @@ public:
     auto l = py::array_t<double>(length);
     for (std::size_t i = 0; i < length; ++i) {
       const auto idx = this->cast_index<uint8_t>(start);
-      l.mutable_at(i) = this->sa.get(idx);
+      l.mutable_at(i) = this->sa.read(idx);
       start += step;
     }
     return l;
   }
 
   std::uint8_t size() { return this->sa.size(); }
-  void auto_clip(bool is_enabled) { this->enable_clip = is_enabled; }
 
 private:
   template<typename Int, typename T, std::enable_if_t<std::numeric_limits<T>::is_signed>* = nullptr>
@@ -112,15 +129,23 @@ private:
 
 PYBIND11_MODULE(servoarray, m) {
   m.doc() = "ServoArray: A fast implementation of servo motor array written in C++, also available as a python module";
+
+  py::class_<::ServoArray::DriverManager>(m, "DriverManager")
+    .def(py::init<const std::vector<std::string>&>())
+    .def("load", [](::ServoArray::DriverManager& manager, const std::string& name, py::dict params) {
+        return manager.load(name, Adaptor::to_driver_params(params));
+      })
+    .def("get", &::ServoArray::DriverManager::get)
+    .def("is_loaded", &::ServoArray::DriverManager::is_loaded);
+
   py::class_<Adaptor::ServoArray>(m, "ServoArray")
-    .def(py::init<std::uint8_t, std::uint8_t, std::uint16_t, std::uint16_t>(), py::arg("bus") = 1, py::arg("address") = 0x40, py::arg("min_pulse") = 150, py::arg("max_pulse") = 600)
-    .def("set", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::set))
-    .def("get", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::get))
-    .def("auto_clip", &Adaptor::ServoArray::auto_clip)
+    .def(py::init<const std::string&, py::dict, ::ServoArray::DriverManager&>(), py::arg("name"), py::arg("params"), py::arg("manager") = ::ServoArray::default_manager)
+    .def("write", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::write))
+    .def("read", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::read))
     .def("__len__", &Adaptor::ServoArray::size)
-    .def("__setitem__", py::overload_cast<py::slice, py::array_t<double>>(&Adaptor::ServoArray::set))
-    .def("__setitem__", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::set))
-    .def("__getitem__", py::overload_cast<py::slice>(&Adaptor::ServoArray::get))
-    .def("__getitem__", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::get));
+    .def("__writeitem__", py::overload_cast<py::slice, py::array_t<double>>(&Adaptor::ServoArray::write))
+    .def("__writeitem__", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::write))
+    .def("__readitem__", py::overload_cast<py::slice>(&Adaptor::ServoArray::read))
+    .def("__readitem__", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::read));
 }
 

@@ -13,15 +13,29 @@
 // You should have received a copy of the GNU General Public License
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <cstdint>
+#ifndef SERVOARRAY_DRIVER_H
+#define SERVOARRAY_DRIVER_H
 
-#include "servoarray/pca9685/register.h"
+#include "servoarray/driver_params.h"
 
 namespace ServoArray {
 
-Register operator+(const Register& reg, const std::uint8_t& offset) {
-  const auto address = static_cast<std::uint8_t>(reg) + offset;
-  return Register(address);
-}
+// ABC for drivers
+class Driver {
+public:
+  virtual ~Driver() = default;
+
+  virtual void write(std::size_t, double) = 0;
+  virtual double read(std::size_t) const { return 0; }
+
+  virtual std::size_t size() const = 0;
+};
+
+//
+// Driver .so must contain this symbol:
+// Driver* servoarray_driver(const DriverParams&);
+//
 
 }
+
+#endif

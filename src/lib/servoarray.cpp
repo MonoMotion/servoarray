@@ -17,35 +17,19 @@
 
 namespace ServoArray {
 
-ServoArray::ServoArray(std::uint8_t bus, std::uint8_t address, std::uint16_t min_pulse_, std::uint16_t max_pulse_)
-  : driver(PCA9685(bus, address)), min_pulse(min_pulse_), max_pulse(max_pulse_) {
-  this->values.resize(this->driver.num_servos());
+ServoArray::ServoArray(std::shared_ptr<Driver> driver) : driver_(driver) {}
+ServoArray::ServoArray(const std::string& name, const DriverParams& params, DriverManager& manager) : driver_(manager.load(name, params)) {}
+
+void ServoArray::write(std::size_t index, double rad) {
+  this->driver_->write(index, rad);
 }
 
-void ServoArray::set(std::uint8_t index, double rad) {
-  if (index >= this->driver.num_servos()) {
-    throw std::out_of_range("Channel index out of bounds");
-  }
-
-  if (!Constants::is_valid_pos(rad)) {
-    throw std::out_of_range("Position value must be within the range from -pi/2 to pi/2");
-  }
-
-  this->values[index] = rad;
-
-  const auto pulse = (rad - Constants::min_pos<double>) * (this->max_pulse - this->min_pulse) / (Constants::max_pos<double> - Constants::min_pos<double>) + this->min_pulse;
-  this->driver.set_pwm(index, 0, static_cast<std::uint16_t>(pulse));
+double ServoArray::read(std::size_t index) const {
+  return this->driver_->read(index);
 }
 
-double ServoArray::get(std::uint8_t index) {
-  if (index >= this->driver.num_servos()) {
-    throw std::out_of_range("Channel index out of bounds");
-  }
-  return this->values[index];
-}
-
-std::uint8_t ServoArray::size() {
-  return this->driver.num_servos();
+std::size_t ServoArray::size() const {
+  return this->driver_->size();
 }
 
 }

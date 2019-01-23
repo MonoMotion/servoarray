@@ -9,6 +9,8 @@ addons:
       - g++-5
       - build-essential
       - cmake
+      - libboost-dev
+      - libboost-filesystem-dev
 env:
   - CXX=g++-5
 script:

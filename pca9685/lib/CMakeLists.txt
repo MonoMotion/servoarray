@@ -1,0 +1,11 @@
+add_library(pca9685_lib STATIC pca9685.cpp register.cpp)
+set_target_properties(pca9685_lib PROPERTIES OUTPUT_NAME "pca9685")
+set_target_properties(pca9685_lib PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+
+add_library(pca9685_driver_lib SHARED driver.cpp)
+set_target_properties(pca9685_driver_lib PROPERTIES PREFIX "")
+set_target_properties(pca9685_driver_lib PROPERTIES OUTPUT_NAME "pca9685")
+execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpmachine OUTPUT_VARIABLE target_triple OUTPUT_STRIP_TRAILING_WHITESPACE)
+set_target_properties(pca9685_driver_lib PROPERTIES SUFFIX ".servoarray-0-${target_triple}.so")
+set_target_properties(pca9685_driver_lib PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+target_link_libraries(pca9685_driver_lib pca9685_lib)

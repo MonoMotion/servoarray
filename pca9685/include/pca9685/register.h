@@ -13,28 +13,33 @@
 // You should have received a copy of the GNU General Public License
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SERVOARRAY_SERVOARRAY_H
-#define SERVOARRAY_SERVOARRAY_H
+#ifndef PCA9685_REGISTER_H
+#define PCA9685_REGISTER_H
 
 #include <cstdint>
 
-#include "servoarray/driver.h"
-#include "servoarray/driver_manager.h"
+namespace pca9685 {
 
-namespace ServoArray {
-
-class ServoArray {
-  std::shared_ptr<Driver> driver_;
-
-public:
-  ServoArray(std::shared_ptr<Driver>);
-  ServoArray(const std::string& name, const DriverParams&, DriverManager& = default_manager);
-
-  void write(std::size_t index, double rad);
-  double read(std::size_t index) const;
-
-  std::size_t size() const;
+enum class Register : std::uint8_t {
+  MODE1 = 0x00,
+  MODE2 = 0x01,
+  SUBADR1 = 0x02,
+  SUBADR2 = 0x03,
+  SUBADR3 = 0x04,
+  ALLCALLADR = 0x05,
+  LED0 = 0x6,
+  LED0_ON_L = 0x6,
+  LED0_ON_H = 0x7,
+  LED0_OFF_L = 0x8,
+  LED0_OFF_H = 0x9,
+  ALLLED_ON_L = 0xFA,
+  ALLLED_ON_H = 0xFB,
+  ALLLED_OFF_L = 0xFC,
+  ALLLED_OFF_H = 0xFD,
+  PRE_SCALE = 0xFE
 };
+
+Register operator+(const Register& reg, const std::uint8_t& offset);
 
 }
 

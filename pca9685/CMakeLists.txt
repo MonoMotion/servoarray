@@ -1,22 +1,7 @@
-# This file is part of servoarray.
-#
-# servoarray is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# servoarray is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
-
 cmake_minimum_required(VERSION 3.7)
 cmake_policy(SET CMP0048 NEW)
 
-project(servoarray VERSION 0.1 LANGUAGES CXX)
+project(pca9685 VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -39,16 +24,7 @@ elseif(CONFIG STREQUAL "Release")
   add_compile_options(-O3 -Wno-error)
 endif()
 
-find_package(Boost 1.36.0 REQUIRED COMPONENTS filesystem system)
-include_directories(${Boost_INCLUDE_DIRS})
-
 include_directories(include/)
 
 add_subdirectory(lib)
 add_subdirectory(bin)
-
-add_subdirectory(pybind11)
-# pybind11 headers produce so many errors with strict compiler options
-include_directories(SYSTEM ${PYBIND11_INCLUDE_DIR})
-
-add_subdirectory(python)

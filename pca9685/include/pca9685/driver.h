@@ -13,29 +13,31 @@
 // You should have received a copy of the GNU General Public License
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SERVOARRAY_SERVOARRAY_H
-#define SERVOARRAY_SERVOARRAY_H
+#ifndef PCA9685_DRIVER_H
+#define PCA9685_DRIVER_H
 
-#include <cstdint>
+#include <unistd.h>
+#include <servoarray/driver.h>
 
-#include "servoarray/driver.h"
-#include "servoarray/driver_manager.h"
+#include "pca9685/pca9685.h"
 
-namespace ServoArray {
+namespace pca9685 {
 
-class ServoArray {
-  std::shared_ptr<Driver> driver_;
+class PCA9685Driver final : public ServoArray::Driver {
+  PCA9685 pca9685_;
+  std::uint16_t min_pulse_;
+  std::uint16_t max_pulse_;
 
 public:
-  ServoArray(std::shared_ptr<Driver>);
-  ServoArray(const std::string& name, const DriverParams&, DriverManager& = default_manager);
+  PCA9685Driver(std::uint8_t bus, std::uint8_t address, std::uint16_t min_pulse=150, std::uint16_t max_pulse=600);
 
-  void write(std::size_t index, double rad);
-  double read(std::size_t index) const;
+  void write(std::size_t, double) override;
 
-  std::size_t size() const;
+  std::size_t size() const override;
 };
 
 }
+
+extern "C" ServoArray::Driver* servoarray_driver(const ServoArray::DriverParams&);
 
 #endif
