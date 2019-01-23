@@ -10,6 +10,7 @@ addons:
       - build-essential
       - cmake
       - libboost-dev
+      - libboost-filesystem-dev
 env:
   - CXX=g++-5
 script:
