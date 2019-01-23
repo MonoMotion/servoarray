@@ -27,6 +27,14 @@ namespace ServoArray {
 // TODO: Using primitive types to keep ABI compatibility
 class DriverParams {
 public:
+  using data_type = std::unordered_map<std::string, std::shared_ptr<void>>;
+  using iterator = data_type::iterator;
+  using const_iterator = data_type::const_iterator;
+
+private:
+  data_type data_;
+
+public:
   DriverParams() = default;
 
   template<typename T>
@@ -59,9 +67,27 @@ public:
     this->data_.erase(key);
   }
 
-private:
-  // TODO: Pimpl?
-  std::unordered_map<std::string, std::shared_ptr<void>> data_;
+  iterator begin() noexcept { return this->data_.begin(); }
+  iterator end() noexcept { return this->data_.end(); }
+
+  const_iterator begin() const noexcept { return this->data_.begin(); }
+  const_iterator end() const noexcept { return this->data_.end(); }
+
+  const_iterator cbegin() const noexcept { return this->data_.cbegin(); }
+  const_iterator cend() const noexcept { return this->data_.cend(); }
+
+  DriverParams& merge(const DriverParams& other) {
+    for (auto const& p : other) {
+      this->data_[p.first] = p.second;
+    }
+
+    return *this;
+  }
+
+  DriverParams merged(const DriverParams& other) const {
+    DriverParams copy {*this};
+    return copy.merge(other);
+  }
 };
 
 }
