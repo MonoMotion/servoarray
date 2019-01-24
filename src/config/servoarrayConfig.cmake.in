@@ -1,0 +1,13 @@
+set(SERVOARRAY_VERSION @servoarray_VERSION@)
+
+@PACKAGE_INIT@
+
+set_and_check(SERVOARRAY_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
+set_and_check(SERVOARRAY_LIB_DIR "@PACKAGE_LIB_INSTALL_DIR@")
+
+find_package(Boost 1.36.0 REQUIRED COMPONENTS filesystem system)
+include_directories(${Boost_INCLUDE_DIRS})
+
+set(SERVOARRAY_LIBRARIES servoarray ${Boost_LIBRARIES})
+
+check_required_components(servoarray)

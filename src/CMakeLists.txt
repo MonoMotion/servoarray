@@ -26,6 +26,9 @@ if(NOT CONFIG)
   set(CONFIG Release)
 endif()
 
+set(INCLUDE_INSTALL_DIR include/)
+set(LIB_INSTALL_DIR lib/)
+
 find_package(Boost 1.36.0 REQUIRED COMPONENTS filesystem system)
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -36,6 +39,8 @@ include(cmake/compile-options.cmake)
 
 add_subdirectory(lib)
 add_subdirectory(bin)
+
+add_subdirectory(config)
 
 add_subdirectory(third_party/pybind11)
 # pybind11 headers produce so many errors with strict compiler options
