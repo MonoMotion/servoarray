@@ -19,15 +19,8 @@
 
 int main(int argc, char **argv) {
 
-  if (argc != 5) {
-    std::cerr << "servo_array <name>" << std::endl;
-    return 1;
-  }
-
-  const std::string name {argv[1]};
-
-  ServoArray::DriverParams params;
-  auto sa = ServoArray::ServoArray(name, params);
+  const std::string name {argc > 1 ? argv[1] : ""};
+  auto sa = ServoArray::ServoArray(name);
 
   while(true) {
     unsigned index_in;

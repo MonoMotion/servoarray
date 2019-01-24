@@ -1,5 +1,7 @@
 #include "servoarray/servoarray.h"
 
+#include <boost/lexical_cast.hpp>
+
 #include <iostream>
 #include <iomanip>
 #include <chrono>
@@ -18,19 +20,14 @@ void bench(std::string const& title, std::size_t times, F target) {
 }
 
 int main(int argc, char **argv) {
-
-  if (argc != 4) {
-    std::cerr << "bench <bus> <address> <times>" << std::endl;
-    return 1;
+  if (argc < 2) {
+    std::cerr << argv[0] << " times [name]" << std::endl;
+    return -1;
   }
 
-  const std::string name {argv[1]};
-  const std::uint16_t times  = static_cast<std::uint16_t>(strtol(argv[2], nullptr, 0));
-
-  ServoArray::DriverParams params;
-  auto sa = ServoArray::ServoArray(name, params);
-
-  auto const array_size = sa.size();
+  const auto times = boost::lexical_cast<std::size_t>(argv[1]);
+  const std::string name {argc > 2 ? argv[2] : ""};
+  auto sa = ServoArray::ServoArray(name);
 
   bench("Set", times, [&sa](size_t i) { sa.write(0, 0); });
   bench("Get", times, [&sa](size_t i) { sa.read(0); });
