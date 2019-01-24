@@ -15,6 +15,8 @@
 
 #include "servoarray/servoarray.h"
 
+#include <cassert>
+
 namespace ServoArray {
 
 ServoArray::ServoArray(std::shared_ptr<Driver> driver) : driver_(driver) {}
@@ -22,10 +24,18 @@ ServoArray::ServoArray(const std::string& name, const DriverParams& params, Driv
 
 void ServoArray::write(std::size_t index, double rad) {
   this->driver_->write(index, rad);
+  this->cache_[index] = rad;
 }
 
 double ServoArray::read(std::size_t index) const {
-  return this->driver_->read(index);
+  switch(this->read_mode_) {
+    case ReadMode::Cached:
+      return this->cache_[index];
+    case ReadMode::Direct:
+      return this->driver_->read(index);
+    default:
+      assert(false); // unreachable
+  }
 }
 
 void ServoArray::set_read_mode(ReadMode mode) {

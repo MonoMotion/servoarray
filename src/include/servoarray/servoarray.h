@@ -32,6 +32,8 @@ class ServoArray {
   std::shared_ptr<Driver> driver_;
   ReadMode read_mode_;
 
+  std::vector<double> cache_;
+
 public:
   ServoArray(std::shared_ptr<Driver>);
   ServoArray(const std::string& name = "", const DriverParams& = {}, DriverManager& = default_manager);
