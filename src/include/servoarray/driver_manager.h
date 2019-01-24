@@ -23,25 +23,32 @@
 
 #include "servoarray/driver_params.h"
 #include "servoarray/driver.h"
+#include "servoarray/user_config.h"
 
 namespace ServoArray {
 
 class DriverManager {
-  const std::vector<std::string> paths_;
+  std::vector<std::string> paths_;
+  UserConfig user_config_;
   std::unordered_map<std::string, std::shared_ptr<Driver>> loaded_drivers_;
 
 public:
-  DriverManager(const std::vector<std::string>& additional_paths = {});
+  DriverManager(const std::vector<std::string>& paths = {}, bool load_defaults = true);
 
   std::shared_ptr<Driver> load(const std::string&, const DriverParams&);
   std::shared_ptr<Driver> get(const std::string&) const;
 
   bool is_loaded(const std::string&) const;
 
+  void load_user_config(const UserConfig&);
+  void append_search_path(const std::string&);
+
 private:
-  static std::vector<std::string> expand_paths(const std::vector<std::string>&);
+  static void expand_paths(std::vector<std::string>&);
   static std::string driver_file_name(const std::string&);
   std::string resolve(const std::string&) const;
+  void add_default_search_paths();
+  void load_default_config_files();
 };
 
 extern DriverManager default_manager;

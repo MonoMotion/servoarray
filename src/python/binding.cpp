@@ -39,11 +39,11 @@ ServoArray::DriverParams to_driver_params(py::dict py_params) {
     auto key = py::cast<std::string>(py_key);
 
     if (py::isinstance<py::int_>(py_value)) {
-      params.emplace<int>(key, py::cast<int>(py_value));
+      params.put(key, py::cast<int>(py_value));
     } else if (py::isinstance<py::float_>(py_value)) {
-      params.emplace<float>(key, py::cast<float>(py_value));
+      params.put(key, py::cast<float>(py_value));
     } else if (py::isinstance<py::bool_>(py_value)) {
-      params.emplace<bool>(key, py::cast<bool>(py_value));
+      params.put(key, py::cast<bool>(py_value));
     } else {
       throw std::runtime_error("Unsupported parameter value " + std::string(py::str(py_value)));
     }
@@ -131,15 +131,19 @@ PYBIND11_MODULE(servoarray, m) {
   m.doc() = "ServoArray: A fast implementation of servo motor array written in C++, also available as a python module";
 
   py::class_<::ServoArray::DriverManager>(m, "DriverManager")
-    .def(py::init<const std::vector<std::string>&>())
+    .def(py::init<const std::vector<std::string>&, bool>(), py::arg("paths"), py::arg("load_defaults") = true)
     .def("load", [](::ServoArray::DriverManager& manager, const std::string& name, py::dict params) {
         return manager.load(name, Adaptor::to_driver_params(params));
       })
     .def("get", &::ServoArray::DriverManager::get)
+    .def("append_search_path", &::ServoArray::DriverManager::append_search_path)
+    .def("load_config_file", [](::ServoArray::DriverManager& manager, const std::string& path) {
+        manager.load_user_config(::ServoArray::UserConfig{path});
+      })
     .def("is_loaded", &::ServoArray::DriverManager::is_loaded);
 
   py::class_<Adaptor::ServoArray>(m, "ServoArray")
-    .def(py::init<const std::string&, py::dict, ::ServoArray::DriverManager&>(), py::arg("name"), py::arg("params"), py::arg("manager") = ::ServoArray::default_manager)
+    .def(py::init<const std::string&, py::dict, ::ServoArray::DriverManager&>(), py::arg("name") = "", py::arg("params") = py::dict(), py::arg("manager") = ::ServoArray::default_manager)
     .def("write", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::write))
     .def("read", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::read))
     .def("__len__", &Adaptor::ServoArray::size)

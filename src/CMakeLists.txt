@@ -43,6 +43,7 @@ find_package(Boost 1.36.0 REQUIRED COMPONENTS filesystem system)
 include_directories(${Boost_INCLUDE_DIRS})
 
 include_directories(include/)
+include_directories(SYSTEM third_party/toml11)
 
 add_subdirectory(lib)
 add_subdirectory(bin)

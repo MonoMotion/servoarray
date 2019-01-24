@@ -28,7 +28,7 @@ class ServoArray {
 
 public:
   ServoArray(std::shared_ptr<Driver>);
-  ServoArray(const std::string& name, const DriverParams&, DriverManager& = default_manager);
+  ServoArray(const std::string& name = "", const DriverParams& = {}, DriverManager& = default_manager);
 
   void write(std::size_t index, double rad);
   double read(std::size_t index) const;

@@ -7,9 +7,20 @@
 
 namespace ServoArray {
 
-std::vector<std::string> DriverManager::expand_paths(const std::vector<std::string>& additional_paths) {
-  std::vector<std::string> new_paths (additional_paths);
+void DriverManager::expand_paths(std::vector<std::string>& paths) {
+  const char* home = std::getenv("HOME");
+  if (!home) {
+    return;
+  }
 
+  for (auto&& path : paths) {
+    if (path[0] == '~') {
+      path.replace(0, 1, home);
+    }
+  }
+}
+
+void DriverManager::add_default_search_paths() {
   //
   // Driver path resolution order
   //
@@ -25,30 +36,36 @@ std::vector<std::string> DriverManager::expand_paths(const std::vector<std::stri
     std::string path;
     std::istringstream s (env_path);
     while(std::getline(s, path, ':')) {
-      new_paths.insert(new_paths.begin(), path);
+      this->paths_.insert(this->paths_.begin(), path);
     }
   }
 
-  new_paths.push_back(".");
+  this->paths_.push_back(".");
 
   for (auto const& path : {SERVOARRAY_DEFAULT_PATHS}) {
-    new_paths.push_back(path);
+    this->paths_.push_back(path);
   }
-
-  const char* home = std::getenv("HOME");
-  if (!home) {
-    return new_paths;
-  }
-
-  for (auto&& path : new_paths) {
-    if (path[0] == '~') {
-      path.replace(0, 1, home);
-    }
-  }
-  return new_paths;
 }
 
-DriverManager::DriverManager(const std::vector<std::string>& paths) : paths_(expand_paths(paths)), loaded_drivers_() {}
+void DriverManager::load_default_config_files() {
+  std::vector<std::string> config_files {SERVOARRAY_DEFAULT_CONFIG_FILES};
+  DriverManager::expand_paths(config_files);
+
+  for (const auto& file : config_files) {
+    if (boost::filesystem::exists(file)) {
+      this->user_config_.merge(UserConfig{file});
+    }
+  }
+}
+
+DriverManager::DriverManager(const std::vector<std::string>& paths, bool load_defaults) : paths_(paths), loaded_drivers_() {
+  if (load_defaults) {
+    this->add_default_search_paths();
+    this->load_default_config_files();
+  }
+
+  DriverManager::expand_paths(this->paths_);
+}
 
 std::shared_ptr<Driver> DriverManager::get(const std::string& name) const {
   // TODO: throw errors::DriverNotFoundError when the name is not found
@@ -56,7 +73,20 @@ std::shared_ptr<Driver> DriverManager::get(const std::string& name) const {
 }
 
 std::shared_ptr<Driver> DriverManager::load(const std::string& name, const DriverParams& params) {
-  const auto path = this->resolve(name);
+  std::string real_name;
+
+  if (name.empty()) {
+    auto const config_name = this->user_config_.driver().name();
+    if (config_name.empty()) {
+      throw std::runtime_error("Driver name not specified");
+    }
+
+    real_name = config_name;
+  } else {
+    real_name = name;
+  }
+
+  const auto path = this->resolve(real_name);
   auto* handle = dlopen(path.c_str(), RTLD_LAZY);
   if (!handle) {
     // TODO: throw errors::DriverLoadError
@@ -81,7 +111,13 @@ std::shared_ptr<Driver> DriverManager::load(const std::string& name, const Drive
     }
   };
 
-  Driver* driver = servoarray_driver(params);
+  Driver* driver;
+  if (this->user_config_.driver().has_params_for(real_name)) {
+    driver = servoarray_driver(this->user_config_.driver().params(real_name).merged(params));
+  } else {
+    driver = servoarray_driver(params);
+  }
+
   std::shared_ptr<Driver> sptr {driver, deleter};
   this->loaded_drivers_.emplace(name, sptr);
   return sptr;
@@ -90,6 +126,14 @@ std::shared_ptr<Driver> DriverManager::load(const std::string& name, const Drive
 bool DriverManager::is_loaded(const std::string& name) const {
   const auto& drivers = this->loaded_drivers_;
   return drivers.find(name) != drivers.end();
+}
+
+void DriverManager::load_user_config(const UserConfig& config) {
+  this->user_config_.merge(config);
+}
+
+void DriverManager::append_search_path(const std::string& path) {
+  this->paths_.push_back(path);
 }
 
 std::string DriverManager::driver_file_name(const std::string& name) {
