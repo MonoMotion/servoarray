@@ -15,7 +15,7 @@
 
 cmake_minimum_required(VERSION 2.7)
 
-add_library(servoarray_lib SHARED servoarray.cpp driver_manager.cpp user_config.cpp)
+add_library(servoarray_lib SHARED servoarray.cpp driver_manager.cpp user_config.cpp servomap.cpp)
 set_target_properties(servoarray_lib PROPERTIES OUTPUT_NAME "servoarray")
 set_target_properties(servoarray_lib PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 target_link_libraries(servoarray_lib ${Boost_LIBRARIES} dl)

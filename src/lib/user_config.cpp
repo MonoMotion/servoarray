@@ -37,33 +37,53 @@ DriverConfig& DriverConfig::merge(const DriverConfig& other) {
   return *this;
 }
 
+const std::unordered_map<std::string, std::size_t>& MapConfig::names() const& {
+  return this->names_;
+}
+
+std::unordered_map<std::string, std::size_t> MapConfig::names() && {
+  return std::move(this->names_);
+}
+
+MapConfig& MapConfig::merge(const MapConfig& other) {
+  for (const auto& p : other.names_) {
+    this->names_[p.first] = p.second;
+  }
+
+  return *this;
+}
+
 UserConfig::UserConfig(const std::string& path) {
   auto const config = toml::parse(path);
 
-  auto const driver = toml::find<toml::table>(config, "driver");
-  this->driver_.name_ = toml::get_or<std::string>(driver, "name", "");
+  {
+    auto const driver = toml::find<toml::table>(config, "driver");
+    this->driver_.name_ = toml::get_or<std::string>(driver, "name", "");
 
-  auto const params = toml::find<toml::table>(driver, "params");
+    auto const params = toml::find<toml::table>(driver, "params");
 
-  for (const auto& p : params) {
-    const auto& name = p.first;
-    auto&& drv_params = this->driver_.params_[name];
+    for (const auto& p : params) {
+      const auto& name = p.first;
+      auto&& drv_params = this->driver_.params_[name];
 
-    const auto& entries = toml::get<toml::table>(p.second);
-    for (const auto& entry : entries) {
-      const auto& key = entry.first;
-      const auto& value = entry.second;
+      const auto& entries = toml::get<toml::table>(p.second);
+      for (const auto& entry : entries) {
+        const auto& key = entry.first;
+        const auto& value = entry.second;
 
-      // TODO: Support array and table type
-      switch(value.type()) {
-        case toml::value_t::Integer: drv_params.put(key, toml::get<int>(value)); break;
-        case toml::value_t::Float:   drv_params.put(key, toml::get<float>(value)); break;
-        case toml::value_t::Boolean: drv_params.put(key, toml::get<bool>(value)); break;
-        case toml::value_t::String:  drv_params.put(key, toml::get<std::string>(value)); break;
-        default: throw std::runtime_error(toml::format_error("Unsupported parameter type", value, toml::stringize(value.type())));
+        // TODO: Support array and table type
+        switch(value.type()) {
+          case toml::value_t::Integer: drv_params.put(key, toml::get<int>(value)); break;
+          case toml::value_t::Float:   drv_params.put(key, toml::get<float>(value)); break;
+          case toml::value_t::Boolean: drv_params.put(key, toml::get<bool>(value)); break;
+          case toml::value_t::String:  drv_params.put(key, toml::get<std::string>(value)); break;
+          default: throw std::runtime_error(toml::format_error("Unsupported parameter type", value, toml::stringize(value.type())));
+        }
       }
     }
   }
+
+  this->mapping_.names_ = toml::get_or<std::unordered_map<std::string, std::size_t>>(config, "mapping", {});
 }
 
 UserConfig::UserConfig(const std::vector<std::string>& paths) {
@@ -75,8 +95,12 @@ UserConfig::UserConfig(const std::vector<std::string>& paths) {
 const DriverConfig& UserConfig::driver() const& { return this->driver_; }
 DriverConfig UserConfig::driver() && { return std::move(this->driver_); }
 
+const MapConfig& UserConfig::mapping() const& { return this->mapping_; }
+MapConfig UserConfig::mapping() && { return std::move(this->mapping_); }
+
 UserConfig& UserConfig::merge(const UserConfig& other) {
   this->driver_.merge(other.driver());
+  this->mapping_.merge(other.mapping());
 
   return *this;
 }

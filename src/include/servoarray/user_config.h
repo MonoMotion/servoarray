@@ -41,8 +41,21 @@ public:
   DriverConfig& merge(const DriverConfig&);
 };
 
+class MapConfig {
+  std::unordered_map<std::string, std::size_t> names_;
+
+  friend class UserConfig;
+
+public:
+  const std::unordered_map<std::string, std::size_t>& names() const&;
+  std::unordered_map<std::string, std::size_t> names() &&;
+
+  MapConfig& merge(const MapConfig&);
+};
+
 class UserConfig {
   DriverConfig driver_;
+  MapConfig mapping_;
 
 public:
   UserConfig() = default;
@@ -51,6 +64,9 @@ public:
 
   const DriverConfig& driver() const&;
   DriverConfig driver() &&;
+
+  const MapConfig& mapping() const&;
+  MapConfig mapping() &&;
 
   UserConfig& merge(const UserConfig&);
 };
