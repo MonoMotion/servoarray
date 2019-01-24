@@ -131,11 +131,15 @@ PYBIND11_MODULE(servoarray, m) {
   m.doc() = "ServoArray: A fast implementation of servo motor array written in C++, also available as a python module";
 
   py::class_<::ServoArray::DriverManager>(m, "DriverManager")
-    .def(py::init<const std::vector<std::string>&>())
+    .def(py::init<const std::vector<std::string>&, bool>(), py::arg("paths"), py::arg("load_defaults") = true)
     .def("load", [](::ServoArray::DriverManager& manager, const std::string& name, py::dict params) {
         return manager.load(name, Adaptor::to_driver_params(params));
       })
     .def("get", &::ServoArray::DriverManager::get)
+    .def("append_search_path", &::ServoArray::DriverManager::append_search_path)
+    .def("load_config_file", [](::ServoArray::DriverManager& manager, const std::string& path) {
+        manager.load_user_config(::ServoArray::UserConfig{path});
+      })
     .def("is_loaded", &::ServoArray::DriverManager::is_loaded);
 
   py::class_<Adaptor::ServoArray>(m, "ServoArray")
