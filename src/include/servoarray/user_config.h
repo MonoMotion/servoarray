@@ -16,6 +16,9 @@
 #ifndef SERVOARRAY_USER_CONFIG_H
 #define SERVOARRAY_USER_CONFIG_H
 
+#include <string>
+#include <vector>
+
 #include "servoarray/driver_params.h"
 
 namespace ServoArray {
@@ -47,7 +50,7 @@ class UserConfig {
 public:
   UserConfig() = default;
   explicit UserConfig(const std::string& path);
-  explicit UserConfig(std::initializer_list<std::string> paths);
+  explicit UserConfig(const std::vector<std::string>& paths);
 
   const DriverConfig& driver() const&;
   DriverConfig driver() &&;

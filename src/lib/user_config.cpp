@@ -63,7 +63,7 @@ UserConfig::UserConfig(const std::string& path) {
   this->driver_.set_params(p);
 }
 
-UserConfig::UserConfig(std::initializer_list<std::string> paths) {
+UserConfig::UserConfig(const std::vector<std::string>& paths) {
   for(auto const& path : paths) {
     this->merge(UserConfig{path});
   }
