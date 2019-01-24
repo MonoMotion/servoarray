@@ -19,8 +19,13 @@
 
 namespace ServoArray {
 
-ServoArray::ServoArray(std::shared_ptr<Driver> driver) : driver_(driver) {}
-ServoArray::ServoArray(const std::string& name, const DriverParams& params, DriverManager& manager) : driver_(manager.load(name, params)) {}
+ServoArray::ServoArray(std::shared_ptr<Driver> driver) : driver_(driver) {
+  this->cache_.resize(this->size());
+}
+
+ServoArray::ServoArray(const std::string& name, const DriverParams& params, DriverManager& manager) : driver_(manager.load(name, params)) {
+  this->cache_.resize(this->size());
+}
 
 void ServoArray::write(std::size_t index, double rad) {
   this->driver_->write(index, rad);
