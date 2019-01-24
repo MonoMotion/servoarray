@@ -23,8 +23,14 @@
 
 namespace ServoArray {
 
+enum class ReadMode {
+  Cached,
+  Direct
+};
+
 class ServoArray {
   std::shared_ptr<Driver> driver_;
+  ReadMode read_mode_;
 
 public:
   ServoArray(std::shared_ptr<Driver>);
@@ -32,6 +38,9 @@ public:
 
   void write(std::size_t index, double rad);
   double read(std::size_t index) const;
+
+  void set_read_mode(ReadMode);
+  ReadMode read_mode() const;
 
   std::size_t size() const;
 };

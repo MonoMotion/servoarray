@@ -28,6 +28,14 @@ double ServoArray::read(std::size_t index) const {
   return this->driver_->read(index);
 }
 
+void ServoArray::set_read_mode(ReadMode mode) {
+  this->read_mode_ = mode;
+}
+
+ReadMode ServoArray::read_mode() const {
+  return this->read_mode_;
+}
+
 std::size_t ServoArray::size() const {
   return this->driver_->size();
 }
