@@ -21,13 +21,15 @@
 #include <memory>
 #include <string>
 
+#include <boost/property_tree/ptree.hpp>
+
 namespace ServoArray {
 
 // A Key-Value store to hold initialization parameters
 // TODO: Using primitive types to keep ABI compatibility
 class DriverParams {
 public:
-  using data_type = std::unordered_map<std::string, std::shared_ptr<void>>;
+  using data_type = boost::property_tree::ptree;
   using iterator = data_type::iterator;
   using const_iterator = data_type::const_iterator;
 
@@ -39,28 +41,22 @@ public:
 
   template<typename T>
   const T& get(const std::string& key) const {
-    auto it = this->data_.find(key);
-    if (it == this->data_.end()) {
+    if(auto const value = this->data_.get_optional<T>(key)) {
+      return value.get();
+    } else {
       // TODO: Use errors::ParamKeyError
       throw std::runtime_error("Could not find " + key);
-    } else {
-      return *static_cast<const T*>(it->second.get());
     }
   }
 
   template<typename T>
   const T& get_or(const std::string& key, const T& default_) const {
-    auto it = this->data_.find(key);
-    if (it == this->data_.end()) {
-      return default_;
-    } else {
-      return *static_cast<const T*>(it->second.get());
-    }
+    return this->data_.get(key, default_);
   }
 
-  template<typename T, typename... Args>
-  void emplace(const std::string& key, Args&&... args) {
-    this->data_.emplace(key, std::make_shared<T>(args...));
+  template<typename T>
+  void put(const std::string& key, const T& value) {
+    this->data_.put(key, value);
   }
 
   void erase(const std::string& key) {
@@ -73,12 +69,12 @@ public:
   const_iterator begin() const noexcept { return this->data_.begin(); }
   const_iterator end() const noexcept { return this->data_.end(); }
 
-  const_iterator cbegin() const noexcept { return this->data_.cbegin(); }
-  const_iterator cend() const noexcept { return this->data_.cend(); }
+  const_iterator cbegin() const noexcept { return this->data_.begin(); }
+  const_iterator cend() const noexcept { return this->data_.end(); }
 
   DriverParams& merge(const DriverParams& other) {
     for (auto const& p : other) {
-      this->data_[p.first] = p.second;
+      this->data_.put(p.first, p.second.data());
     }
 
     return *this;
