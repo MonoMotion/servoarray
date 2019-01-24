@@ -37,6 +37,8 @@ public:
   const ServoArray& array() const;
 
   std::size_t size() const;
+
+  const std::unordered_map<std::string, std::size_t>& names() const;
 };
 
 }

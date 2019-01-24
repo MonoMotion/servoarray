@@ -163,6 +163,7 @@ PYBIND11_MODULE(servoarray, m) {
     .def("write", &::ServoArray::ServoMap::write)
     .def("read", &::ServoArray::ServoMap::read)
     .def_property_readonly("array", &::ServoArray::ServoMap::array)
+    .def_property_readonly("names", &::ServoArray::ServoMap::names)
     .def("__len__", &::ServoArray::ServoMap::size)
     .def("__writeitem__", &::ServoArray::ServoMap::write)
     .def("__readitem__", &::ServoArray::ServoMap::read);

@@ -34,4 +34,6 @@ const ServoArray& ServoMap::array() const { return this->sa_; }
 
 std::size_t ServoMap::size() const { return this->sa_.size(); }
 
+const std::unordered_map<std::string, std::size_t>& ServoMap::names() const { return this->names_; }
+
 }
