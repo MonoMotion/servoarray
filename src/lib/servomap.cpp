@@ -18,6 +18,7 @@
 namespace ServoArray {
 
 ServoMap::ServoMap(const ServoArray& sa, const std::unordered_map<std::string, std::size_t> names) : sa_(sa), names_(names) {}
+ServoMap::ServoMap(const ServoArray& sa, DriverManager& manager) : sa_(sa), names_(manager.config().mapping().names()) {}
 
 void ServoMap::write(const std::string& name, double rad) {
   // TODO: Throw proper error
