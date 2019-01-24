@@ -9,6 +9,8 @@ Pluggable servomotor driver library
 
 ## Install
 
+[Boost.Filesystem](https://boostorg.github.io/filesystem) is required
+
 ```shell
 pip install servoarray
 ```
