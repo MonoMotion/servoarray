@@ -90,7 +90,7 @@ std::shared_ptr<Driver> DriverManager::load(const std::string& name, const Drive
     }
   };
 
-  Driver* driver = servoarray_driver(params);
+  Driver* driver = servoarray_driver(params.merged(this->user_config_.driver().params(name)));
   std::shared_ptr<Driver> sptr {driver, deleter};
   this->loaded_drivers_.emplace(name, sptr);
   return sptr;
@@ -114,6 +114,10 @@ std::string DriverManager::driver_file_name(const std::string& name) {
 }
 
 std::string DriverManager::resolve(const std::string& name) const {
+  if (name.empty()) {
+    return this->user_config_.driver().name();
+  }
+
   namespace fs = boost::filesystem;
 
   fs::path file {DriverManager::driver_file_name(name)};
