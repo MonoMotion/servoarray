@@ -13,12 +13,19 @@
 # You should have received a copy of the GNU General Public License
 # along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 2.7)
+macro(sa_convlist var)
+  foreach(path ${ARGN})
+    if(${var})
+      set(${var} "${${var}}, \"${path}\"")
+    else()
+      set(${var} "\"${path}\"")
+    endif()
+  endforeach()
+endmacro()
 
-add_library(servoarray_lib SHARED servoarray.cpp driver_manager.cpp user_config.cpp servomap.cpp)
-set_target_properties(servoarray_lib PROPERTIES OUTPUT_NAME "servoarray")
-set_target_properties(servoarray_lib PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
-target_link_libraries(servoarray_lib ${Boost_LIBRARIES} dl)
-sa_set_compile_options(servoarray_lib)
+sa_convlist(CONFIG_SERVOARRAY_DEFAULT_CONFIG_FILES ${SERVOARRAY_DEFAULT_CONFIG_FILES})
+sa_convlist(CONFIG_SERVOARRAY_DEFAULT_DRIVER_PATHS ${SERVOARRAY_DEFAULT_DRIVER_PATHS})
+configure_file(servoarray/config.h.in servoarray/config.h)
 
-install(TARGETS servoarray_lib LIBRARY DESTINATION ${LIB_INSTALL_DIR})
+install(DIRECTORY . DESTINATION ${INCLUDE_INSTALL_DIR} FILES_MATCHING PATTERN "*.h")
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/servoarray/config.h DESTINATION ${INCLUDE_INSTALL_DIR}/servoarray)

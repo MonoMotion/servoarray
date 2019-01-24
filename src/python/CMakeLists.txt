@@ -17,3 +17,6 @@ cmake_minimum_required(VERSION 2.7)
 
 pybind11_add_module(servoarray SHARED binding.cpp)
 target_link_libraries(servoarray servoarray_lib)
+sa_set_compile_options(servoarray)
+
+install(TARGETS servoarray LIBRARY DESTINATION ${LIB_INSTALL_DIR})
