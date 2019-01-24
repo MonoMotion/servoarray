@@ -7,9 +7,20 @@
 
 namespace ServoArray {
 
-std::vector<std::string> DriverManager::expand_paths(const std::vector<std::string>& additional_paths) {
-  std::vector<std::string> new_paths (additional_paths);
+void DriverManager::expand_paths(std::vector<std::string>& paths) {
+  const char* home = std::getenv("HOME");
+  if (!home) {
+    return;
+  }
 
+  for (auto&& path : paths) {
+    if (path[0] == '~') {
+      path.replace(0, 1, home);
+    }
+  }
+}
+
+void DriverManager::add_default_search_paths() {
   //
   // Driver path resolution order
   //
@@ -25,30 +36,32 @@ std::vector<std::string> DriverManager::expand_paths(const std::vector<std::stri
     std::string path;
     std::istringstream s (env_path);
     while(std::getline(s, path, ':')) {
-      new_paths.insert(new_paths.begin(), path);
+      this->paths_.insert(this->paths_.begin(), path);
     }
   }
 
-  new_paths.push_back(".");
+  this->paths_.push_back(".");
 
   for (auto const& path : {SERVOARRAY_DEFAULT_PATHS}) {
-    new_paths.push_back(path);
+    this->paths_.push_back(path);
   }
 
   const char* home = std::getenv("HOME");
   if (!home) {
-    return new_paths;
+    return;
   }
 
-  for (auto&& path : new_paths) {
+  for (auto&& path : this->paths_) {
     if (path[0] == '~') {
       path.replace(0, 1, home);
     }
   }
-  return new_paths;
 }
 
-DriverManager::DriverManager(const std::vector<std::string>& paths) : paths_(expand_paths(paths)), loaded_drivers_() {}
+DriverManager::DriverManager(const std::vector<std::string>& paths) : paths_(paths), loaded_drivers_() {
+  this->add_default_search_paths();
+  DriverManager::expand_paths(this->paths_);
+}
 
 std::shared_ptr<Driver> DriverManager::get(const std::string& name) const {
   // TODO: throw errors::DriverNotFoundError when the name is not found
