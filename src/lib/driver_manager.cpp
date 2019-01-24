@@ -52,13 +52,16 @@ void DriverManager::add_default_search_paths() {
   }
 }
 
-DriverManager::DriverManager(const std::vector<std::string>& paths) : paths_(paths), loaded_drivers_() {
-  this->add_default_search_paths();
-  DriverManager::expand_paths(this->paths_);
+DriverManager::DriverManager(const std::vector<std::string>& paths, bool load_defaults) : paths_(paths), loaded_drivers_() {
+  if (load_defaults) {
+    this->add_default_search_paths();
 
-  std::vector<std::string> config_files {SERVOARRAY_DEFAULT_CONFIG_FILES};
-  DriverManager::expand_paths(config_files);
-  this->user_config_ = UserConfig{config_files};
+    std::vector<std::string> config_files {SERVOARRAY_DEFAULT_CONFIG_FILES};
+    DriverManager::expand_paths(config_files);
+    this->user_config_ = UserConfig{config_files};
+  }
+
+  DriverManager::expand_paths(this->paths_);
 }
 
 std::shared_ptr<Driver> DriverManager::get(const std::string& name) const {
