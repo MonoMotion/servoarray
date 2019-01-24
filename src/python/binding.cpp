@@ -156,10 +156,10 @@ PYBIND11_MODULE(servoarray, m) {
     .def("read", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::read))
     .def_property("read_mode", &Adaptor::ServoArray::read_mode, &Adaptor::ServoArray::set_read_mode)
     .def("__len__", &Adaptor::ServoArray::size)
-    .def("__writeitem__", py::overload_cast<py::slice, py::array_t<double>>(&Adaptor::ServoArray::write))
-    .def("__writeitem__", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::write))
-    .def("__readitem__", py::overload_cast<py::slice>(&Adaptor::ServoArray::read))
-    .def("__readitem__", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::read));
+    .def("__setitem__", py::overload_cast<py::slice, py::array_t<double>>(&Adaptor::ServoArray::write))
+    .def("__setitem__", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::write))
+    .def("__getitem__", py::overload_cast<py::slice>(&Adaptor::ServoArray::read))
+    .def("__getitem__", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::read));
 
   py::class_<::ServoArray::ServoMap>(m, "ServoMap")
     .def(py::init([](const Adaptor::ServoArray& array, const std::unordered_map<std::string, std::size_t>& names) {
@@ -173,7 +173,7 @@ PYBIND11_MODULE(servoarray, m) {
     .def_property_readonly("array", &::ServoArray::ServoMap::array)
     .def_property_readonly("names", &::ServoArray::ServoMap::names)
     .def("__len__", &::ServoArray::ServoMap::size)
-    .def("__writeitem__", &::ServoArray::ServoMap::write)
-    .def("__readitem__", &::ServoArray::ServoMap::read);
+    .def("__setitem__", &::ServoArray::ServoMap::write)
+    .def("__getitem__", &::ServoArray::ServoMap::read);
 }
 
