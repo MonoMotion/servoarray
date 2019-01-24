@@ -24,6 +24,10 @@ std::string DriverConfig::name() && { return std::move(this->name_); }
 
 const DriverParams& DriverConfig::params(const std::string& name) const { return this->params_.at(name); }
 
+bool DriverConfig::has_params_for(const std::string& name) const {
+  return this->params_.find(name) != this->params_.end();
+}
+
 DriverConfig& DriverConfig::merge(const DriverConfig& other) {
   this->name_ = other.name();
   for(const auto& p : other.params_) {

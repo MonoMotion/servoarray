@@ -36,6 +36,7 @@ public:
   std::string name() &&;
 
   const DriverParams& params(const std::string& name) const;
+  bool has_params_for(const std::string& name) const;
 
   DriverConfig& merge(const DriverConfig&);
 };

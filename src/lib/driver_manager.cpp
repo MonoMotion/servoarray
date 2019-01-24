@@ -111,7 +111,13 @@ std::shared_ptr<Driver> DriverManager::load(const std::string& name, const Drive
     }
   };
 
-  Driver* driver = servoarray_driver(params.merged(this->user_config_.driver().params(name)));
+  Driver* driver;
+  if (this->user_config_.driver().has_params_for(real_name)) {
+    driver = servoarray_driver(this->user_config_.driver().params(real_name).merged(params));
+  } else {
+    driver = servoarray_driver(params);
+  }
+
   std::shared_ptr<Driver> sptr {driver, deleter};
   this->loaded_drivers_.emplace(name, sptr);
   return sptr;
