@@ -50,12 +50,6 @@ void DriverManager::add_default_search_paths() {
   if (!home) {
     return;
   }
-
-  for (auto&& path : this->paths_) {
-    if (path[0] == '~') {
-      path.replace(0, 1, home);
-    }
-  }
 }
 
 DriverManager::DriverManager(const std::vector<std::string>& paths, std::vector<std::string> config_files) : paths_(paths), loaded_drivers_() {
