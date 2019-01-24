@@ -139,7 +139,7 @@ PYBIND11_MODULE(servoarray, m) {
     .def("is_loaded", &::ServoArray::DriverManager::is_loaded);
 
   py::class_<Adaptor::ServoArray>(m, "ServoArray")
-    .def(py::init<const std::string&, py::dict, ::ServoArray::DriverManager&>(), py::arg("name"), py::arg("params"), py::arg("manager") = ::ServoArray::default_manager)
+    .def(py::init<const std::string&, py::dict, ::ServoArray::DriverManager&>(), py::arg("name") = "", py::arg("params") = py::dict(), py::arg("manager") = ::ServoArray::default_manager)
     .def("write", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::write))
     .def("read", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::read))
     .def("__len__", &Adaptor::ServoArray::size)
