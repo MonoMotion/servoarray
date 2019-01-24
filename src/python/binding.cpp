@@ -106,6 +106,9 @@ public:
 
   std::uint8_t size() { return this->sa.size(); }
 
+  void set_read_mode(::ServoArray::ReadMode mode) { this->sa.set_read_mode(mode); }
+  ::ServoArray::ReadMode read_mode() const { return this->sa.read_mode(); }
+
 private:
   template<typename Int, typename T, std::enable_if_t<std::numeric_limits<T>::is_signed>* = nullptr>
   Int cast_index(T v) {
@@ -143,10 +146,15 @@ PYBIND11_MODULE(servoarray, m) {
       })
     .def("is_loaded", &::ServoArray::DriverManager::is_loaded);
 
+  py::enum_<::ServoArray::ReadMode>(m, "ReadMode")
+    .value("Cached", ::ServoArray::ReadMode::Cached)
+    .value("Direct", ::ServoArray::ReadMode::Direct);
+
   py::class_<Adaptor::ServoArray>(m, "ServoArray")
     .def(py::init<const std::string&, py::dict, ::ServoArray::DriverManager&>(), py::arg("name") = "", py::arg("params") = py::dict(), py::arg("manager") = ::ServoArray::default_manager)
     .def("write", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::write))
     .def("read", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::read))
+    .def_property("read_mode", &Adaptor::ServoArray::read_mode, &Adaptor::ServoArray::set_read_mode)
     .def("__len__", &Adaptor::ServoArray::size)
     .def("__writeitem__", py::overload_cast<py::slice, py::array_t<double>>(&Adaptor::ServoArray::write))
     .def("__writeitem__", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::write))
