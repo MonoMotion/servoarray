@@ -4,37 +4,29 @@ set(SERVOARRAY_VERSION_MINOR @servoarray_VERSION_MINOR@)
 set(SERVOARRAY_VERSION_PATCH @servoarray_VERSION_PATCH@)
 set(SERVOARRAY_VERSION_TWEAK @servoarray_VERSION_TWEAK@)
 
+set(servoarray_VERSION @servoarray_VERSION@)
+set(servoarray_VERSION_MAJOR @servoarray_VERSION_MAJOR@)
+set(servoarray_VERSION_MINOR @servoarray_VERSION_MINOR@)
+set(servoarray_VERSION_PATCH @servoarray_VERSION_PATCH@)
+set(servoarray_VERSION_TWEAK @servoarray_VERSION_TWEAK@)
+
 @PACKAGE_INIT@
 
 set_and_check(SERVOARRAY_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
 set_and_check(SERVOARRAY_LIB_DIR "@PACKAGE_LIB_INSTALL_DIR@")
 
+set_and_check(servoarray_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
+set_and_check(servoarray_LIB_DIR "@PACKAGE_LIB_INSTALL_DIR@")
+
 find_package(Boost 1.36.0 REQUIRED COMPONENTS filesystem system)
 include_directories(${Boost_INCLUDE_DIRS})
 
 set(SERVOARRAY_LIBRARIES servoarray ${Boost_LIBRARIES})
+set(servoarray_LIBRARIES servoarray ${Boost_LIBRARIES})
+
 set(SERVOARRAY_DRIVER_LIBRARIES "")
+set(servoarray_DRIVER_LIBRARIES "")
 
-function(servoarray_add_driver target)
-  cmake_parse_arguments(ARG "" "NAME" "" ${ARGN})
-
-  if(ARG_NAME)
-    set(name ${ARG_NAME})
-  else()
-    set(name ${target})
-  endif()
-
-  add_library(${target} SHARED ${ARG_UNPARSED_ARGUMENTS})
-  set_target_properties(${target} PROPERTIES PREFIX "")
-  set_target_properties(${target} PROPERTIES OUTPUT_NAME "${name}")
-  set_target_properties(${target} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
-  set_target_properties(${target} PROPERTIES MACOSX_RPATH ON)
-
-  execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpmachine OUTPUT_VARIABLE host_triple OUTPUT_STRIP_TRAILING_WHITESPACE)
-  set_target_properties(${target} PROPERTIES SUFFIX ".servoarray-${SERVOARRAY_VERSION_MAJOR}-${host_triple}.so")
-
-  target_link_libraries(${target} ${SERVOARRAY_DRIVER_LIBRARIES})
-  target_include_directories(${target} ${inc_system} PRIVATE ${SERVOARRAY_INCLUDE_DIR})
-endfunction()
+include(${CMAKE_CURRENT_LIST_DIR}/servoarrayTools.cmake)
 
 check_required_components(servoarray)
