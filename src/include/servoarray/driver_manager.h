@@ -40,6 +40,9 @@ public:
 
   bool is_loaded(const std::string&) const;
 
+  void load_user_config(const UserConfig&);
+  void append_search_path(const std::string&);
+
 private:
   static void expand_paths(std::vector<std::string>&);
   static std::string driver_file_name(const std::string&);

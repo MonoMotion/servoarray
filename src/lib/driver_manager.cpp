@@ -103,6 +103,14 @@ bool DriverManager::is_loaded(const std::string& name) const {
   return drivers.find(name) != drivers.end();
 }
 
+void DriverManager::load_user_config(const UserConfig& config) {
+  this->user_config_.merge(config);
+}
+
+void DriverManager::append_search_path(const std::string& path) {
+  this->paths_.push_back(path);
+}
+
 std::string DriverManager::driver_file_name(const std::string& name) {
   return name + SERVOARRAY_DRIVER_POSTFIX;
 }
