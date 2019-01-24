@@ -25,13 +25,18 @@ class DriverConfig {
   DriverParams params_;
 
 public:
+  DriverConfig() = default;
   DriverConfig(const std::string& name, const DriverParams& params);
 
   const std::string& name() const&;
   std::string name() &&;
 
+  void set_name(const std::string&);
+
   const DriverParams& params() const&;
   DriverParams params() &&;
+
+  void set_params(const DriverParams&);
 
   DriverConfig& merge(const DriverConfig&);
 };
@@ -40,7 +45,9 @@ class UserConfig {
   DriverConfig driver_;
 
 public:
+  UserConfig() = default;
   explicit UserConfig(const std::string& path);
+  explicit UserConfig(std::initializer_list<std::string> paths);
 
   const DriverConfig& driver() const&;
   DriverConfig driver() &&;

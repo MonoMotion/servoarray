@@ -23,8 +23,12 @@ DriverConfig::DriverConfig(const std::string& name, const DriverParams& params) 
 const std::string& DriverConfig::name() const& { return this->name_; }
 std::string DriverConfig::name() && { return std::move(this->name_); }
 
+void DriverConfig::set_name(const std::string& name) { this->name_ = name; }
+
 const DriverParams& DriverConfig::params() const& { return this->params_; }
 DriverParams DriverConfig::params() && { return std::move(this->params_); }
+
+void DriverConfig::set_params(const DriverParams& params) { this->params_ = params; }
 
 DriverConfig& DriverConfig::merge(const DriverConfig& other) {
   this->name_ = other.name();
@@ -33,12 +37,13 @@ DriverConfig& DriverConfig::merge(const DriverConfig& other) {
   return *this;
 }
 
-UserConfig::UserConfig(const std::string& path) : driver_({}, {}) {
+UserConfig::UserConfig(const std::string& path) {
   auto const config = toml::parse(path);
 
   auto const driver = toml::get<toml::table>(config.at("driver"));
   auto const name = toml::get_or<std::string>(driver, "name", "");
-  auto const params = toml::get<toml::Table>(driver.at("params"));
+
+  auto const params = toml::get<toml::table>(driver.at("params"));
 
   DriverParams p;
   for (const auto& entry : params) {
@@ -54,8 +59,14 @@ UserConfig::UserConfig(const std::string& path) : driver_({}, {}) {
     }
   }
 
-  // TODO: Fixme
-  this->driver_ = DriverConfig(name, p);
+  this->driver_.set_name(name);
+  this->driver_.set_params(p);
+}
+
+UserConfig::UserConfig(std::initializer_list<std::string> paths) {
+  for(auto const& path : paths) {
+    this->merge(UserConfig{path});
+  }
 }
 
 const DriverConfig& UserConfig::driver() const& { return this->driver_; }
