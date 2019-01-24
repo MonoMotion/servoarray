@@ -39,6 +39,7 @@ include(cmake/compile-options.cmake)
 
 add_subdirectory(lib)
 add_subdirectory(bin)
+add_subdirectory(include)
 
 add_subdirectory(config)
 

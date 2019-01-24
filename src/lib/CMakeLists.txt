@@ -25,3 +25,5 @@ target_compile_definitions(servoarray_lib PRIVATE SERVOARRAY_DRIVER_POSTFIX=".se
 target_compile_definitions(servoarray_lib PRIVATE SERVOARRAY_DEFAULT_CONFIG_FILES="~/.servoarrayrc",\ "./.servoarrayrc")
 
 sa_set_compile_options(servoarray_lib)
+
+install(TARGETS servoarray_lib LIBRARY DESTINATION ${LIB_INSTALL_DIR})
