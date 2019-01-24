@@ -1,4 +1,5 @@
 #include "servoarray/driver_manager.h"
+#include "servoarray/config.h"
 
 #include <boost/filesystem.hpp>
 
@@ -42,7 +43,7 @@ void DriverManager::add_default_search_paths() {
 
   this->paths_.push_back(".");
 
-  for (auto const& path : {SERVOARRAY_DEFAULT_PATHS}) {
+  for (auto const& path : {SERVOARRAY_DEFAULT_DRIVER_PATHS}) {
     this->paths_.push_back(path);
   }
 }
@@ -140,7 +141,7 @@ const UserConfig& DriverManager::config() const& { return this->user_config_; }
 UserConfig DriverManager::config() && { return std::move(this->user_config_); }
 
 std::string DriverManager::driver_file_name(const std::string& name) {
-  return name + SERVOARRAY_DRIVER_POSTFIX;
+  return name + SERVOARRAY_DRIVER_SUFFIX;
 }
 
 std::string DriverManager::resolve(const std::string& name) const {

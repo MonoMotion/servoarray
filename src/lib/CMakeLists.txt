@@ -19,11 +19,6 @@ add_library(servoarray_lib SHARED servoarray.cpp driver_manager.cpp user_config.
 set_target_properties(servoarray_lib PROPERTIES OUTPUT_NAME "servoarray")
 set_target_properties(servoarray_lib PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 target_link_libraries(servoarray_lib ${Boost_LIBRARIES} dl)
-target_compile_definitions(servoarray_lib PRIVATE SERVOARRAY_DEFAULT_PATHS="~/.servoarray/",\ "/usr/lib/servoarray")
-execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpmachine OUTPUT_VARIABLE target_triple OUTPUT_STRIP_TRAILING_WHITESPACE)
-target_compile_definitions(servoarray_lib PRIVATE SERVOARRAY_DRIVER_POSTFIX=".servoarray-${servoarray_VERSION_MAJOR}-${target_triple}.so")
-target_compile_definitions(servoarray_lib PRIVATE SERVOARRAY_DEFAULT_CONFIG_FILES="~/.servoarrayrc",\ "./.servoarrayrc")
-
 sa_set_compile_options(servoarray_lib)
 
 install(TARGETS servoarray_lib LIBRARY DESTINATION ${LIB_INSTALL_DIR})
