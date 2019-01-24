@@ -9,5 +9,17 @@ find_package(Boost 1.36.0 REQUIRED COMPONENTS filesystem system)
 include_directories(${Boost_INCLUDE_DIRS})
 
 set(SERVOARRAY_LIBRARIES servoarray ${Boost_LIBRARIES})
+set(SERVOARRAY_DRIVER_LIBRARIES "")
+
+function(servoarray_add_driver target)
+  add_library(${target} SHARED ${ARGN})
+  set_target_properties(${target} PROPERTIES PREFIX "")
+  set_target_properties(${target} PROPERTIES OUTPUT_NAME "pca9685")
+  set_target_properties(${target} PROPERTIES SUFFIX "@SERVOARRAY_DRIVER_POSTFIX@")
+  set_target_properties(${target} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+  set_target_properties(${target} PROPERTIES MACOSX_RPATH ON)
+  target_link_libraries(${target} ${SERVOARRAY_DRIVER_LIBRARIES})
+  target_include_directories(${target} ${inc_system} PRIVATE ${SERVOARRAY_INCLUDE_DIR})
+endfunction()
 
 check_required_components(servoarray)
