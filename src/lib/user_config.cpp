@@ -36,10 +36,10 @@ DriverConfig& DriverConfig::merge(const DriverConfig& other) {
 UserConfig::UserConfig(const std::string& path) {
   auto const config = toml::parse(path);
 
-  auto const driver = toml::get<toml::table>(config.at("driver"));
+  auto const driver = toml::find<toml::table>(config, "driver");
   this->driver_.name_ = toml::get_or<std::string>(driver, "name", "");
 
-  auto const params = toml::get<toml::table>(driver.at("params"));
+  auto const params = toml::find<toml::table>(driver, "params");
 
   for (const auto& p : params) {
     const auto& name = p.first;
