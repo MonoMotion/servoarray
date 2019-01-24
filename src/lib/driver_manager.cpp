@@ -136,6 +136,9 @@ void DriverManager::append_search_path(const std::string& path) {
   this->paths_.push_back(path);
 }
 
+const UserConfig& DriverManager::config() const& { return this->user_config_; }
+UserConfig DriverManager::config() && { return std::move(this->user_config_); }
+
 std::string DriverManager::driver_file_name(const std::string& name) {
   return name + SERVOARRAY_DRIVER_POSTFIX;
 }
