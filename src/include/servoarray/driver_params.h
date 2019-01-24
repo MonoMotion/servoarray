@@ -73,9 +73,7 @@ public:
   const_iterator cend() const noexcept { return this->data_.end(); }
 
   DriverParams& merge(const DriverParams& other) {
-    for (auto const& p : other) {
-      this->data_.put(p.first, p.second.data());
-    }
+    this->merge_impl("", other.data_);
 
     return *this;
   }
@@ -83,6 +81,16 @@ public:
   DriverParams merged(const DriverParams& other) const {
     DriverParams copy {*this};
     return copy.merge(other);
+  }
+
+private:
+  void merge_impl(const boost::property_tree::ptree::path_type& path, const boost::property_tree::ptree& tree) {
+    this->data_.put(path, tree.data());
+
+    for (const auto& p : tree) {
+      const auto child_path = path / boost::property_tree::ptree::path_type(p.first);
+      this->merge_impl(child_path, p.second);
+    }
   }
 };
 
