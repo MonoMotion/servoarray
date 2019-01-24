@@ -15,26 +15,6 @@ include_directories(${Boost_INCLUDE_DIRS})
 set(SERVOARRAY_LIBRARIES servoarray ${Boost_LIBRARIES})
 set(SERVOARRAY_DRIVER_LIBRARIES "")
 
-function(servoarray_add_driver target)
-  cmake_parse_arguments(ARG "" "NAME" "" ${ARGN})
-
-  if(ARG_NAME)
-    set(name ${ARG_NAME})
-  else()
-    set(name ${target})
-  endif()
-
-  add_library(${target} SHARED ${ARG_UNPARSED_ARGUMENTS})
-  set_target_properties(${target} PROPERTIES PREFIX "")
-  set_target_properties(${target} PROPERTIES OUTPUT_NAME "${name}")
-  set_target_properties(${target} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
-  set_target_properties(${target} PROPERTIES MACOSX_RPATH ON)
-
-  execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpmachine OUTPUT_VARIABLE host_triple OUTPUT_STRIP_TRAILING_WHITESPACE)
-  set_target_properties(${target} PROPERTIES SUFFIX ".servoarray-${SERVOARRAY_VERSION_MAJOR}-${host_triple}.so")
-
-  target_link_libraries(${target} ${SERVOARRAY_DRIVER_LIBRARIES})
-  target_include_directories(${target} ${inc_system} PRIVATE ${SERVOARRAY_INCLUDE_DIR})
-endfunction()
+include(./tools.cmake)
 
 check_required_components(servoarray)
