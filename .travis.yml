@@ -20,6 +20,7 @@ script:
   - make -j"$(nproc)"
 before_deploy:
   - cpack -D CPACK_OUTPUT_FILE_PREFIX=dist
+  - cd ${TRAVIS_BUILD_DIR}
 deploy:
 - provider: pypi
   user: "${PYPI_USERNAME}"
@@ -30,6 +31,6 @@ deploy:
   api_key: $GITHUB_OAUTH_TOKEN
   skip_cleanup: true
   file_glob: true
-  file: 'dist/*'
+  file: 'src/build/dist/*'
   on:
     tags: true
