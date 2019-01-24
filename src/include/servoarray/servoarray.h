@@ -17,27 +17,34 @@
 #define SERVOARRAY_SERVOARRAY_H
 
 #include <cstdint>
-#include <vector>
 
-#include "servoarray/pca9685/pca9685.h"
-#include "servoarray/constants.h"
+#include "servoarray/driver.h"
+#include "servoarray/driver_manager.h"
 
 namespace ServoArray {
 
-class ServoArray {
-  PCA9685 driver;
-  std::uint16_t min_pulse;
-  std::uint16_t max_pulse;
+enum class ReadMode {
+  Cached,
+  Direct
+};
 
-  std::vector<double> values;
+class ServoArray {
+  std::shared_ptr<Driver> driver_;
+  ReadMode read_mode_ = ReadMode::Direct;
+
+  std::vector<double> cache_;
 
 public:
-  ServoArray(std::uint8_t bus=1, std::uint8_t address=0x40, std::uint16_t min_pulse=150, std::uint16_t max_pulse=600);
+  ServoArray(std::shared_ptr<Driver>);
+  ServoArray(const std::string& name = "", const DriverParams& = {}, DriverManager& = default_manager);
 
-  void set(std::uint8_t index, double rad);
-  double get(std::uint8_t index);
+  void write(std::size_t index, double rad);
+  double read(std::size_t index) const;
 
-  std::uint8_t size();
+  void set_read_mode(ReadMode);
+  ReadMode read_mode() const;
+
+  std::size_t size() const;
 };
 
 }

@@ -13,15 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <cstdint>
+#ifndef SERVOARRAY_CONFIG_H
+#define SERVOARRAY_CONFIG_H
 
-#include "servoarray/pca9685/register.h"
+#define SERVOARRAY_VERSION "@servoarray_VERSION@"
 
-namespace ServoArray {
+#define SERVOARRAY_DRIVER_SUFFIX "@SERVOARRAY_DRIVER_SUFFIX@"
+#define SERVOARRAY_DEFAULT_CONFIG_FILES @CONFIG_SERVOARRAY_DEFAULT_CONFIG_FILES@
+#define SERVOARRAY_DEFAULT_DRIVER_PATHS @CONFIG_SERVOARRAY_DEFAULT_DRIVER_PATHS@
 
-Register operator+(const Register& reg, const std::uint8_t& offset) {
-  const auto address = static_cast<std::uint8_t>(reg) + offset;
-  return Register(address);
-}
-
-}
+#endif

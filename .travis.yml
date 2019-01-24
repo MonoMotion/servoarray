@@ -9,13 +9,27 @@ addons:
       - g++-5
       - build-essential
       - cmake
+      - libboost-dev
+      - libboost-filesystem-dev
 env:
   - CXX=g++-5
 script:
   - pip install -e .
+  - mkdir -p src/build && cd $_
+  - cmake .. -DPYBIND11_PYTHON_VERSION=${TRAVIS_PYTHON_VERSION}
+  - make -j"$(nproc)"
+before_deploy:
+  - cpack -D CPACK_OUTPUT_FILE_PREFIX=dist
 deploy:
-  provider: pypi
+- provider: pypi
   user: "${PYPI_USERNAME}"
   password: "${PYPI_PASSWORD}"
+  on:
+    tags: true
+- provider: releases
+  api_key: $GITHUB_OAUTH_TOKEN
+  skip_cleanup: true
+  file_glob: true
+  file: 'dist/*'
   on:
     tags: true

@@ -13,27 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "servoarray/pca9685/pca9685.h"
+#ifndef SERVOARRAY_SERVOMAP_H
+#define SERVOARRAY_SERVOMAP_H
 
-#include <iostream>
+#include <string>
+#include <vector>
 
-int main(int argc, char **argv) {
+#include "servoarray/servoarray.h"
 
-  if (argc != 4) {
-    std::cerr << "set_pwm <bus> <address> <index>" << std::endl;
-    return 1;
-  }
+namespace ServoArray {
 
-  const std::uint8_t bus   = static_cast<std::uint8_t>(strtol(argv[1], nullptr, 0));
-  const std::uint8_t addr  = static_cast<std::uint8_t>(strtol(argv[2], nullptr, 0));
-  const std::uint8_t index = static_cast<std::uint8_t>(strtol(argv[3], nullptr, 0));
+class ServoMap {
+  ServoArray sa_;
+  std::unordered_map<std::string, std::size_t> names_;
 
-  auto driver = ServoArray::PCA9685(bus, addr);
+public:
+  ServoMap(const ServoArray&, const std::unordered_map<std::string, std::size_t> names);
+  ServoMap(const ServoArray&, DriverManager& manager = default_manager);
 
-  while(true) {
-    std::uint16_t pulselen;
-    std::cout << "> ";
-    std::cin >> pulselen;
-    driver.set_pwm(index, 0, pulselen);
-  }
+  void write(const std::string& name, double rad);
+  double read(const std::string& name) const;
+
+  const ServoArray& array() const;
+
+  std::size_t size() const;
+
+  const std::unordered_map<std::string, std::size_t>& names() const;
+};
+
 }
+
+#endif

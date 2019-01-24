@@ -13,12 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 2.7)
+set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${PROJECT_VERSION}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
+set(CPACK_GENERATOR "TGZ;ZIP")
 
-add_library(servoarray_lib SHARED servoarray.cpp driver_manager.cpp user_config.cpp servomap.cpp)
-set_target_properties(servoarray_lib PROPERTIES OUTPUT_NAME "servoarray")
-set_target_properties(servoarray_lib PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
-target_link_libraries(servoarray_lib ${Boost_LIBRARIES} dl)
-sa_set_compile_options(servoarray_lib)
-
-install(TARGETS servoarray_lib LIBRARY DESTINATION ${LIB_INSTALL_DIR})
+include(CPack)
