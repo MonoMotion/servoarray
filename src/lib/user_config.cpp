@@ -22,12 +22,13 @@ namespace ServoArray {
 const std::string& DriverConfig::name() const& { return this->name_; }
 std::string DriverConfig::name() && { return std::move(this->name_); }
 
-const DriverParams& DriverConfig::params() const& { return this->params_; }
-DriverParams DriverConfig::params() && { return std::move(this->params_); }
+const DriverParams& DriverConfig::params(const std::string& name) const { return this->params_.at(name); }
 
 DriverConfig& DriverConfig::merge(const DriverConfig& other) {
   this->name_ = other.name();
-  this->params_.merge(other.params());
+  for(const auto& p : other.params_) {
+    this->params_[p.first].merge(p.second);
+  }
 
   return *this;
 }
@@ -36,26 +37,28 @@ UserConfig::UserConfig(const std::string& path) {
   auto const config = toml::parse(path);
 
   auto const driver = toml::get<toml::table>(config.at("driver"));
-  auto const name = toml::get_or<std::string>(driver, "name", "");
+  this->driver_.name_ = toml::get_or<std::string>(driver, "name", "");
 
   auto const params = toml::get<toml::table>(driver.at("params"));
 
-  DriverParams p;
-  for (const auto& entry : params) {
-    const auto& key = entry.first;
-    const auto& value = entry.second;
+  for (const auto& p : params) {
+    const auto& name = p.first;
+    auto&& drv_params = this->driver_.params_.at(name);
 
-    switch(value.type()) {
-      case toml::value_t::Integer: p.put(key, toml::get<int>(value)); break;
-      case toml::value_t::Float: p.put(key, toml::get<float>(value)); break;
-      case toml::value_t::Boolean: p.put(key, toml::get<bool>(value)); break;
-      case toml::value_t::String: p.put(key, toml::get<std::string>(value)); break;
-      default: throw std::runtime_error(toml::format_error("Unsupported parameter type", value, toml::stringize(value.type())));
+    const auto& entries = toml::get<toml::table>(p.second);
+    for (const auto& entry : entries) {
+      const auto& key = entry.first;
+      const auto& value = entry.second;
+
+      switch(value.type()) {
+        case toml::value_t::Integer: drv_params.put(key, toml::get<int>(value)); break;
+        case toml::value_t::Float:   drv_params.put(key, toml::get<float>(value)); break;
+        case toml::value_t::Boolean: drv_params.put(key, toml::get<bool>(value)); break;
+        case toml::value_t::String:  drv_params.put(key, toml::get<std::string>(value)); break;
+        default: throw std::runtime_error(toml::format_error("Unsupported parameter type", value, toml::stringize(value.type())));
+      }
     }
   }
-
-  this->driver_.name_ = name;
-  this->driver_.params_ = p;
 }
 
 UserConfig::UserConfig(const std::vector<std::string>& paths) {

@@ -18,6 +18,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include "servoarray/driver_params.h"
 
@@ -25,7 +26,7 @@ namespace ServoArray {
 
 class DriverConfig {
   std::string name_;
-  DriverParams params_;
+  std::unordered_map<std::string, DriverParams> params_;
   std::vector<std::string> search_paths_;
 
   friend class UserConfig;
@@ -34,8 +35,7 @@ public:
   const std::string& name() const&;
   std::string name() &&;
 
-  const DriverParams& params() const&;
-  DriverParams params() &&;
+  const DriverParams& params(const std::string& name) const;
 
   DriverConfig& merge(const DriverConfig&);
 };
