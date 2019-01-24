@@ -22,6 +22,7 @@
 #include <pybind11/numpy.h>
 
 #include "servoarray/servoarray.h"
+#include "servoarray/servomap.h"
 
 namespace py = pybind11;
 
@@ -53,9 +54,9 @@ ServoArray::DriverParams to_driver_params(py::dict py_params) {
 }
 
 class ServoArray {
+public:
   ::ServoArray::ServoArray sa;
 
-public:
   ServoArray(const std::string& name, py::dict py_params, ::ServoArray::DriverManager& manager) : sa(name, to_driver_params(py_params), manager) {}
 
   void write(std::int16_t index, double rad) {
@@ -151,5 +152,19 @@ PYBIND11_MODULE(servoarray, m) {
     .def("__writeitem__", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::write))
     .def("__readitem__", py::overload_cast<py::slice>(&Adaptor::ServoArray::read))
     .def("__readitem__", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::read));
+
+  py::class_<::ServoArray::ServoMap>(m, "ServoMap")
+    .def(py::init([](const Adaptor::ServoArray& array, const std::unordered_map<std::string, std::size_t>& names) {
+          return ::ServoArray::ServoMap(array.sa, names);
+        }))
+    .def(py::init([](const Adaptor::ServoArray& array, ::ServoArray::DriverManager& manager) {
+          return ::ServoArray::ServoMap(array.sa, manager);
+        }), py::arg("array"), py::arg("manager") = ::ServoArray::default_manager)
+    .def("write", &::ServoArray::ServoMap::write)
+    .def("read", &::ServoArray::ServoMap::read)
+    .def_property_readonly("array", &::ServoArray::ServoMap::array)
+    .def("__len__", &::ServoArray::ServoMap::size)
+    .def("__writeitem__", &::ServoArray::ServoMap::write)
+    .def("__readitem__", &::ServoArray::ServoMap::read);
 }
 
