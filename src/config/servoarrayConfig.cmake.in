@@ -27,6 +27,6 @@ set(servoarray_LIBRARIES servoarray ${Boost_LIBRARIES})
 set(SERVOARRAY_DRIVER_LIBRARIES "")
 set(servoarray_DRIVER_LIBRARIES "")
 
-include(./tools.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/servoarrayTools.cmake)
 
 check_required_components(servoarray)
