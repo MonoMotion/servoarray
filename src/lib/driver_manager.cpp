@@ -45,11 +45,6 @@ void DriverManager::add_default_search_paths() {
   for (auto const& path : {SERVOARRAY_DEFAULT_PATHS}) {
     this->paths_.push_back(path);
   }
-
-  const char* home = std::getenv("HOME");
-  if (!home) {
-    return;
-  }
 }
 
 DriverManager::DriverManager(const std::vector<std::string>& paths, bool load_defaults) : paths_(paths), loaded_drivers_() {
