@@ -30,7 +30,7 @@ enum class ReadMode {
 
 class ServoArray {
   std::shared_ptr<Driver> driver_;
-  ReadMode read_mode_;
+  ReadMode read_mode_ = ReadMode::Direct;
 
   std::vector<double> cache_;
 
