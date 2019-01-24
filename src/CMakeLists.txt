@@ -48,7 +48,7 @@ add_subdirectory(bin)
 add_subdirectory(include)
 
 add_subdirectory(config)
-add_subdirectory(dummy-driver)
+add_subdirectory(examples)
 
 add_subdirectory(third_party/pybind11)
 # pybind11 headers produce so many errors with strict compiler options
