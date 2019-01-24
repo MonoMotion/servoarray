@@ -26,20 +26,16 @@ namespace ServoArray {
 class DriverConfig {
   std::string name_;
   DriverParams params_;
+  std::vector<std::string> search_paths_;
+
+  friend class UserConfig;
 
 public:
-  DriverConfig() = default;
-  DriverConfig(const std::string& name, const DriverParams& params);
-
   const std::string& name() const&;
   std::string name() &&;
 
-  void set_name(const std::string&);
-
   const DriverParams& params() const&;
   DriverParams params() &&;
-
-  void set_params(const DriverParams&);
 
   DriverConfig& merge(const DriverConfig&);
 };

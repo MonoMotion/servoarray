@@ -19,16 +19,11 @@
 
 namespace ServoArray {
 
-DriverConfig::DriverConfig(const std::string& name, const DriverParams& params) : name_(name), params_(params) {}
 const std::string& DriverConfig::name() const& { return this->name_; }
 std::string DriverConfig::name() && { return std::move(this->name_); }
 
-void DriverConfig::set_name(const std::string& name) { this->name_ = name; }
-
 const DriverParams& DriverConfig::params() const& { return this->params_; }
 DriverParams DriverConfig::params() && { return std::move(this->params_); }
-
-void DriverConfig::set_params(const DriverParams& params) { this->params_ = params; }
 
 DriverConfig& DriverConfig::merge(const DriverConfig& other) {
   this->name_ = other.name();
@@ -59,8 +54,8 @@ UserConfig::UserConfig(const std::string& path) {
     }
   }
 
-  this->driver_.set_name(name);
-  this->driver_.set_params(p);
+  this->driver_.name_ = name;
+  this->driver_.params_ = p;
 }
 
 UserConfig::UserConfig(const std::vector<std::string>& paths) {
