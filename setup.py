@@ -74,14 +74,17 @@ class CMakeBuild(build_ext):
                 cwd=self.build_temp)
         print()  # Add an empty line for cleaner output
 
+with open('README.md', encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(
         name='servoarray',
-        version='0.5',
+        version='0.6',
         author='coord.e',
         author_email='me@coord-e.com',
-        description='ServoArray: A fast implementation of servo motor array written in C++, also available as a python module',
-        long_description='',
+        description='ServoArray: Pluggable servomotor driver library',
+        long_description=long_description,
+        long_description_content_type='text/markdown',
         ext_modules=[CMakeExtension('servoarray', './src/')],
         cmdclass=dict(build_ext=CMakeBuild),
         zip_safe=False,
