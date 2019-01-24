@@ -16,10 +16,17 @@ set(SERVOARRAY_LIBRARIES servoarray ${Boost_LIBRARIES})
 set(SERVOARRAY_DRIVER_LIBRARIES "")
 
 function(servoarray_add_driver target)
-  add_library(${target} SHARED ${ARGN})
+  cmake_parse_arguments(ARG "" "NAME" "" ${ARGN})
+
+  if(ARG_NAME)
+    set(name ${ARG_NAME})
+  else()
+    set(name ${target})
+  endif()
+
+  add_library(${target} SHARED ${ARG_UNPARSED_ARGUMENTS})
   set_target_properties(${target} PROPERTIES PREFIX "")
-  set_target_properties(${target} PROPERTIES OUTPUT_NAME "pca9685")
-  set_target_properties(${target} PROPERTIES SUFFIX "@SERVOARRAY_DRIVER_POSTFIX@")
+  set_target_properties(${target} PROPERTIES OUTPUT_NAME "${name}")
   set_target_properties(${target} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
   set_target_properties(${target} PROPERTIES MACOSX_RPATH ON)
 
