@@ -48,7 +48,7 @@ include_directories(SYSTEM third_party/toml11)
 add_subdirectory(lib)
 add_subdirectory(bin)
 
-add_subdirectory(pybind11)
+add_subdirectory(third_party/pybind11)
 # pybind11 headers produce so many errors with strict compiler options
 include_directories(SYSTEM ${PYBIND11_INCLUDE_DIR})
 
