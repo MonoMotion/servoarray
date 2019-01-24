@@ -45,6 +45,7 @@ double ServoArray::read(std::size_t index) const {
 
 void ServoArray::set_read_mode(ReadMode mode) {
   this->read_mode_ = mode;
+  // TODO: Print warning if mode == Direct and the driver doesn't support read
 }
 
 ReadMode ServoArray::read_mode() const {
