@@ -18,7 +18,9 @@ pip install servoarray
 ```python
 from servoarray import ServoArray
 
-sa = ServoArray(bus=1, address=0x40, min_pulse=150, max_pulse=600)
+sa = ServoArray()
+# You can specify driver name and parameters directly though it is not recommended
+# sa = ServoArray("pca9685", {"bus": 1, "address": 0x40, "min_pulse": 150, "max_pulse": 600})
 
 # Now you can set a radian value to the servo
 sa[0] = 3.14 / 2  # Max
