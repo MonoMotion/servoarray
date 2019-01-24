@@ -28,7 +28,7 @@ void DriverManager::add_default_search_paths() {
   // 1. $SA_DRIVER_PATH
   // 2. additional_paths
   // 3. ./
-  // 4. SERVOARRAY_DEFAULT_PATHS (set in cmake)
+  // 4. SERVOARRAY_DEFAULT_DRIVER_PATHS (set in cmake)
   // 5. dynamic linker searches for the library
   //
 
