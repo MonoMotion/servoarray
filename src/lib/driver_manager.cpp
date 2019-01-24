@@ -73,7 +73,20 @@ std::shared_ptr<Driver> DriverManager::get(const std::string& name) const {
 }
 
 std::shared_ptr<Driver> DriverManager::load(const std::string& name, const DriverParams& params) {
-  const auto path = this->resolve(name);
+  std::string real_name;
+
+  if (name.empty()) {
+    auto const config_name = this->user_config_.driver().name();
+    if (config_name.empty()) {
+      throw std::runtime_error("Driver name not specified");
+    }
+
+    real_name = config_name;
+  } else {
+    real_name = name;
+  }
+
+  const auto path = this->resolve(real_name);
   auto* handle = dlopen(path.c_str(), RTLD_LAZY);
   if (!handle) {
     // TODO: throw errors::DriverLoadError
@@ -122,10 +135,6 @@ std::string DriverManager::driver_file_name(const std::string& name) {
 }
 
 std::string DriverManager::resolve(const std::string& name) const {
-  if (name.empty()) {
-    return this->user_config_.driver().name();
-  }
-
   namespace fs = boost::filesystem;
 
   fs::path file {DriverManager::driver_file_name(name)};
