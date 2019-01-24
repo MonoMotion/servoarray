@@ -54,6 +54,7 @@ UserConfig::UserConfig(const std::string& path) {
       const auto& key = entry.first;
       const auto& value = entry.second;
 
+      // TODO: Support array and table type
       switch(value.type()) {
         case toml::value_t::Integer: drv_params.put(key, toml::get<int>(value)); break;
         case toml::value_t::Float:   drv_params.put(key, toml::get<float>(value)); break;
