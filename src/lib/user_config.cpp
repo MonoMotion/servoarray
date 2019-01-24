@@ -43,7 +43,7 @@ UserConfig::UserConfig(const std::string& path) {
 
   for (const auto& p : params) {
     const auto& name = p.first;
-    auto&& drv_params = this->driver_.params_.at(name);
+    auto&& drv_params = this->driver_.params_[name];
 
     const auto& entries = toml::get<toml::table>(p.second);
     for (const auto& entry : entries) {
