@@ -48,6 +48,7 @@ private:
   static std::string driver_file_name(const std::string&);
   std::string resolve(const std::string&) const;
   void add_default_search_paths();
+  void load_default_config_files();
 };
 
 extern DriverManager default_manager;

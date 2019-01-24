@@ -47,13 +47,21 @@ void DriverManager::add_default_search_paths() {
   }
 }
 
+void DriverManager::load_default_config_files() {
+  std::vector<std::string> config_files {SERVOARRAY_DEFAULT_CONFIG_FILES};
+  DriverManager::expand_paths(config_files);
+
+  for (const auto& file : config_files) {
+    if (boost::filesystem::exists(file)) {
+      this->user_config_.merge(UserConfig{file});
+    }
+  }
+}
+
 DriverManager::DriverManager(const std::vector<std::string>& paths, bool load_defaults) : paths_(paths), loaded_drivers_() {
   if (load_defaults) {
     this->add_default_search_paths();
-
-    std::vector<std::string> config_files {SERVOARRAY_DEFAULT_CONFIG_FILES};
-    DriverManager::expand_paths(config_files);
-    this->user_config_ = UserConfig{config_files};
+    this->load_default_config_files();
   }
 
   DriverManager::expand_paths(this->paths_);
