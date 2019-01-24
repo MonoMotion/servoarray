@@ -51,7 +51,12 @@ public:
 
   template<typename T>
   const T& get_or(const std::string& key, const T& default_) const {
-    return this->data_.get(key, default_);
+    // TODO: Use the default-value version of ptree::get
+    if(auto const value = this->data_.get_optional<T>(key)) {
+      return value.get();
+    } else {
+      return default_;
+    }
   }
 
   template<typename T>
