@@ -34,7 +34,7 @@ public:
     return pos;
   }
 
-  operator double() const noexcept {
+  operator double() {
     return this->array_->read(this->idx_);
   }
 };
