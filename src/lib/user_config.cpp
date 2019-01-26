@@ -58,6 +58,7 @@ UserConfig::UserConfig(const std::string& path) {
 
   this->mapping_.names_ = toml::get_or<std::unordered_map<std::string, std::size_t>>(config, "mapping", {});
 
+  // TODO: Seperate this into some function
   {
     auto const it_d = config.find("driver");
     if (it_d == config.end()) {
