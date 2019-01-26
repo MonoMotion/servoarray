@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
     std::cout << " (rad)  > ";
     std::cin >> rad;
 
-    sa.write(index, rad);
-    std::cout << index << " -> " << sa.read(index) << std::endl;
+    sa[index] = rad;
+    std::cout << index << " -> " << sa[index] << std::endl;
   }
 }

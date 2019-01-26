@@ -53,4 +53,6 @@ public:
 
 }
 
+#include "servoarray/subscript_wrapper.h"
+
 #endif
