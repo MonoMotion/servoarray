@@ -43,6 +43,8 @@ static ServoArray::DriverParams to_driver_params(py::dict py_params) {
       params.put(key, py::cast<int>(py_value));
     } else if (py::isinstance<py::float_>(py_value)) {
       params.put(key, py::cast<float>(py_value));
+    } else if (py::isinstance<py::str>(py_value)) {
+      params.put(key, py::cast<std::string>(py_value));
     } else if (py::isinstance<py::bool_>(py_value)) {
       params.put(key, py::cast<bool>(py_value));
     } else {
