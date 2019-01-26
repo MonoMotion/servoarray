@@ -28,6 +28,8 @@ enum class ReadMode {
   Direct
 };
 
+class SubscriptWrapper;
+
 class ServoArray {
   std::shared_ptr<Driver> driver_;
   ReadMode read_mode_ = ReadMode::Direct;
@@ -39,7 +41,9 @@ public:
   ServoArray(const std::string& name = "", const DriverParams& = {}, DriverManager& = default_manager);
 
   void write(std::size_t index, double rad);
-  double read(std::size_t index) const;
+  double read(std::size_t index);
+
+  SubscriptWrapper operator[](std::size_t);
 
   void set_read_mode(ReadMode);
   ReadMode read_mode() const;
@@ -48,5 +52,7 @@ public:
 };
 
 }
+
+#include "servoarray/subscript_wrapper.h"
 
 #endif

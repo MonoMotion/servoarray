@@ -18,8 +18,9 @@ script:
   - mkdir -p src/build && cd $_
   - cmake .. -DPYBIND11_PYTHON_VERSION=${TRAVIS_PYTHON_VERSION}
   - make -j"$(nproc)"
-before_deploy:
+after_success:
   - cpack -D CPACK_OUTPUT_FILE_PREFIX=dist
+before_deploy:
   - cd ${TRAVIS_BUILD_DIR}
 deploy:
 - provider: pypi

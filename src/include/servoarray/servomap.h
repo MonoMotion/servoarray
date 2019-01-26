@@ -23,6 +23,8 @@
 
 namespace ServoArray {
 
+class SubscriptWrapper;
+
 class ServoMap {
   ServoArray sa_;
   std::unordered_map<std::string, std::size_t> names_;
@@ -32,15 +34,20 @@ public:
   ServoMap(const ServoArray&, DriverManager& manager = default_manager);
 
   void write(const std::string& name, double rad);
-  double read(const std::string& name) const;
+  double read(const std::string& name);
+
+  SubscriptWrapper operator[](const std::string&);
 
   const ServoArray& array() const;
 
   std::size_t size() const;
 
   const std::unordered_map<std::string, std::size_t>& names() const;
+  bool has_name(const std::string&) const;
 };
 
 }
+
+#include "servoarray/subscript_wrapper.h"
 
 #endif

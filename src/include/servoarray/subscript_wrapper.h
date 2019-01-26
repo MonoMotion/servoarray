@@ -13,25 +13,32 @@
 // You should have received a copy of the GNU General Public License
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef SERVOARRAY_SUBSCRIPT_WRAPPER_H
+#define SERVOARRAY_SUBSCRIPT_WRAPPER_H
+
 #include "servoarray/servoarray.h"
 
-#include <iostream>
+#include <cstdint>
 
-int main(int argc, char **argv) {
+namespace ServoArray {
 
-  const std::string name {argc > 1 ? argv[1] : ""};
-  auto sa = ServoArray::ServoArray(name);
+class SubscriptWrapper {
+  ServoArray* array_;
+  std::size_t idx_;
 
-  while(true) {
-    std::size_t index;
-    std::cout << "(index) > ";
-    std::cin >> index;
+public:
+  SubscriptWrapper(ServoArray* array, std::size_t idx) : array_(array), idx_(idx) {}
 
-    double rad;
-    std::cout << " (rad)  > ";
-    std::cin >> rad;
-
-    sa[index] = rad;
-    std::cout << index << " -> " << sa[index] << std::endl;
+  double operator=(double pos) {
+    this->array_->write(this->idx_, pos);
+    return pos;
   }
+
+  operator double() {
+    return this->array_->read(this->idx_);
+  }
+};
+
 }
+
+#endif

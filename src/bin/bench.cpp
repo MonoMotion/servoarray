@@ -31,4 +31,7 @@ int main(int argc, char **argv) {
 
   bench("Set", times, [&sa](size_t i) { sa.write(0, 0); });
   bench("Get", times, [&sa](size_t i) { sa.read(0); });
+
+  bench("Set (subscript)", times, [&sa](size_t i) { sa[0] = 0; });
+  bench("Get (subscript)", times, [&sa](size_t i) { static_cast<double>(sa[0]); });
 }

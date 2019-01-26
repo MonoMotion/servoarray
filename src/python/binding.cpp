@@ -28,7 +28,7 @@ namespace py = pybind11;
 
 namespace Adaptor {
 
-ServoArray::DriverParams to_driver_params(py::dict py_params) {
+static ServoArray::DriverParams to_driver_params(py::dict py_params) {
   ServoArray::DriverParams params;
   for (auto item : py_params) {
     auto const& py_key = item.first;
@@ -43,6 +43,8 @@ ServoArray::DriverParams to_driver_params(py::dict py_params) {
       params.put(key, py::cast<int>(py_value));
     } else if (py::isinstance<py::float_>(py_value)) {
       params.put(key, py::cast<float>(py_value));
+    } else if (py::isinstance<py::str>(py_value)) {
+      params.put(key, py::cast<std::string>(py_value));
     } else if (py::isinstance<py::bool_>(py_value)) {
       params.put(key, py::cast<bool>(py_value));
     } else {
@@ -60,14 +62,13 @@ public:
   ServoArray(const std::string& name, py::dict py_params, ::ServoArray::DriverManager& manager) : sa(name, to_driver_params(py_params), manager) {}
 
   void write(std::int16_t index, double rad) {
-    const auto u8idx = this->cast_index<uint8_t>(index);
     if (index >= 0) {
-      return this->sa.write(u8idx, rad);
+      return this->sa.write(index, rad);
     } else {
-      return this->sa.write(static_cast<uint8_t>(this->sa.size() + index), rad);
+      return this->sa.write(this->sa.size() + index, rad);
     }
   }
-  void write(py::slice slice, py::array_t<double> list) {
+  void write_slice(py::slice slice, py::array_t<double> list) {
     std::size_t start, stop, step, length;
     if (!slice.compute(this->sa.size(), &start, &stop, &step, &length))
       throw py::error_already_set();
@@ -76,29 +77,26 @@ public:
       throw std::out_of_range("Can't assign the different length of list from slice");
     }
     for (std::size_t i = 0; i < length; ++i) {
-      const auto idx = this->cast_index<uint8_t>(start);
       double rad = list.at(i);
-      this->sa.write(idx, rad);
+      this->sa.write(start, rad);
       start += step;
     }
   }
   double read(std::int16_t index) {
-    const auto u8idx = this->cast_index<uint8_t>(index);
     if (index >= 0) {
-      return this->sa.read(u8idx);
+      return this->sa.read(index);
     } else {
-      return this->sa.read(static_cast<uint8_t>(this->sa.size() + index));
+      return this->sa.read(this->sa.size() + index);
     }
   }
-  py::array_t<double> read(py::slice slice) {
+  py::array_t<double> read_slice(py::slice slice) {
     std::size_t start, stop, step, length;
     if (!slice.compute(this->sa.size(), &start, &stop, &step, &length))
       throw py::error_already_set();
 
     auto l = py::array_t<double>(length);
     for (std::size_t i = 0; i < length; ++i) {
-      const auto idx = this->cast_index<uint8_t>(start);
-      l.mutable_at(i) = this->sa.read(idx);
+      l.mutable_at(i) = this->sa.read(start);
       start += step;
     }
     return l;
@@ -108,25 +106,6 @@ public:
 
   void set_read_mode(::ServoArray::ReadMode mode) { this->sa.set_read_mode(mode); }
   ::ServoArray::ReadMode read_mode() const { return this->sa.read_mode(); }
-
-private:
-  template<typename Int, typename T, std::enable_if_t<std::numeric_limits<T>::is_signed>* = nullptr>
-  Int cast_index(T v) {
-    static_assert(sizeof(Int) < sizeof(T), "check_index is only available to convert larger integer to smaller one");
-    if (std::numeric_limits<Int>::max() < v || -std::numeric_limits<Int>::max() > v) {
-      throw std::out_of_range("Index out of bounds");
-    }
-    return static_cast<Int>(v);
-  }
-
-  template<typename Int, typename T, std::enable_if_t<!std::numeric_limits<T>::is_signed>* = nullptr>
-  Int cast_index(T v) {
-    static_assert(sizeof(Int) < sizeof(T), "check_index is only available to convert larger integer to smaller one");
-    if (std::numeric_limits<Int>::max() < v) {
-      throw std::out_of_range("Index out of bounds");
-    }
-    return static_cast<Int>(v);
-  }
 };
 
 }
@@ -152,14 +131,14 @@ PYBIND11_MODULE(servoarray, m) {
 
   py::class_<Adaptor::ServoArray>(m, "ServoArray")
     .def(py::init<const std::string&, py::dict, ::ServoArray::DriverManager&>(), py::arg("name") = "", py::arg("params") = py::dict(), py::arg("manager") = ::ServoArray::default_manager)
-    .def("write", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::write))
-    .def("read", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::read))
+    .def("write", &Adaptor::ServoArray::write)
+    .def("read", &Adaptor::ServoArray::read)
     .def_property("read_mode", &Adaptor::ServoArray::read_mode, &Adaptor::ServoArray::set_read_mode)
     .def("__len__", &Adaptor::ServoArray::size)
-    .def("__setitem__", py::overload_cast<py::slice, py::array_t<double>>(&Adaptor::ServoArray::write))
-    .def("__setitem__", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::write))
-    .def("__getitem__", py::overload_cast<py::slice>(&Adaptor::ServoArray::read))
-    .def("__getitem__", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::read));
+    .def("__setitem__", &Adaptor::ServoArray::write_slice)
+    .def("__setitem__", &Adaptor::ServoArray::write)
+    .def("__getitem__", &Adaptor::ServoArray::read_slice)
+    .def("__getitem__", &Adaptor::ServoArray::read);
 
   py::class_<::ServoArray::ServoMap>(m, "ServoMap")
     .def(py::init([](const Adaptor::ServoArray& array, const std::unordered_map<std::string, std::size_t>& names) {

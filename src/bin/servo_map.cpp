@@ -13,25 +13,26 @@
 // You should have received a copy of the GNU General Public License
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "servoarray/servoarray.h"
+#include "servoarray/servomap.h"
 
 #include <iostream>
 
 int main(int argc, char **argv) {
 
-  const std::string name {argc > 1 ? argv[1] : ""};
-  auto sa = ServoArray::ServoArray(name);
+  const std::string driver {argc > 1 ? argv[1] : ""};
+  auto sa = ServoArray::ServoArray(driver);
+  auto map = ServoArray::ServoMap(sa);
 
   while(true) {
-    std::size_t index;
-    std::cout << "(index) > ";
-    std::cin >> index;
+    std::string name;
+    std::cout << "(name) > ";
+    std::cin >> name;
 
     double rad;
-    std::cout << " (rad)  > ";
+    std::cout << " (rad) > ";
     std::cin >> rad;
 
-    sa[index] = rad;
-    std::cout << index << " -> " << sa[index] << std::endl;
+    map[name] = rad;
+    std::cout << name << " -> " << map[name] << std::endl;
   }
 }
