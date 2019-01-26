@@ -14,6 +14,7 @@
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "servoarray/servoarray.h"
+#include "servoarray/subscript_wrapper.h"
 
 #include <cassert>
 
@@ -41,6 +42,10 @@ double ServoArray::read(std::size_t index) {
     default:
       assert(false); // unreachable
   }
+}
+
+SubscriptWrapper ServoArray::operator[](std::size_t index) {
+  return {this, index};
 }
 
 void ServoArray::set_read_mode(ReadMode mode) {

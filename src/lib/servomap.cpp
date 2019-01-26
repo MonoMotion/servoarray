@@ -14,6 +14,7 @@
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "servoarray/servomap.h"
+#include "servoarray/subscript_wrapper.h"
 
 namespace ServoArray {
 
@@ -28,6 +29,10 @@ void ServoMap::write(const std::string& name, double rad) {
 double ServoMap::read(const std::string& name) {
   // TODO: Throw proper error
   return this->sa_.read(this->names_.at(name));
+}
+
+SubscriptWrapper ServoMap::operator[](const std::string& name) {
+  return {&this->sa_, this->names_.at(name)};
 }
 
 const ServoArray& ServoMap::array() const { return this->sa_; }
