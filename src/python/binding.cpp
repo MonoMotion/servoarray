@@ -62,11 +62,10 @@ public:
   ServoArray(const std::string& name, py::dict py_params, ::ServoArray::DriverManager& manager) : sa(name, to_driver_params(py_params), manager) {}
 
   void write(std::int16_t index, double rad) {
-    const auto u8idx = this->cast_index<uint8_t>(index);
     if (index >= 0) {
-      return this->sa.write(u8idx, rad);
+      return this->sa.write(index, rad);
     } else {
-      return this->sa.write(static_cast<uint8_t>(this->sa.size() + index), rad);
+      return this->sa.write(this->sa.size() + index, rad);
     }
   }
   void write(py::slice slice, py::array_t<double> list) {
@@ -78,18 +77,16 @@ public:
       throw std::out_of_range("Can't assign the different length of list from slice");
     }
     for (std::size_t i = 0; i < length; ++i) {
-      const auto idx = this->cast_index<uint8_t>(start);
       double rad = list.at(i);
-      this->sa.write(idx, rad);
+      this->sa.write(start, rad);
       start += step;
     }
   }
   double read(std::int16_t index) {
-    const auto u8idx = this->cast_index<uint8_t>(index);
     if (index >= 0) {
-      return this->sa.read(u8idx);
+      return this->sa.read(index);
     } else {
-      return this->sa.read(static_cast<uint8_t>(this->sa.size() + index));
+      return this->sa.read(this->sa.size() + index);
     }
   }
   py::array_t<double> read(py::slice slice) {
@@ -99,8 +96,7 @@ public:
 
     auto l = py::array_t<double>(length);
     for (std::size_t i = 0; i < length; ++i) {
-      const auto idx = this->cast_index<uint8_t>(start);
-      l.mutable_at(i) = this->sa.read(idx);
+      l.mutable_at(i) = this->sa.read(start);
       start += step;
     }
     return l;
@@ -110,25 +106,6 @@ public:
 
   void set_read_mode(::ServoArray::ReadMode mode) { this->sa.set_read_mode(mode); }
   ::ServoArray::ReadMode read_mode() const { return this->sa.read_mode(); }
-
-private:
-  template<typename Int, typename T, std::enable_if_t<std::numeric_limits<T>::is_signed>* = nullptr>
-  Int cast_index(T v) {
-    static_assert(sizeof(Int) < sizeof(T), "check_index is only available to convert larger integer to smaller one");
-    if (std::numeric_limits<Int>::max() < v || -std::numeric_limits<Int>::max() > v) {
-      throw std::out_of_range("Index out of bounds");
-    }
-    return static_cast<Int>(v);
-  }
-
-  template<typename Int, typename T, std::enable_if_t<!std::numeric_limits<T>::is_signed>* = nullptr>
-  Int cast_index(T v) {
-    static_assert(sizeof(Int) < sizeof(T), "check_index is only available to convert larger integer to smaller one");
-    if (std::numeric_limits<Int>::max() < v) {
-      throw std::out_of_range("Index out of bounds");
-    }
-    return static_cast<Int>(v);
-  }
 };
 
 }
