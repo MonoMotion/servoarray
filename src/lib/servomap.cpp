@@ -41,4 +41,6 @@ std::size_t ServoMap::size() const { return this->sa_.size(); }
 
 const std::unordered_map<std::string, std::size_t>& ServoMap::names() const { return this->names_; }
 
+bool ServoMap::has_name(const std::string& name) const { return this->names_.find(name) != this->names_.end(); }
+
 }

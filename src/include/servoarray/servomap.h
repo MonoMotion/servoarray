@@ -43,6 +43,7 @@ public:
   std::size_t size() const;
 
   const std::unordered_map<std::string, std::size_t>& names() const;
+  bool has_name(const std::string&) const;
 };
 
 }
