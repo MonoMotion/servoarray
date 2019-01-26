@@ -68,7 +68,7 @@ public:
       return this->sa.write(this->sa.size() + index, rad);
     }
   }
-  void write(py::slice slice, py::array_t<double> list) {
+  void write_slice(py::slice slice, py::array_t<double> list) {
     std::size_t start, stop, step, length;
     if (!slice.compute(this->sa.size(), &start, &stop, &step, &length))
       throw py::error_already_set();
@@ -89,7 +89,7 @@ public:
       return this->sa.read(this->sa.size() + index);
     }
   }
-  py::array_t<double> read(py::slice slice) {
+  py::array_t<double> read_slice(py::slice slice) {
     std::size_t start, stop, step, length;
     if (!slice.compute(this->sa.size(), &start, &stop, &step, &length))
       throw py::error_already_set();
@@ -131,14 +131,14 @@ PYBIND11_MODULE(servoarray, m) {
 
   py::class_<Adaptor::ServoArray>(m, "ServoArray")
     .def(py::init<const std::string&, py::dict, ::ServoArray::DriverManager&>(), py::arg("name") = "", py::arg("params") = py::dict(), py::arg("manager") = ::ServoArray::default_manager)
-    .def("write", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::write))
-    .def("read", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::read))
+    .def("write", &Adaptor::ServoArray::write)
+    .def("read", &Adaptor::ServoArray::read)
     .def_property("read_mode", &Adaptor::ServoArray::read_mode, &Adaptor::ServoArray::set_read_mode)
     .def("__len__", &Adaptor::ServoArray::size)
-    .def("__setitem__", py::overload_cast<py::slice, py::array_t<double>>(&Adaptor::ServoArray::write))
-    .def("__setitem__", py::overload_cast<std::int16_t, double>(&Adaptor::ServoArray::write))
-    .def("__getitem__", py::overload_cast<py::slice>(&Adaptor::ServoArray::read))
-    .def("__getitem__", py::overload_cast<std::int16_t>(&Adaptor::ServoArray::read));
+    .def("__setitem__", &Adaptor::ServoArray::write_slice)
+    .def("__setitem__", &Adaptor::ServoArray::write)
+    .def("__getitem__", &Adaptor::ServoArray::read_slice)
+    .def("__getitem__", &Adaptor::ServoArray::read);
 
   py::class_<::ServoArray::ServoMap>(m, "ServoMap")
     .def(py::init([](const Adaptor::ServoArray& array, const std::unordered_map<std::string, std::size_t>& names) {
