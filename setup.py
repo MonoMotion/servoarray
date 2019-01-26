@@ -79,7 +79,7 @@ with open('README.md', encoding='utf-8') as f:
 
 setup(
         name='servoarray',
-        version='0.6.1',
+        version='0.6.2',
         author='coord.e',
         author_email='me@coord-e.com',
         description='ServoArray: Pluggable servomotor driver library',
