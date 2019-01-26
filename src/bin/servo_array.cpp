@@ -23,10 +23,9 @@ int main(int argc, char **argv) {
   auto sa = ServoArray::ServoArray(name);
 
   while(true) {
-    unsigned index_in;
+    std::size_t index;
     std::cout << "(index) > ";
-    std::cin >> index_in;
-    const auto index = static_cast<std::uint8_t>(index_in);
+    std::cin >> index;
 
     double rad;
     std::cout << " (rad)  > ";
