@@ -28,7 +28,7 @@ namespace py = pybind11;
 
 namespace Adaptor {
 
-ServoArray::DriverParams to_driver_params(py::dict py_params) {
+static ServoArray::DriverParams to_driver_params(py::dict py_params) {
   ServoArray::DriverParams params;
   for (auto item : py_params) {
     auto const& py_key = item.first;
