@@ -57,19 +57,19 @@ UserConfig::UserConfig(const std::string& path) {
   auto const config = toml::parse(path);
 
   {
-    auto const it = config.find("driver");
-    if (it == config.end()) {
+    auto const it_d = config.find("driver");
+    if (it_d == config.end()) {
       return;
     }
-    auto const driver = toml::get<toml::table>(it->second);
+    auto const driver = toml::get<toml::table>(it_d->second);
     this->driver_.name_ = toml::get_or<std::string>(driver, "name", "");
 
-    auto const it = driver.find("params");
-    if (it == driver.end()) {
+    auto const it_p = driver.find("params");
+    if (it_p == driver.end()) {
       return;
     }
 
-    auto const params = toml::get<toml::table>(it->second);
+    auto const params = toml::get<toml::table>(it_p->second);
 
     for (const auto& p : params) {
       const auto& name = p.first;
