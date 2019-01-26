@@ -20,6 +20,8 @@
 
 #include <cstdint>
 
+namespace ServoArray {
+
 class SubscriptWrapper {
   ServoArray* array_;
   std::size_t idx_;
@@ -29,11 +31,14 @@ public:
 
   double operator=(double pos) {
     this->array_->write(this->idx_, pos);
+    return pos;
   }
 
   operator double() const noexcept {
     return this->array_->read(this->idx_);
   }
 };
+
+}
 
 #endif
