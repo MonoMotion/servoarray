@@ -56,6 +56,8 @@ MapConfig& MapConfig::merge(const MapConfig& other) {
 UserConfig::UserConfig(const std::string& path) {
   auto const config = toml::parse(path);
 
+  this->mapping_.names_ = toml::get_or<std::unordered_map<std::string, std::size_t>>(config, "mapping", {});
+
   {
     auto const it_d = config.find("driver");
     if (it_d == config.end()) {
@@ -91,8 +93,6 @@ UserConfig::UserConfig(const std::string& path) {
       }
     }
   }
-
-  this->mapping_.names_ = toml::get_or<std::unordered_map<std::string, std::size_t>>(config, "mapping", {});
 }
 
 UserConfig::UserConfig(const std::vector<std::string>& paths) {
