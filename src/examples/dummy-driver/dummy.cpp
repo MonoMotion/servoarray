@@ -12,7 +12,7 @@ public:
     std::cout << "[write] index: " << idx << "\t position: " << pos << std::endl;
   }
 
-  double read(std::size_t idx) const override {
+  double read(std::size_t idx) override {
     std::cout << "[read]  index: " << idx << std::endl;
     return 0;
   }
