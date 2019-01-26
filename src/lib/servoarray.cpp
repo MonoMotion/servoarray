@@ -32,7 +32,7 @@ void ServoArray::write(std::size_t index, double rad) {
   this->cache_[index] = rad;
 }
 
-double ServoArray::read(std::size_t index) const {
+double ServoArray::read(std::size_t index) {
   switch(this->read_mode_) {
     case ReadMode::Cached:
       return this->cache_[index];

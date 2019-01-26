@@ -39,7 +39,7 @@ public:
   ServoArray(const std::string& name = "", const DriverParams& = {}, DriverManager& = default_manager);
 
   void write(std::size_t index, double rad);
-  double read(std::size_t index) const;
+  double read(std::size_t index);
 
   void set_read_mode(ReadMode);
   ReadMode read_mode() const;

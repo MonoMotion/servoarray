@@ -25,7 +25,7 @@ void ServoMap::write(const std::string& name, double rad) {
   this->sa_.write(this->names_.at(name), rad);
 }
 
-double ServoMap::read(const std::string& name) const {
+double ServoMap::read(const std::string& name) {
   // TODO: Throw proper error
   return this->sa_.read(this->names_.at(name));
 }

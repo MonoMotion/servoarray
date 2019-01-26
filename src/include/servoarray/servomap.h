@@ -32,7 +32,7 @@ public:
   ServoMap(const ServoArray&, DriverManager& manager = default_manager);
 
   void write(const std::string& name, double rad);
-  double read(const std::string& name) const;
+  double read(const std::string& name);
 
   const ServoArray& array() const;
 
