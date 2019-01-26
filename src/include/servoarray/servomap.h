@@ -23,6 +23,8 @@
 
 namespace ServoArray {
 
+class SubscriptWrapper;
+
 class ServoMap {
   ServoArray sa_;
   std::unordered_map<std::string, std::size_t> names_;
@@ -33,6 +35,8 @@ public:
 
   void write(const std::string& name, double rad);
   double read(const std::string& name) const;
+
+  SubscriptWrapper operator[](const std::string&);
 
   const ServoArray& array() const;
 
