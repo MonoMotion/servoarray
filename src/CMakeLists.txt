@@ -29,8 +29,7 @@ endif()
 set(INCLUDE_INSTALL_DIR include/)
 set(LIB_INSTALL_DIR lib/)
 
-execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpmachine OUTPUT_VARIABLE target_triple OUTPUT_STRIP_TRAILING_WHITESPACE)
-set(SERVOARRAY_DRIVER_SUFFIX ".servoarray-${servoarray_VERSION_MAJOR}-${target_triple}.so")
+include(config/servoarrayTools.cmake)  # sets SERVOARRAY_DRIVER_SUFFIX
 set(SERVOARRAY_DEFAULT_DRIVER_PATHS ~/.servoarray/ ${CMAKE_INSTALL_PREFIX}/lib/servoarray)
 set(SERVOARRAY_DEFAULT_CONFIG_FILES ~/.servoarrayrc ./.servoarrayrc)
 
