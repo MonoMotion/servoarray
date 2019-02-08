@@ -11,6 +11,14 @@ addons:
       - cmake
       - libboost-dev
       - libboost-filesystem-dev
+
+matrix:
+  include:
+    - env: DEB=true DEBIAN_VERSION=stretch
+    - env: DEB=true DEBIAN_VERSION=buster
+    - env: DEB=true DEBIAN_VERSION=stretch CROSS=raspberrypi
+    - env: PYTHON=true
+
 env:
   - CXX=g++-5
 script:
