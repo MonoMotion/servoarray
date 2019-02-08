@@ -28,8 +28,9 @@ function(servoarray_add_driver target)
   set_target_properties(${target} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
   set_target_properties(${target} PROPERTIES MACOSX_RPATH ON)
 
-  execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpmachine OUTPUT_VARIABLE host_triple OUTPUT_STRIP_TRAILING_WHITESPACE)
-  set_target_properties(${target} PROPERTIES SUFFIX ".servoarray-${servoarray_VERSION_MAJOR}-${host_triple}.so")
+  execute_process(COMMAND uname -m OUTPUT_VARIABLE machine OUTPUT_STRIP_TRAILING_WHITESPACE)
+  execute_process(COMMAND uname -s OUTPUT_VARIABLE abi OUTPUT_STRIP_TRAILING_WHITESPACE)
+  set_target_properties(${target} PROPERTIES SUFFIX ".servoarray-${servoarray_VERSION_MAJOR}-${machine}-${abi}.so")
 
   target_link_libraries(${target} ${SERVOARRAY_DRIVER_LIBRARIES})
   target_include_directories(${target} ${inc_system} PRIVATE ${SERVOARRAY_INCLUDE_DIR})
