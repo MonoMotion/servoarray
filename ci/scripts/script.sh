@@ -16,4 +16,4 @@
 
 set -euo pipefail
 
-docker run -v $(pwd):/source -v $(pwd)/build:/build builder /package.sh
+docker run -v $(pwd):/source -v $(pwd)/build:/build builder /scripts/${BUILD_TYPE}_build.sh
