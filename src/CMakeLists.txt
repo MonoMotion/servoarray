@@ -34,6 +34,7 @@ set(SERVOARRAY_DRIVER_SUFFIX ".servoarray-${servoarray_VERSION_MAJOR}-${target_t
 set(SERVOARRAY_DEFAULT_DRIVER_PATHS ~/.servoarray/ ${CMAKE_INSTALL_PREFIX}/lib/servoarray)
 set(SERVOARRAY_DEFAULT_CONFIG_FILES ~/.servoarrayrc ./.servoarrayrc)
 
+set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.36.0 REQUIRED COMPONENTS filesystem system)
 include_directories(${Boost_INCLUDE_DIRS})
 
