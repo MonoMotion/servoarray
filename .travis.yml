@@ -14,22 +14,26 @@ addons:
 
 matrix:
   include:
-    - env: DEB=true DEBIAN_VERSION=stretch
-    - env: DEB=true DEBIAN_VERSION=buster
-    - env: DEB=true DEBIAN_VERSION=stretch CROSS=raspberrypi
-    - env: PYTHON=true
+    - env: BUILD_TYPE=deb DEBIAN_VERSION=stretch
+    - env: BUILD_TYPE=deb DEBIAN_VERSION=buster
+    - env: BUILD_TYPE=deb DEBIAN_VERSION=stretch CROSS=raspberrypi
+    - env: BUILD_TYPE=python
 
 env:
   - CXX=g++-5
+
+install:
+  - ci/scripts/${BUILD_TYPE}/install.sh
+
 script:
-  - pip install -e .
-  - mkdir -p src/build && cd $_
-  - cmake .. -DPYBIND11_PYTHON_VERSION=${TRAVIS_PYTHON_VERSION}
-  - make -j"$(nproc)"
+  - ci/scripts/${BUILD_TYPE}/script.sh
+
 after_success:
-  - cpack -D CPACK_OUTPUT_FILE_PREFIX=dist
+  - ci/scripts/${BUILD_TYPE}/after_success.sh
+
 before_deploy:
   - cd ${TRAVIS_BUILD_DIR}
+
 deploy:
 - provider: pypi
   user: "${PYPI_USERNAME}"
