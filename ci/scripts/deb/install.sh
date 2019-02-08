@@ -16,12 +16,28 @@
 
 set -euo pipefail
 
-function base_image() {
+function base_image_python() {
+  if [ -n "${CROSS:-}" ]; then
+    echo "balenalib/${CROSS}-python:${PYTHON_VERSION}-${DEBIAN_VERSION}-build"
+  else
+    echo "python:${PYTHON_VERSION}-slim-${DEBIAN_VERSION}"
+  fi
+}
+
+function base_image_deb() {
   if [ -n "${CROSS:-}" ]; then
     echo "balenalib/${CROSS}:${DEBIAN_VERSION}-build"
   else
     echo "debian:${DEBIAN_VERSION}-slim"
   fi
+}
+
+function base_image() {
+  case ${BUILD_TYPE} in
+    "python" ) base_image_python ;;
+    "deb" ) base_image_deb ;;
+    * ) echo "unknown build type ${BUILD_TYPE}"; exit -1 ;;
+  esac
 }
 
 docker build ci/image -t builder --build-arg BASE_IMAGE=$(base_image)

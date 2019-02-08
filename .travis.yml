@@ -17,19 +17,19 @@ matrix:
     - env: BUILD_TYPE=deb DEBIAN_VERSION=stretch
     - env: BUILD_TYPE=deb DEBIAN_VERSION=buster
     - env: BUILD_TYPE=deb DEBIAN_VERSION=stretch CROSS=raspberrypi
-    - env: BUILD_TYPE=python
+    - env: BUILD_TYPE=python PYTHON_VERSION=3.5
 
 env:
   - CXX=g++-5
 
 install:
-  - ci/scripts/${BUILD_TYPE}/install.sh
+  - ci/scripts/install.sh
 
 script:
-  - ci/scripts/${BUILD_TYPE}/script.sh
+  - ci/scripts/script.sh
 
 after_success:
-  - ci/scripts/${BUILD_TYPE}/after_success.sh
+  - ci/scripts/after_success.sh
 
 before_deploy:
   - cd ${TRAVIS_BUILD_DIR}
