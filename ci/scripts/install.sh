@@ -40,7 +40,21 @@ function base_image() {
   esac
 }
 
+function cross_sh() {
+  if [ -n "${CROSS:-}" ]; then
+    echo "[\"/usr/bin/qemu-arm-static\", \"-execve\", \"/bin/sh\", \"-c\"]"
+  else
+    echo "[\"/bin/sh\", \"-c\"]"
+  fi
+}
+
 readonly BASE_IMAGE=$(base_image)
+readonly CROSS_SH=$(cross_sh)
 
 echo "BASE_IMAGE=${BASE_IMAGE}"
-docker build ci/image -t builder --build-arg BASE_IMAGE=${BASE_IMAGE}
+cat ci/image/Dockerfile.in \
+  | sed "s/@BASE_IMAGE@/${BASE_IMAGE//\//\\/}/g" \
+  | sed "s/@SHELL@/${CROSS_SH//\//\\/}/g" \
+  > ci/image/Dockerfile
+
+docker build ci/image -t builder
