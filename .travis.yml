@@ -33,6 +33,7 @@ deploy:
   script: bash ci/scripts/pypi_deploy.sh
   skip_cleanup: true
   on:
+    condition: "$BUILD_TYPE = python"
     all_branches: true
 - provider: bintray
   file: "bintray.json"
@@ -41,4 +42,5 @@ deploy:
   skip_cleanup: true
   dry_run: true
   on:
+    condition: "$BUILD_TYPE = deb"
     all_branches: true
