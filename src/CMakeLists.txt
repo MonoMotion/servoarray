@@ -33,6 +33,8 @@ include(config/servoarrayTools.cmake)  # sets SERVOARRAY_DRIVER_SUFFIX
 set(SERVOARRAY_DEFAULT_DRIVER_PATHS ~/.servoarray/ ${CMAKE_INSTALL_PREFIX}/lib/servoarray)
 set(SERVOARRAY_DEFAULT_CONFIG_FILES ~/.servoarrayrc ./.servoarrayrc)
 
+option(BUILD_PYTHON "Build servoarray python module" ON)
+
 set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.36.0 REQUIRED COMPONENTS filesystem system)
 include_directories(${Boost_INCLUDE_DIRS})
@@ -51,8 +53,10 @@ add_subdirectory(include)
 add_subdirectory(config)
 add_subdirectory(examples)
 
-add_subdirectory(third_party/pybind11)
-# pybind11 headers produce so many errors with strict compiler options
-include_directories(SYSTEM ${PYBIND11_INCLUDE_DIR})
+if (${BUILD_PYTHON})
+  add_subdirectory(third_party/pybind11)
+  # pybind11 headers produce so many errors with strict compiler options
+  include_directories(SYSTEM ${PYBIND11_INCLUDE_DIR})
 
-add_subdirectory(python)
+  add_subdirectory(python)
+endif()
