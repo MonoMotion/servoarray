@@ -19,4 +19,5 @@ set -euo pipefail
 pip install --upgrade setuptools pip wheel
 
 cd /source
-python setup.py sdist bdist_wheel -d /dist
+${BUILDER_SDIST:-false} && python setup.py sdist -d /dist
+${BUILDER_WHEEL:-false} && python setup.py bdist_wheel -d /dist
