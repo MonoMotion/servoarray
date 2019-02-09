@@ -17,5 +17,12 @@
 set -euo pipefail
 
 sudo apt-get update -y
-sudo apt-get install -y twine python3-setuptools
-twine upload --repository-url https://test.pypi.org/legacy/ -u ${PYPI_USERNAME} -p ${PYPI_PASSWORD} dist/*.whl dist/*.tar.gz
+sudo apt-get install -y python3-setuptools python3-pip
+sudo pip3 install twine
+
+function upload_pypi() {
+  twine upload --repository-url https://test.pypi.org/legacy/ -u ${PYPI_USERNAME} -p ${PYPI_PASSWORD} $@
+}
+
+${BUILDER_SDIST:-false} && upload_pypi dist/*.tar.gz
+${BUILDER_WHEEL:-false} && upload_pypi dist/*.whl
