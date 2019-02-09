@@ -31,6 +31,7 @@ before_deploy:
 deploy:
 - provider: script
   script: bash ci/scripts/pypi_deploy.sh
+  skip_cleanup: true
   on:
     tags: true
 - provider: bintray
