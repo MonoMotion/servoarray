@@ -16,8 +16,8 @@ matrix:
   include:
     - env: BUILD_TYPE=deb DEBIAN_VERSION=stretch
     - env: BUILD_TYPE=deb DEBIAN_VERSION=buster
-    - env: BUILD_TYPE=deb DEBIAN_VERSION=stretch CROSS=raspberrypi
-    - env: BUILD_TYPE=python PYTHON_VERSION=3.5
+    - env: BUILD_TYPE=deb DEBIAN_VERSION=stretch CROSS=raspberry-pi
+    - env: BUILD_TYPE=python PYTHON_VERSION=3.5 DEBIAN_VERSION=stretch
 
 env:
   - CXX=g++-5
