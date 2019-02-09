@@ -17,7 +17,10 @@ matrix:
     - env: BUILD_TYPE=deb DEBIAN_VERSION=stretch
     - env: BUILD_TYPE=deb DEBIAN_VERSION=buster
     - env: BUILD_TYPE=deb DEBIAN_VERSION=stretch CROSS=raspberry-pi
-    - env: BUILD_TYPE=python PYTHON_VERSION=3.5 DEBIAN_VERSION=stretch
+    - env: BUILD_TYPE=python PYTHON_VERSION=3.5 DEBIAN_VERSION=stretch BUILDER_SDIST=true
+    - env: BUILD_TYPE=python PYTHON_VERSION=3.5 DEBIAN_VERSION=stretch CROSS=raspberry-pi BUILDER_WHEEL=true
+    - env: BUILD_TYPE=python PYTHON_VERSION=3.6 DEBIAN_VERSION=stretch CROSS=raspberry-pi BUILDER_WHEEL=true
+    - env: BUILD_TYPE=python PYTHON_VERSION=3.7 DEBIAN_VERSION=stretch CROSS=raspberry-pi BUILDER_WHEEL=true
 
 env:
   - CXX=g++-5
