@@ -18,7 +18,7 @@ set -euo pipefail
 
 DEB_ARCH=$(docker run builder "dpkg --print-architecture")
 
-cat ci/bintray.in \
+cat ci/bintray.json.in \
   | sed "s/@VERSION@/$(./version.sh)/g" \
   | sed "s/@DEBIAN_VERSION@/${DEBIAN_VERSION}/g" \
   | sed "s/@ARCH@/${DEB_ARCH}/g" \
