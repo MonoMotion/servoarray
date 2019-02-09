@@ -19,6 +19,4 @@ set -euo pipefail
 cd /source
 pip install -e .
 
-cd /build
-cmake /source/src -DBUILD_PYTHON=ON
-make -j"$(nproc)"
+# TODO: perform tests around here
