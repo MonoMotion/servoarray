@@ -1,0 +1,10 @@
+FROM @BASE_IMAGE@
+
+SHELL @SHELL@
+
+RUN apt-get update -y \
+  && apt-get install -y --no-install-recommends libboost-dev libboost-filesystem-dev cmake build-essential
+
+COPY scripts /scripts
+
+ENTRYPOINT @SHELL@
