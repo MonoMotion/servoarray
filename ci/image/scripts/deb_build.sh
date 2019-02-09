@@ -17,5 +17,5 @@
 set -euo pipefail
 
 cd /build
-cmake /source -DBUILD_PYTHON=OFF
+cmake /source/src -DBUILD_PYTHON=OFF
 make -j"$(nproc)"

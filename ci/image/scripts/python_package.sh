@@ -16,4 +16,5 @@
 
 set -euo pipefail
 
+cd /source
 python setup.py sdist bdist_wheel -d /dist

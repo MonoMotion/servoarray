@@ -20,5 +20,5 @@ cd /source
 pip install -e .
 
 cd /build
-cmake /source -DBUILD_PYTHON=ON
+cmake /source/src -DBUILD_PYTHON=ON
 make -j"$(nproc)"
