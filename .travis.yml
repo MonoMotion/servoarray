@@ -1,5 +1,6 @@
 language: cpp
 sudo: true
+dist: xenial
 
 services:
   - docker
@@ -28,9 +29,8 @@ before_deploy:
   - cd ${TRAVIS_BUILD_DIR}
 
 deploy:
-- provider: pypi
-  user: "${PYPI_USERNAME}"
-  password: "${PYPI_PASSWORD}"
+- provider: script
+  script: bash ci/scripts/pypi_deploy.sh
   on:
     tags: true
 - provider: bintray
