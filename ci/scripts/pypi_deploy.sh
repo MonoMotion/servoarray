@@ -21,7 +21,7 @@ sudo apt-get install -y python3-setuptools python3-pip
 sudo pip3 install twine
 
 function upload_pypi() {
-  twine upload --repository-url https://test.pypi.org/legacy/ -u ${PYPI_USERNAME} -p ${PYPI_PASSWORD} $@
+  twine upload -u ${PYPI_USERNAME} -p ${PYPI_PASSWORD} $@
 }
 
 ${BUILDER_SDIST:-false} && upload_pypi dist/*.tar.gz
