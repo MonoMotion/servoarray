@@ -33,11 +33,12 @@ deploy:
   script: bash ci/scripts/pypi_deploy.sh
   skip_cleanup: true
   on:
-    tags: true
+    all_branches: true
 - provider: bintray
   file: "bintray.json"
   user: "coord-e"
   key: $BINTRAY_API_KEY
   skip_cleanup: true
+  dry_run: true
   on:
-    tags: true
+    all_branches: true
