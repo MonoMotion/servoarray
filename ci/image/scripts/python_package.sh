@@ -16,5 +16,7 @@
 
 set -euo pipefail
 
+pip install --upgrade setuptools pip wheel
+
 cd /source
 python setup.py sdist bdist_wheel -d /dist
