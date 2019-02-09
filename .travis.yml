@@ -1,16 +1,8 @@
-language: python
-python:
-  - '3.5'
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-5
-      - build-essential
-      - cmake
-      - libboost-dev
-      - libboost-filesystem-dev
+language: cpp
+sudo: true
+
+services:
+  - docker
 
 matrix:
   include:
@@ -21,9 +13,6 @@ matrix:
     - env: BUILD_TYPE=python PYTHON_VERSION=3.5 DEBIAN_VERSION=stretch CROSS=raspberry-pi BUILDER_WHEEL=true
     - env: BUILD_TYPE=python PYTHON_VERSION=3.6 DEBIAN_VERSION=stretch CROSS=raspberry-pi BUILDER_WHEEL=true
     - env: BUILD_TYPE=python PYTHON_VERSION=3.7 DEBIAN_VERSION=stretch CROSS=raspberry-pi BUILDER_WHEEL=true
-
-env:
-  - CXX=g++-5
 
 install:
   - ci/scripts/install.sh
