@@ -16,4 +16,4 @@
 
 set -euo pipefail
 
-docker run -v $(pwd):/source -v $(pwd)/build:/build builder /scripts/${BUILD_TYPE}_build.sh
+docker run -v $(pwd):/source -v $(pwd)/build:/build --env-file <(env | grep BUILDER_) builder /scripts/${BUILD_TYPE}_build.sh
