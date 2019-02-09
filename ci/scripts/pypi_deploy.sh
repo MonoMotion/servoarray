@@ -17,4 +17,4 @@
 set -euo pipefail
 
 apt install -y twine
-twine upload -u ${PYPI_USERNAME} -p ${PYPI_PASSWORD} dist/*
+twine upload -u ${PYPI_USERNAME} -p ${PYPI_PASSWORD} dist/*.whl dist/*.tar.gz
