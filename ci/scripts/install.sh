@@ -40,4 +40,7 @@ function base_image() {
   esac
 }
 
-docker build ci/image -t builder --build-arg BASE_IMAGE=$(base_image)
+readonly BASE_IMAGE=$(base_image)
+
+echo "BASE_IMAGE=${BASE_IMAGE}"
+docker build ci/image -t builder --build-arg BASE_IMAGE=${BASE_IMAGE}
