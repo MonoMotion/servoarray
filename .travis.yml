@@ -24,6 +24,7 @@ after_success:
   - ci/scripts/after_success.sh
 
 before_deploy:
+  - ci/scripts/before_deploy.sh
   - cd ${TRAVIS_BUILD_DIR}
 
 deploy:

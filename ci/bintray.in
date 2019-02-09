@@ -1,0 +1,22 @@
+{
+  "package": {
+    "name": "servoarray",
+    "repo": "apt",
+    "subject": "monomotion"
+  },
+  "version": {
+    "name": "@VERSION@"
+  },
+  "files": [
+    {
+      "includePattern": "dist/(.*\.deb)",
+      "uploadPattern": "pool/main/m/servoarray/$1",
+      "matrixParams": {
+        "deb_distribution": "@DEBIAN_VERSION@",
+        "deb_component": "main",
+        "deb_architecture": "@ARCH@"
+      }
+    }
+  ],
+  "publish": true
+}
