@@ -16,4 +16,4 @@
 
 set -euo pipefail
 
-docker run -v $(pwd):/source -v $(pwd)/build:/build -v $(pwd)/dist:/dist builder /scripts/${BUILD_TYPE}_package.sh
+python setup.py sdist bdist_wheel -d /dist

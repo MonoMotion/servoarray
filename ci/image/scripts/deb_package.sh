@@ -16,4 +16,5 @@
 
 set -euo pipefail
 
-docker run -v $(pwd):/source -v $(pwd)/build:/build -v $(pwd)/dist:/dist builder /scripts/${BUILD_TYPE}_package.sh
+cd /build
+cpack -D CPACK_OUTPUT_FILE_PREFIX=/dist
