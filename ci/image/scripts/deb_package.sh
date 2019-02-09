@@ -17,4 +17,4 @@
 set -euo pipefail
 
 cd /build
-cpack -D CPACK_OUTPUT_FILE_PREFIX=/dist
+cpack -D CPACK_OUTPUT_FILE_PREFIX=/dist -D CPACK_GENERATOR=DEB
