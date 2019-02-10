@@ -3,7 +3,7 @@ FROM @BASE_IMAGE@
 SHELL @SHELL@
 
 RUN apt-get update -y \
-  && apt-get install -y --no-install-recommends libboost-dev libboost-filesystem-dev cmake build-essential curl
+  && apt-get install -y --no-install-recommends cmake build-essential curl
 
 RUN mkdir -p tmp/boost && cd $_ \
   && curl -L https://dl.bintray.com/boostorg/release/1.69.0/source/boost_1_69_0.tar.gz | tar -xz --strip-components=1 \
