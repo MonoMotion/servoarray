@@ -40,7 +40,7 @@ public:
   DriverParams() = default;
 
   template<typename T>
-  const T& get(const std::string& key) const {
+  T get(const std::string& key) const {
     if(auto const value = this->data_.get_optional<T>(key)) {
       return value.get();
     } else {
@@ -50,7 +50,7 @@ public:
   }
 
   template<typename T>
-  const T& get_or(const std::string& key, const T& default_) const {
+  T get_or(const std::string& key, const T& default_) const {
     // TODO: Use the default-value version of ptree::get
     if(auto const value = this->data_.get_optional<T>(key)) {
       return value.get();

@@ -1,3 +1,4 @@
+#!/bin/bash
 # This file is part of servoarray.
 #
 # servoarray is free software: you can redistribute it and/or modify
@@ -13,9 +14,12 @@
 # You should have received a copy of the GNU General Public License
 # along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${PROJECT_VERSION}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
-set(CPACK_GENERATOR "TGZ;ZIP")
-set(CPACK_PACKAGE_CONTACT "coord.e <me@coord-e.com>")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libboost-filesystem1.62.0")
+set -euo pipefail
 
-include(CPack)
+DEB_ARCH=$(docker run builder "dpkg --print-architecture")
+
+cat ci/bintray.json.in \
+  | sed "s/@VERSION@/$(./version.sh)/g" \
+  | sed "s/@DEBIAN_VERSION@/${DEBIAN_VERSION}/g" \
+  | sed "s/@ARCH@/${DEB_ARCH}/g" \
+  > bintray.json

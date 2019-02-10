@@ -1,37 +1,45 @@
-language: python
-python:
-  - '3.5'
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-5
-      - build-essential
-      - cmake
-      - libboost-dev
-      - libboost-filesystem-dev
-env:
-  - CXX=g++-5
+language: cpp
+sudo: true
+dist: xenial
+
+services:
+  - docker
+
+matrix:
+  include:
+    - env: BUILD_TYPE=deb DEBIAN_VERSION=stretch
+    - env: BUILD_TYPE=deb DEBIAN_VERSION=buster
+    - env: BUILD_TYPE=deb DEBIAN_VERSION=stretch CROSS=raspberry-pi
+    - env: BUILD_TYPE=python PYTHON_VERSION=3.5 DEBIAN_VERSION=stretch BUILDER_SDIST=true
+    - env: BUILD_TYPE=python PYTHON_VERSION=3.5 DEBIAN_VERSION=stretch CROSS=raspberry-pi BUILDER_WHEEL=true
+    - env: BUILD_TYPE=python PYTHON_VERSION=3.6 DEBIAN_VERSION=stretch CROSS=raspberry-pi BUILDER_WHEEL=true
+    - env: BUILD_TYPE=python PYTHON_VERSION=3.7 DEBIAN_VERSION=stretch CROSS=raspberry-pi BUILDER_WHEEL=true
+
+install:
+  - ci/scripts/install.sh
+
 script:
-  - pip install -e .
-  - mkdir -p src/build && cd $_
-  - cmake .. -DPYBIND11_PYTHON_VERSION=${TRAVIS_PYTHON_VERSION}
-  - make -j"$(nproc)"
+  - ci/scripts/script.sh
+
 after_success:
-  - cpack -D CPACK_OUTPUT_FILE_PREFIX=dist
+  - ci/scripts/after_success.sh
+
 before_deploy:
+  - ci/scripts/before_deploy.sh
   - cd ${TRAVIS_BUILD_DIR}
+
 deploy:
-- provider: pypi
-  user: "${PYPI_USERNAME}"
-  password: "${PYPI_PASSWORD}"
-  on:
-    tags: true
-- provider: releases
-  api_key: $GITHUB_OAUTH_TOKEN
+- provider: script
+  script: bash ci/scripts/pypi_deploy.sh
   skip_cleanup: true
-  file_glob: true
-  file: 'src/build/dist/*'
   on:
+    condition: "$BUILD_TYPE = python"
+    tags: true
+- provider: bintray
+  file: "bintray.json"
+  user: "coord-e"
+  key: $BINTRAY_API_KEY
+  skip_cleanup: true
+  on:
+    condition: "$BUILD_TYPE = deb"
     tags: true
