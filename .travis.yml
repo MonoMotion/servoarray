@@ -40,7 +40,6 @@ deploy:
   user: "coord-e"
   key: $BINTRAY_API_KEY
   skip_cleanup: true
-  dry_run: true
   on:
     condition: "$BUILD_TYPE = deb"
     all_branches: true
