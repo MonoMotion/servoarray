@@ -16,11 +16,28 @@
 #include "servoarray/servoarray.h"
 #include "./util.h"
 
+#include <args.hxx>
+
 #include <iostream>
 
 int main(int argc, char **argv) {
+  args::ArgumentParser argparser("Test the servoarray driver in REPL-like interface");
+  args::HelpFlag help(argparser, "help", "Print this help", {'h', "help"});
+  args::Positional<std::string> arg_driver(argparser, "driver", "Driver name");
 
-  const std::string name {argc > 1 ? argv[1] : ""};
+  try {
+    argparser.ParseCLI(argc, argv);
+  } catch (const args::Help&){
+    std::cout << argparser;
+    return 0;
+  } catch (const args::ParseError& e){
+    std::cerr << e.what() << std::endl;
+    std::cerr << argparser;
+    return -1;
+  }
+
+  const std::string name {arg_driver ? args::get(arg_driver) : ""};
+
   auto sa = ServoArray::ServoArray(name);
 
   util::register_signal(SIGINT);
