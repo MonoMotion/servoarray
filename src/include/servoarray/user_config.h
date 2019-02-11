@@ -53,9 +53,22 @@ public:
   MapConfig& merge(const MapConfig&);
 };
 
+class OffsetConfig {
+  std::vector<double> offsets_;
+
+  friend class UserConfig;
+
+public:
+  const std::vector<double>& offsets() const&;
+  std::vector<double> offsets() &&;
+
+  OffsetConfig& merge(const OffsetConfig&);
+};
+
 class UserConfig {
   DriverConfig driver_;
   MapConfig mapping_;
+  OffsetConfig offset_;
 
 public:
   UserConfig() = default;
@@ -67,6 +80,9 @@ public:
 
   const MapConfig& mapping() const&;
   MapConfig mapping() &&;
+
+  const OffsetConfig& offset() const&;
+  OffsetConfig offset() &&;
 
   UserConfig& merge(const UserConfig&);
 };
