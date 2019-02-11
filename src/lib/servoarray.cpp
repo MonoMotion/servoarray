@@ -28,6 +28,14 @@ ServoArray::ServoArray(std::shared_ptr<Driver> driver, const std::vector<double>
 ServoArray::ServoArray(const std::string& name, const DriverParams& params, DriverManager& manager) : driver_(manager.load(name, params)) {
   this->cache_.resize(this->size());
   this->offsets_.resize(this->size());
+
+  for (const auto& p : manager.config().offset().offsets()) {
+    if (p.first >= this->size()) {
+      throw std::runtime_error("Offset index out of range");
+    }
+
+    this->offsets_[p.first] = p.second;
+  }
 }
 
 void ServoArray::write(std::size_t index, double rad) {
