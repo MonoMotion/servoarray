@@ -15,8 +15,8 @@
 
 cmake_minimum_required(VERSION 2.7)
 
-sa_add_bin(servo_array INSTALL)
-sa_add_bin(servo_map INSTALL)
-sa_add_bin(reset INSTALL)
+sa_add_bin(servo_array NAME servoarray-shell INSTALL)
+sa_add_bin(servo_map NAME servoarray-map-shell INSTALL)
+sa_add_bin(reset NAME servoarray-reset INSTALL)
 
 sa_add_bin(bench)
