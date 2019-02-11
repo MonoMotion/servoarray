@@ -14,6 +14,7 @@
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <toml11/toml.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "servoarray/user_config.h"
 
@@ -73,7 +74,13 @@ UserConfig::UserConfig(const std::string& path) {
   auto const config = toml::parse(path);
 
   this->mapping_.names_ = toml::get_or<std::unordered_map<std::string, std::size_t>>(config, "mapping", {});
-  this->offset_.offsets_ = toml::get_or<std::unordered_map<std::size_t, double>>(config, "offsets", {});
+  {
+    auto const offsets = toml::get_or<std::unordered_map<std::string, double>>(config, "offsets", {});
+    for (auto const& p : offsets) {
+      auto const idx = boost::lexical_cast<std::size_t>(p.first);
+      this->offset_.offsets_[idx] = p.second;
+    }
+  }
 
   // TODO: Seperate this into some function
   {
