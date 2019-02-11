@@ -16,7 +16,7 @@
 cmake_minimum_required(VERSION 2.7)
 
 sa_add_bin(servo_array INSTALL)
-
 sa_add_bin(servo_map INSTALL)
+sa_add_bin(reset INSTALL)
 
 sa_add_bin(bench)
