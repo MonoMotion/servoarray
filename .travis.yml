@@ -34,7 +34,7 @@ deploy:
   skip_cleanup: true
   on:
     condition: "$BUILD_TYPE = python"
-    all_branches: true
+    tags: true
 - provider: bintray
   file: "bintray.json"
   user: "coord-e"
@@ -42,4 +42,4 @@ deploy:
   skip_cleanup: true
   on:
     condition: "$BUILD_TYPE = deb"
-    all_branches: true
+    tags: true
