@@ -20,7 +20,7 @@
 
 namespace ServoArray {
 
-ServoArray::ServoArray(std::shared_ptr<Driver> driver) : driver_(driver) {
+ServoArray::ServoArray(std::shared_ptr<Driver> driver, const std::vector<double>& offsets) : driver_(driver), offsets_(offsets) {
   this->cache_.resize(this->size());
 }
 
