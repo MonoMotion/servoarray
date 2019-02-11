@@ -34,12 +34,13 @@ deploy:
   skip_cleanup: true
   on:
     condition: "$BUILD_TYPE = python"
-    tags: true
+    all_branches: true
 - provider: bintray
   file: "bintray.json"
   user: "coord-e"
   key: $BINTRAY_API_KEY
   skip_cleanup: true
+  dry_run: true
   on:
     condition: "$BUILD_TYPE = deb"
-    tags: true
+    all_branches: true
