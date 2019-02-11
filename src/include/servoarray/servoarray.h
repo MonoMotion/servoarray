@@ -49,6 +49,9 @@ public:
   void set_read_mode(ReadMode);
   ReadMode read_mode() const;
 
+  double offset(std::size_t) const;
+  void set_offset(std::size_t, double);
+
   std::size_t size() const;
 };
 

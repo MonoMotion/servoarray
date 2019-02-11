@@ -69,6 +69,14 @@ ReadMode ServoArray::read_mode() const {
   return this->read_mode_;
 }
 
+double ServoArray::offset(std::size_t idx) const {
+  return this->offsets_[idx];
+}
+
+void ServoArray::set_offset(std::size_t idx, double value) {
+  this->offsets_[idx] = value;
+}
+
 std::size_t ServoArray::size() const {
   return this->driver_->size();
 }
