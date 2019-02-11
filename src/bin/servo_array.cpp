@@ -16,11 +16,22 @@
 #include "servoarray/servoarray.h"
 
 #include <iostream>
+#include <atomic>
+#include <signal.h>
+
+static std::atomic<bool> quit(false);
+
+void register_signal(int);
+void quit_handler(int);
 
 int main(int argc, char **argv) {
 
   const std::string name {argc > 1 ? argv[1] : ""};
   auto sa = ServoArray::ServoArray(name);
+
+  register_signal(SIGINT);
+  register_signal(SIGQUIT);
+  register_signal(SIGTERM);
 
   while(true) {
     std::size_t index;
@@ -33,5 +44,18 @@ int main(int argc, char **argv) {
 
     sa[index] = rad;
     std::cout << index << " -> " << sa[index] << std::endl;
+
+    if(quit.load()) break;
   }
+}
+
+void register_signal(int signal) {
+  struct sigaction action{};
+  action.sa_handler = quit_handler;
+  sigfillset(&action.sa_mask);
+  sigaction(signal, &action, nullptr);
+}
+
+void quit_handler(int) {
+  quit.store(true);
 }
