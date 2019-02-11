@@ -8,6 +8,10 @@ class DummyDriver final : public ServoArray::Driver {
 public:
   DummyDriver(std::size_t size) : size_(size) {}
 
+  ~DummyDriver() override {
+    std::cout << "[dtor] Destructing DummyDriver" << std::endl;
+  }
+
   void write(std::size_t idx, double pos) override {
     std::cout << "[write] index: " << idx << "\t position: " << pos << std::endl;
   }

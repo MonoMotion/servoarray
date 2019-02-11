@@ -14,13 +14,40 @@
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "servoarray/servoarray.h"
+#include "./util.h"
+
+#include <args.hxx>
 
 #include <iostream>
 
 int main(int argc, char **argv) {
+  args::ArgumentParser argparser("Test the servoarray driver in REPL-like interface");
+  args::HelpFlag help(argparser, "help", "Print this help", {'h', "help"});
+  args::Positional<std::string> arg_driver(argparser, "driver", "Driver name");
+  args::Flag arg_cached(argparser, "cached_read", "Use ReadMode::Cached", {'c', "cached-read"});
 
-  const std::string name {argc > 1 ? argv[1] : ""};
+  try {
+    argparser.ParseCLI(argc, argv);
+  } catch (const args::Help&){
+    std::cout << argparser;
+    return 0;
+  } catch (const args::ParseError& e){
+    std::cerr << e.what() << std::endl;
+    std::cerr << argparser;
+    return -1;
+  }
+
+  const std::string name {arg_driver ? args::get(arg_driver) : ""};
+
   auto sa = ServoArray::ServoArray(name);
+
+  if (arg_cached) {
+    sa.set_read_mode(ServoArray::ReadMode::Cached);
+  }
+
+  util::register_signal(SIGINT);
+  util::register_signal(SIGQUIT);
+  util::register_signal(SIGTERM);
 
   while(true) {
     std::size_t index;
@@ -33,5 +60,7 @@ int main(int argc, char **argv) {
 
     sa[index] = rad;
     std::cout << index << " -> " << sa[index] << std::endl;
+
+    if(util::should_exit()) break;
   }
 }

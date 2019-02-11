@@ -46,9 +46,11 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories(include/)
 include_directories(${CMAKE_BINARY_DIR}/include/)
 include_directories(SYSTEM third_party/toml11)
+include_directories(SYSTEM third_party/args)
 
 include(cmake/compile-options.cmake)
 include(cmake/cpack.cmake)
+include(cmake/bin.cmake)
 
 add_subdirectory(lib)
 add_subdirectory(bin)

@@ -13,18 +13,17 @@
 // You should have received a copy of the GNU General Public License
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "servoarray/servomap.h"
-#include "./util.h"
+#include "servoarray/servoarray.h"
 
 #include <args.hxx>
 
 #include <iostream>
+#include <cstdint>
 
 int main(int argc, char **argv) {
-  args::ArgumentParser argparser("Test the servoarray driver in REPL-like interface");
+  args::ArgumentParser argparser("Reset all joints");
   args::HelpFlag help(argparser, "help", "Print this help", {'h', "help"});
   args::Positional<std::string> arg_driver(argparser, "driver", "Driver name");
-  args::Flag arg_cached(argparser, "cached_read", "Use ReadMode::Cached", {'c', "cached-read"});
 
   try {
     argparser.ParseCLI(argc, argv);
@@ -41,28 +40,7 @@ int main(int argc, char **argv) {
 
   auto sa = ServoArray::ServoArray(driver);
 
-  if (arg_cached) {
-    sa.set_read_mode(ServoArray::ReadMode::Cached);
-  }
-
-  auto map = ServoArray::ServoMap(sa);
-
-  util::register_signal(SIGINT);
-  util::register_signal(SIGQUIT);
-  util::register_signal(SIGTERM);
-
-  while(true) {
-    std::string name;
-    std::cout << "(name) > ";
-    std::cin >> name;
-
-    double rad;
-    std::cout << " (rad) > ";
-    std::cin >> rad;
-
-    map[name] = rad;
-    std::cout << name << " -> " << map[name] << std::endl;
-
-    if(util::should_exit()) break;
+  for (std::size_t i = 0; i < sa.size(); i++) {
+    sa[i] = 0;
   }
 }

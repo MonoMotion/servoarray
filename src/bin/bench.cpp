@@ -1,6 +1,6 @@
 #include "servoarray/servoarray.h"
 
-#include <boost/lexical_cast.hpp>
+#include <args.hxx>
 
 #include <iostream>
 #include <iomanip>
@@ -20,13 +20,25 @@ void bench(std::string const& title, std::size_t times, F target) {
 }
 
 int main(int argc, char **argv) {
-  if (argc < 2) {
-    std::cerr << argv[0] << " times [name]" << std::endl;
+  args::ArgumentParser argparser("servoarray benchmark");
+  args::HelpFlag help(argparser, "help", "Print this help", {'h', "help"});
+  args::Positional<std::string> arg_driver(argparser, "driver", "Driver name");
+  args::ValueFlag<std::size_t> arg_times(argparser, "times", "times", {'n', "times"});
+
+  try {
+    argparser.ParseCLI(argc, argv);
+  } catch (const args::Help&){
+    std::cout << argparser;
+    return 0;
+  } catch (const args::ParseError& e){
+    std::cerr << e.what() << std::endl;
+    std::cerr << argparser;
     return -1;
   }
 
-  const auto times = boost::lexical_cast<std::size_t>(argv[1]);
-  const std::string name {argc > 2 ? argv[2] : ""};
+  const std::size_t times {arg_times ? args::get(arg_times) : 1000};
+  const std::string name {arg_driver ? args::get(arg_driver) : ""};
+
   auto sa = ServoArray::ServoArray(name);
 
   bench("Set", times, [&sa](size_t i) { sa.write(0, 0); });
