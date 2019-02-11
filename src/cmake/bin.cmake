@@ -13,10 +13,21 @@
 # You should have received a copy of the GNU General Public License
 # along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 2.7)
+function(sa_add_bin target)
+  cmake_parse_arguments(ARG "INSTALL" "NAME" "" ${ARGN})
 
-sa_add_bin(servo_array INSTALL)
+  if(ARG_NAME)
+    set(name ${ARG_NAME})
+  else()
+    set(name ${target})
+  endif()
 
-sa_add_bin(servo_map INSTALL)
+  add_executable(${target}_bin ${target}.cpp)
+  set_target_properties(${target}_bin PROPERTIES OUTPUT_NAME "${name}")
+  target_link_libraries(${target}_bin servoarray_lib)
+  sa_set_compile_options(${target}_bin)
 
-sa_add_bin(bench)
+  if(${ARG_INSTALL})
+    install(TARGETS ${target}_bin RUNTIME DESTINATION bin)
+  endif()
+endfunction()

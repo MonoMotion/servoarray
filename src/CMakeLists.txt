@@ -49,6 +49,7 @@ include_directories(SYSTEM third_party/toml11)
 
 include(cmake/compile-options.cmake)
 include(cmake/cpack.cmake)
+include(cmake/bin.cmake)
 
 add_subdirectory(lib)
 add_subdirectory(bin)
