@@ -54,13 +54,13 @@ public:
 };
 
 class OffsetConfig {
-  std::vector<double> offsets_;
+  std::unordered_map<std::size_t, double> offsets_;
 
   friend class UserConfig;
 
 public:
-  const std::vector<double>& offsets() const&;
-  std::vector<double> offsets() &&;
+  const std::unordered_map<std::size_t, double>& offsets() const&;
+  std::unordered_map<std::size_t, double> offsets() &&;
 
   OffsetConfig& merge(const OffsetConfig&);
 };
