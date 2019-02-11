@@ -14,9 +14,14 @@
 # along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
 cmake_minimum_required(VERSION 3.7)
-cmake_policy(SET CMP0048 NEW)
 
-project(servoarray VERSION 0.7.0 LANGUAGES CXX)
+project(servoarray LANGUAGES CXX)
+
+execute_process(COMMAND ${PROJECT_SOURCE_DIR}/../version.sh simple OUTPUT_VARIABLE servoarray_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
+project(servoarray VERSION ${servoarray_VERSION})
+
+execute_process(COMMAND ${PROJECT_SOURCE_DIR}/../version.sh OUTPUT_VARIABLE servoarray_DETAILED_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
+message(STATUS "Version: v${servoarray_DETAILED_VERSION}")
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
