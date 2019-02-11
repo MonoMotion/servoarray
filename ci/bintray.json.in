@@ -3,7 +3,7 @@
     "name": "servoarray",
     "repo": "apt",
     "subject": "monomotion",
-    "licenses": ["GPL-3.0-or-later"],
+    "licenses": ["GPL-2.0-or-later"],
     "website_url": "https://github.com/MonoMotion/servoarray",
     "issue_tracker_url": "https://github.com/MonoMotion/servoarray/issues",
     "vcs_url": "https://github.com/MonoMotion/servoarray.git"
