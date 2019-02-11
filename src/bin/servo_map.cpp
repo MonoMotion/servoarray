@@ -14,6 +14,7 @@
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "servoarray/servomap.h"
+#include "./util.h"
 
 #include <iostream>
 
@@ -22,6 +23,10 @@ int main(int argc, char **argv) {
   const std::string driver {argc > 1 ? argv[1] : ""};
   auto sa = ServoArray::ServoArray(driver);
   auto map = ServoArray::ServoMap(sa);
+
+  util::register_signal(SIGINT);
+  util::register_signal(SIGQUIT);
+  util::register_signal(SIGTERM);
 
   while(true) {
     std::string name;
@@ -34,5 +39,7 @@ int main(int argc, char **argv) {
 
     map[name] = rad;
     std::cout << name << " -> " << map[name] << std::endl;
+
+    if(util::should_exit()) break;
   }
 }
