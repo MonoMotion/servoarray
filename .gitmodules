@@ -4,3 +4,6 @@
 [submodule "src/third_party/toml11"]
 	path = src/third_party/toml11/toml11
 	url = https://github.com/ToruNiina/toml11
+[submodule "src/third_party/args"]
+	path = src/third_party/args
+	url = https://github.com/Taywee/args.git
