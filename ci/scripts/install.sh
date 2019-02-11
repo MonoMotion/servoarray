@@ -60,4 +60,4 @@ cat ci/image/Dockerfile.in \
   | sed "s/@BOOST_VERSION_U@/${BOOST_VERSION//\./_}/g" \
   > ci/image/Dockerfile
 
-travis_wait 20 docker build ci/image -t builder
+docker build ci/image -t builder
