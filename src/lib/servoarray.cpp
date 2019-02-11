@@ -31,6 +31,7 @@ ServoArray::ServoArray(const std::string& name, const DriverParams& params, Driv
 
   for (const auto& p : manager.config().offset().offsets()) {
     if (p.first >= this->size()) {
+      // TODO: ignore this with warning
       throw std::runtime_error("Offset index out of range");
     }
 
