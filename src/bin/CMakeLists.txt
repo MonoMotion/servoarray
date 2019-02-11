@@ -19,11 +19,13 @@ add_executable(servo_array_bin servo_array.cpp)
 set_target_properties(servo_array_bin PROPERTIES OUTPUT_NAME "servo_array")
 target_link_libraries(servo_array_bin servoarray_lib)
 sa_set_compile_options(servo_array_bin)
+install(TARGETS servo_array_bin RUNTIME DESTINATION bin)
 
 add_executable(servo_map_bin servo_map.cpp)
 set_target_properties(servo_map_bin PROPERTIES OUTPUT_NAME "servo_map")
 target_link_libraries(servo_map_bin servoarray_lib)
 sa_set_compile_options(servo_map_bin)
+install(TARGETS servo_map_bin RUNTIME DESTINATION bin)
 
 add_executable(bench_bin bench.cpp)
 set_target_properties(bench_bin PROPERTIES OUTPUT_NAME "bench")
