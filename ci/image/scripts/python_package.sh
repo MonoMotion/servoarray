@@ -21,3 +21,6 @@ pip install --upgrade setuptools pip wheel
 cd /source
 ${BUILDER_SDIST:-false} && python setup.py sdist -d /dist
 ${BUILDER_WHEEL:-false} && python setup.py bdist_wheel -d /dist
+
+# tell travis that this is success
+true

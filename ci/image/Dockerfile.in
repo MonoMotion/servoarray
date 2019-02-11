@@ -3,7 +3,7 @@ FROM @BASE_IMAGE@
 SHELL @SHELL@
 
 RUN apt-get update -y \
-  && apt-get install -y --no-install-recommends cmake build-essential curl ca-certificates
+  && apt-get install -y --no-install-recommends cmake build-essential curl ca-certificates git
 
 RUN mkdir -p tmp/boost && cd $_ \
   && curl -fsSL https://dl.bintray.com/boostorg/release/@BOOST_VERSION@/source/boost_@BOOST_VERSION_U@.tar.gz | tar -xz --strip-components=1 \
