@@ -34,10 +34,11 @@ class ServoArray {
   std::shared_ptr<Driver> driver_;
   ReadMode read_mode_ = ReadMode::Direct;
 
+  std::vector<double> offsets_;
   std::vector<double> cache_;
 
 public:
-  ServoArray(std::shared_ptr<Driver>);
+  ServoArray(std::shared_ptr<Driver>, const std::vector<double>& offsets = {});
   ServoArray(const std::string& name = "", const DriverParams& = {}, DriverManager& = default_manager);
 
   void write(std::size_t index, double rad);
@@ -47,6 +48,9 @@ public:
 
   void set_read_mode(ReadMode);
   ReadMode read_mode() const;
+
+  double offset(std::size_t) const;
+  void set_offset(std::size_t, double);
 
   std::size_t size() const;
 };

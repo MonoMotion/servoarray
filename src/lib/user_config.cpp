@@ -14,6 +14,7 @@
 // along with servoarray.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <toml11/toml.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "servoarray/user_config.h"
 
@@ -53,10 +54,33 @@ MapConfig& MapConfig::merge(const MapConfig& other) {
   return *this;
 }
 
+const std::unordered_map<std::size_t, double>& OffsetConfig::offsets() const& {
+  return this->offsets_;
+}
+
+std::unordered_map<std::size_t, double> OffsetConfig::offsets() && {
+  return std::move(this->offsets_);
+}
+
+OffsetConfig& OffsetConfig::merge(const OffsetConfig& other) {
+  for (const auto& p : other.offsets_) {
+    this->offsets_[p.first] = p.second;
+  }
+
+  return *this;
+}
+
 UserConfig::UserConfig(const std::string& path) {
   auto const config = toml::parse(path);
 
   this->mapping_.names_ = toml::get_or<std::unordered_map<std::string, std::size_t>>(config, "mapping", {});
+  {
+    auto const offsets = toml::get_or<std::unordered_map<std::string, double>>(config, "offsets", {});
+    for (auto const& p : offsets) {
+      auto const idx = boost::lexical_cast<std::size_t>(p.first);
+      this->offset_.offsets_[idx] = p.second;
+    }
+  }
 
   // TODO: Seperate this into some function
   {
@@ -108,9 +132,13 @@ DriverConfig UserConfig::driver() && { return std::move(this->driver_); }
 const MapConfig& UserConfig::mapping() const& { return this->mapping_; }
 MapConfig UserConfig::mapping() && { return std::move(this->mapping_); }
 
+const OffsetConfig& UserConfig::offset() const& { return this->offset_; }
+OffsetConfig UserConfig::offset() && { return std::move(this->offset_); }
+
 UserConfig& UserConfig::merge(const UserConfig& other) {
   this->driver_.merge(other.driver());
   this->mapping_.merge(other.mapping());
+  this->offset_.merge(other.offset());
 
   return *this;
 }

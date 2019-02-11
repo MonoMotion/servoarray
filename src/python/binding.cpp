@@ -106,6 +106,9 @@ public:
 
   void set_read_mode(::ServoArray::ReadMode mode) { this->sa.set_read_mode(mode); }
   ::ServoArray::ReadMode read_mode() const { return this->sa.read_mode(); }
+
+  void set_offset(std::size_t index, double value) { this->sa.set_offset(index, value); }
+  double offset(std::size_t index) const { return this->sa.offset(index); }
 };
 
 }
@@ -134,6 +137,8 @@ PYBIND11_MODULE(servoarray, m) {
     .def("write", &Adaptor::ServoArray::write)
     .def("read", &Adaptor::ServoArray::read)
     .def_property("read_mode", &Adaptor::ServoArray::read_mode, &Adaptor::ServoArray::set_read_mode)
+    .def("offset", &Adaptor::ServoArray::offset)
+    .def("set_offset", &Adaptor::ServoArray::set_offset)
     .def("__len__", &Adaptor::ServoArray::size)
     .def("__setitem__", &Adaptor::ServoArray::write_slice)
     .def("__setitem__", &Adaptor::ServoArray::write)

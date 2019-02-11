@@ -20,25 +20,37 @@
 
 namespace ServoArray {
 
-ServoArray::ServoArray(std::shared_ptr<Driver> driver) : driver_(driver) {
+ServoArray::ServoArray(std::shared_ptr<Driver> driver, const std::vector<double>& offsets) : driver_(driver), offsets_(offsets) {
   this->cache_.resize(this->size());
+  this->offsets_.resize(this->size());
 }
 
 ServoArray::ServoArray(const std::string& name, const DriverParams& params, DriverManager& manager) : driver_(manager.load(name, params)) {
   this->cache_.resize(this->size());
+  this->offsets_.resize(this->size());
+
+  for (const auto& p : manager.config().offset().offsets()) {
+    if (p.first >= this->size()) {
+      // TODO: ignore this with warning
+      throw std::runtime_error("Offset index out of range");
+    }
+
+    this->offsets_[p.first] = p.second;
+  }
 }
 
 void ServoArray::write(std::size_t index, double rad) {
-  this->driver_->write(index, rad);
-  this->cache_[index] = rad;
+  auto const value = this->offsets_[index] + rad;
+  this->driver_->write(index, value);
+  this->cache_[index] = value;
 }
 
 double ServoArray::read(std::size_t index) {
   switch(this->read_mode_) {
     case ReadMode::Cached:
-      return this->cache_[index];
+      return this->cache_[index] - this->offsets_[index];
     case ReadMode::Direct:
-      return this->driver_->read(index);
+      return this->driver_->read(index) - this->offsets_[index];
     default:
       assert(false); // unreachable
   }
@@ -55,6 +67,14 @@ void ServoArray::set_read_mode(ReadMode mode) {
 
 ReadMode ServoArray::read_mode() const {
   return this->read_mode_;
+}
+
+double ServoArray::offset(std::size_t idx) const {
+  return this->offsets_[idx];
+}
+
+void ServoArray::set_offset(std::size_t idx, double value) {
+  this->offsets_[idx] = value;
 }
 
 std::size_t ServoArray::size() const {
