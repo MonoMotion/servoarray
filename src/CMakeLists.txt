@@ -40,6 +40,7 @@ set(SERVOARRAY_DEFAULT_CONFIG_FILES ~/.servoarrayrc ./.servoarrayrc)
 
 option(BUILD_PYTHON "Build servoarray python module" ON)
 
+set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.36.0 REQUIRED COMPONENTS filesystem system)
 include_directories(${Boost_INCLUDE_DIRS})
 

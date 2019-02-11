@@ -50,11 +50,14 @@ function cross_sh() {
 
 readonly BASE_IMAGE=$(base_image)
 readonly CROSS_SH=$(cross_sh)
+readonly BOOST_VERSION=1.69.0
 
 echo "BASE_IMAGE=${BASE_IMAGE}"
 cat ci/image/Dockerfile.in \
   | sed "s/@BASE_IMAGE@/${BASE_IMAGE//\//\\/}/g" \
   | sed "s/@SHELL@/${CROSS_SH//\//\\/}/g" \
+  | sed "s/@BOOST_VERSION@/${BOOST_VERSION}/g" \
+  | sed "s/@BOOST_VERSION_U@/${BOOST_VERSION//\./_}/g" \
   > ci/image/Dockerfile
 
 docker build ci/image -t builder
