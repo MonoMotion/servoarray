@@ -21,6 +21,8 @@
 
 namespace util {
 
+// TODO: Use better way to share these code
+
 static std::atomic<bool> quit(false);
 
 void register_signal(int);
