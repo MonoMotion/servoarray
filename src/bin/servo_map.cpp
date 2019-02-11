@@ -24,6 +24,7 @@ int main(int argc, char **argv) {
   args::ArgumentParser argparser("Test the servoarray driver in REPL-like interface");
   args::HelpFlag help(argparser, "help", "Print this help", {'h', "help"});
   args::Positional<std::string> arg_driver(argparser, "driver", "Driver name");
+  args::Flag arg_cached(argparser, "cached_read", "Use ReadMode::Cached", {'c', "cached-read"});
 
   try {
     argparser.ParseCLI(argc, argv);
@@ -39,6 +40,11 @@ int main(int argc, char **argv) {
   const std::string driver {arg_driver ? args::get(arg_driver) : ""};
 
   auto sa = ServoArray::ServoArray(driver);
+
+  if (arg_cached) {
+    sa.set_read_mode(ServoArray::ReadMode::Cached);
+  }
+
   auto map = ServoArray::ServoMap(sa);
 
   util::register_signal(SIGINT);
