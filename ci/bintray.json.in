@@ -2,7 +2,8 @@
   "package": {
     "name": "servoarray",
     "repo": "apt",
-    "subject": "monomotion"
+    "subject": "monomotion",
+    "licenses": ["GPL-3.0-or-later"]
   },
   "version": {
     "name": "@VERSION@"
