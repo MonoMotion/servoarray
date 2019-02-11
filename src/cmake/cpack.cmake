@@ -18,4 +18,8 @@ set(CPACK_GENERATOR "TGZ;ZIP")
 set(CPACK_PACKAGE_CONTACT "coord.e <me@coord-e.com>")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libboost-filesystem1.62.0")
 
+set(CPACK_PACKAGE_VERSION_MAJOR ${servoarray_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${servoarray_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${servoarray_VERSION_PATCH})
+
 include(CPack)

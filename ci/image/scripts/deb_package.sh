@@ -17,4 +17,17 @@
 set -euo pipefail
 
 cd /build
-cpack -D CPACK_OUTPUT_FILE_PREFIX=/dist -D CPACK_GENERATOR=DEB
+
+function package_filename() {
+  local sa_version=$(/source/version.sh)
+  local arch=$(dpkg --print-architecture)
+
+  . /etc/os-release
+  if [ -n "${VERSION_ID:-}" ]; then
+    echo "servoarray_${sa_version}-deb${VERSION_ID}_${arch}"
+  else
+    echo "servoarray_${sa_version}_${arch}"
+  fi
+}
+
+cpack -D CPACK_OUTPUT_FILE_PREFIX=/dist -D CPACK_GENERATOR=DEB -D CPACK_PACKAGE_FILE_NAME=$(package_filename)
