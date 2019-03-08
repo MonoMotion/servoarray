@@ -92,7 +92,7 @@ setup(
             'Development Status :: 4 - Beta',
             'Intended Audience :: Developers',
             'Environment :: Other Environment',
-            'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
+            'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
             'Operating System :: POSIX',
             'Programming Language :: Python',
             'Programming Language :: C++',
